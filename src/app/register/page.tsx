@@ -1,4 +1,4 @@
-import Login from "./_components/login";
+import Register from "./_components/register";
 
 export default function Page() {
   return (
@@ -7,7 +7,7 @@ export default function Page() {
         SISTEMA DE GESTION DE PRECIOS UNITARIOS <br />
         (SGPU)
       </h1>
-      <Login />
+      <Register />
     </main>
   );
 }
