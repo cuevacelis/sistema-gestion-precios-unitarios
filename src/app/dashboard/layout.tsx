@@ -1,3 +1,4 @@
+import MenuLateral from "./_components/menuLateral";
 import NavbarDashboard from "./_components/navbarDashboard";
 
 export default function DashboardLayout({
@@ -8,7 +9,7 @@ export default function DashboardLayout({
   return (
     <>
       <NavbarDashboard />
-      <section>{children}</section>
+      <MenuLateral>{children}</MenuLateral>
     </>
   );
 }
