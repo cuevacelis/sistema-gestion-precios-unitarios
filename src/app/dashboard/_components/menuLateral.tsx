@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function MenuLateral(props: any) {
   return (
-    <section className="menu-lateral flex flex-row gap-x-4 h-[calc(100vh-65px)]">
-      <ul className="hidden sm:flex flex-col w-40 h-full px-4 gap-y-4 pt-4 ">
+    <section className="menu-lateral flex flex-row h-[calc(100vh-65px)]">
+      <ul className="hidden sm:flex flex-col w-44 h-full px-4 gap-y-4 pt-4 border-r-1 border-gray-300 dark:border-gray-800">
         <li>
           <Link href={"/dashboard/proyectos"}>Proyectos</Link>
         </li>
@@ -26,73 +26,8 @@ export default function MenuLateral(props: any) {
           <Link href={"/dashboard/usuarios"}>Usuarios</Link>
         </li>
       </ul>
-      <main className="contenido-principal overflow-y-auto">
+      <main className="contenido-principal overflow-y-auto flex flex-col bg-slate-100 dark:bg-[#111] px-2">
         {props.children}
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
-        <p>
-          fefefefwefwef dqwdqw qwdq wdqw dqwdqwdqwd qwdq wdq dq wdqwd qwdq wdq
-          qwdq wd qwd qdq wdq sdqwdwdqdededq qdqdqdqd qd q dqdqwdqd e dqeqfeqdq
-          qdqdqdq dq
-        </p>
       </main>
     </section>
   );

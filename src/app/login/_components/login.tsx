@@ -31,6 +31,7 @@ export default function Login() {
       <Input
         type="text"
         label="Correo"
+        color="primary"
         {...register("email", {
           required: "*Se requiere el campo de correo.",
           pattern: {
@@ -46,10 +47,11 @@ export default function Login() {
 
       <Input
         type="password"
+        label="Contraseña"
+        color="primary"
         {...register("password", {
           required: "*Se requiere el campo de contraseña.",
         })}
-        label="Contraseña"
         errorMessage={errors.password?.message?.toString()}
         validationState={errors.password ? "invalid" : "valid"}
         autoComplete="new-password"
