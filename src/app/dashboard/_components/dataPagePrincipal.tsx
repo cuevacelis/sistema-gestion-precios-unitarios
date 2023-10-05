@@ -7,7 +7,7 @@ export function FunctionPagePrincipal(props: any) {
   return (
     <section className="flex gap-x-4 gap-y-3">
       {props.dataFetch.data.map((data: any) => (
-        <Card className="max-w-[400px]">
+        <Card className="max-w-[400px]" key={data.pre_Codigo}>
           <CardHeader className="flex gap-3">
             <Image
               alt="nextui logo"

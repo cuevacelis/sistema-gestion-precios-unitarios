@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { FunctionPagePrincipal } from "./dataPagePrincipal";
+import { FunctionPagePrincipal } from "./_components/dataPagePrincipal";
 
 interface IPropsPage {
   isSuccessful: boolean;
