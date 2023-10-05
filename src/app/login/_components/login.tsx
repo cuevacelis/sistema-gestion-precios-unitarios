@@ -1,12 +1,13 @@
 "use client";
 
 import { Button, Input } from "@nextui-org/react";
+import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 type FormDataLogin = {
-  email: string;
+  user: string;
   password: string;
 };
 
@@ -18,9 +19,33 @@ export default function Login() {
     formState: { errors },
   } = useForm<FormDataLogin>();
 
-  const onSubmit = (data: any) => {
-    // console.log(data);
-    router.push("/dashboard");
+  const onSubmit = async (data: any) => {
+    try {
+      const responseLoginToken = await fetch(
+        `${process.env.NEXT_PUBLIC_URL_API}/Accounts/Login`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify({
+            usu_Correo: data.user,
+            usu_Clave: data.password,
+          }),
+        }
+      );
+
+      const dataLoginToken = await responseLoginToken.json();
+
+      if (dataLoginToken.isAuthSuccessful) {
+        Cookies.set("token", dataLoginToken.token);
+        router.push("/dashboard");
+      } else {
+        router.push("/login-faild");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -32,16 +57,12 @@ export default function Login() {
         type="text"
         label="Correo"
         color="primary"
-        {...register("email", {
-          required: "*Se requiere el campo de correo.",
-          pattern: {
-            value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-            message: "*Ingrese un correo válido.",
-          },
+        {...register("user", {
+          required: "*Se requiere el campo de usuario.",
         })}
-        errorMessage={errors.email?.message?.toString()}
-        validationState={errors.email ? "invalid" : "valid"}
-        autoComplete="username email"
+        errorMessage={errors.user?.message?.toString()}
+        validationState={errors.user ? "invalid" : "valid"}
+        autoComplete="username user"
         className="w-64 mb-5"
       />
 

@@ -16,7 +16,21 @@ import Link from "next/link";
 import { AcmeLogo } from "./acmeLogo";
 import { PlusIcon } from "./plusIcon";
 
-export default function NavbarDashboard() {
+interface PropsNavbarDashboard {
+  dataFetch: {
+    isSuccessful: boolean;
+    errorMessage: any;
+    data: {
+      usu_Correo: string;
+      usu_NomApellidos: string;
+      rol_Nombre: string;
+      usu_FecHoraRegistro: string;
+      usu_Estado: string;
+    };
+  };
+}
+
+export default function NavbarDashboard(props: PropsNavbarDashboard) {
   return (
     <Navbar isBordered maxWidth="full" position="sticky">
       <NavbarContent justify="start" className="gap-10">
@@ -53,7 +67,7 @@ export default function NavbarDashboard() {
               as="button"
               className="transition-transform"
               color="secondary"
-              name="Jose Cueva"
+              name={props.dataFetch.data.usu_NomApellidos}
               size="sm"
               src="https://avatars.githubusercontent.com/u/46981396?v=4"
             />
@@ -83,8 +97,8 @@ export default function NavbarDashboard() {
                 className="h-14 gap-2 opacity-100"
               >
                 <User
-                  name="Jose Cueva"
-                  description="@jcueva"
+                  name={props.dataFetch.data.rol_Nombre}
+                  description={props.dataFetch.data.usu_Correo}
                   classNames={{
                     name: "text-default-600",
                     description: "text-default-500",
