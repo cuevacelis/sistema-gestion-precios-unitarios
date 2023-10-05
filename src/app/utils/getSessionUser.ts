@@ -15,6 +15,7 @@ export async function getSessionUser() {
     `${process.env.NEXT_PUBLIC_URL_API}/Usuario/Obten_Usuario_Logeado`,
     {
       headers: {
+        Accept: "*/*",
         "Content-Type": "application/json",
         Authorization: `Bearer ${cookieStore.get("token")?.value}`,
       },
