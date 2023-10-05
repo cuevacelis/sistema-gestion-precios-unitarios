@@ -25,6 +25,7 @@ export default function Login() {
         `${process.env.NEXT_PUBLIC_URL_API}/Accounts/Login`,
         {
           headers: {
+            Accept: "*/*",
             "Content-Type": "application/json",
           },
           method: "POST",
@@ -34,6 +35,7 @@ export default function Login() {
           }),
         }
       );
+      console.log(responseLoginToken);
 
       const dataLoginToken = await responseLoginToken.json();
 
