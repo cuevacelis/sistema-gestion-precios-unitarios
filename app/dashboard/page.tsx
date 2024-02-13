@@ -1,26 +1,4 @@
 import { auth } from "@/auth";
-import { cookies } from "next/headers";
-
-async function getData() {
-  const cookieStore = cookies();
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_URL_API}/Presupuesto/Obten_Paginado/100/1/%20`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cookieStore.get("token")?.value}`,
-      },
-      method: "GET",
-    }
-  );
-
-  if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch data");
-  }
-
-  return response.json();
-}
 
 export default async function Page() {
   const xd = await auth();

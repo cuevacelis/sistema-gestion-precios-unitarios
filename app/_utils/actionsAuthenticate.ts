@@ -1,5 +1,5 @@
 "use server";
-import { signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 
 export async function authenticateCredentials(
@@ -40,6 +40,15 @@ export async function authenticateGoogle() {
 export async function signOutServer() {
   try {
     await signOut();
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getSessionAsync() {
+  try {
+    const session = await auth();
+    return session;
   } catch (error) {
     throw error;
   }

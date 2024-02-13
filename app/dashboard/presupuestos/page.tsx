@@ -1,5 +1,6 @@
 "use client";
 
+import { getSessionAsync } from "@/app/_utils/actionsAuthenticate";
 import {
   Modal,
   ModalBody,
@@ -29,7 +30,6 @@ import {
   TableRow,
 } from "@nextui-org/table";
 import { useAsyncList } from "@react-stately/data";
-import Cookies from "js-cookie";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ChevronDownIcon } from "./ChevronDownIcon";
 import { PlusIcon } from "./PlusIcon";
@@ -57,7 +57,7 @@ interface ITableData {
       ubi_Distrito: string;
       pre_Jornal: string;
       pre_FecHorRegistro: string;
-    }
+    },
   ];
 }
 
@@ -135,19 +135,19 @@ export default function Page() {
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [totalOfItems, setTotalOfItems] = useState<number>(0);
-  console.log(selectedRows);
-  // console.log(currentTotalPages);
+  const sessionAsync = getSessionAsync();
 
   let tableData = useAsyncList<ITableData["data"][0]>({
     async load({ signal }) {
+      const session = await sessionAsync;
       let res = await fetch(
-        `http://serfercer-001-site1.gtempurl.com/api/v1/Presupuesto/Obten_Paginado/${currentRowsPerPageRef.current}/${currentPageRef.current}/%20`,
+        `${process.env.NEXT_PUBLIC_URL_API}/Presupuesto/Obten_Paginado/${currentRowsPerPageRef.current}/${currentPageRef.current}/%20`,
         {
           signal,
           headers: {
             Accept: "*/*",
             "Content-Type": "application/json",
-            Authorization: `Bearer ${Cookies.get("token")}`,
+            Authorization: `Bearer ${session?.user?.token}`,
           },
           method: "GET",
         }
