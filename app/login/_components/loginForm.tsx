@@ -6,12 +6,12 @@ import Link from "next/link";
 import { useFormState, useFormStatus } from "react-dom";
 import { Form, useForm } from "react-hook-form";
 import { TUserLogin } from "../../_types/userTypes";
-import { authenticateCredentials } from "../../_utils/actionsAuthenticate";
+import { authenticateCredentialsOnlyServer } from "../../_utils/actionsAuthenticate";
 
-export default function LoginForm() {
+export default function LoginFormComponent() {
   const { register, formState, control } = useForm<TUserLogin>();
   const [errorMessage, formActionSignInCredentials] = useFormState(
-    authenticateCredentials,
+    authenticateCredentialsOnlyServer,
     undefined
   );
   const { pending } = useFormStatus();

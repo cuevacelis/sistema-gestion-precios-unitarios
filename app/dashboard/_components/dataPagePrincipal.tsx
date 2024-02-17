@@ -3,7 +3,7 @@
 import { Card, CardBody, CardHeader, Divider, Image } from "@nextui-org/react";
 
 export function FunctionPagePrincipal(props: any) {
-  console.log("feef", props);
+  // console.log("feef", props);
   return (
     <section className="flex gap-x-4 gap-y-3">
       {props.dataFetch.data.map((data: any) => (

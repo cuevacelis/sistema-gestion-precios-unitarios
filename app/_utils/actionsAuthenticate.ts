@@ -1,8 +1,10 @@
 "use server";
+
 import { auth, signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
+// import "server-only";
 
-export async function authenticateCredentials(
+export async function authenticateCredentialsOnlyServer(
   prevState: string | undefined,
   formData: FormData
 ) {
@@ -21,7 +23,7 @@ export async function authenticateCredentials(
   }
 }
 
-export async function authenticateGoogle() {
+export async function authenticateGoogleOnlyServer() {
   try {
     await signIn("google");
   } catch (error) {
@@ -37,18 +39,18 @@ export async function authenticateGoogle() {
   }
 }
 
-export async function signOutServer() {
+export async function getSessionActionServer() {
   try {
-    await signOut();
+    const session = await auth();
+    return session;
   } catch (error) {
     throw error;
   }
 }
 
-export async function getSessionAsync() {
+export async function signOutActionServer() {
   try {
-    const session = await auth();
-    return session;
+    await signOut();
   } catch (error) {
     throw error;
   }

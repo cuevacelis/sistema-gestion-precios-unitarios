@@ -1,16 +1,14 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
+import { getToken, getTokenRefresh } from "./app/_utils/fetchApi/token";
+import { getUserLogged } from "./app/_utils/fetchApi/user";
 
 declare module "next-auth" {
   interface User {
     token: string;
     refreshToken: string;
-    usu_Correo: string;
-    usu_NomApellidos: string;
-    rol_Nombre: string;
-    usu_FecHoraRegistro: string;
-    usu_Estado: string;
+    isValidToken: boolean;
   }
 }
 
@@ -24,38 +22,45 @@ export const {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.token = user.token;
-        token.refreshToken = user.refreshToken;
-        token.usu_Correo = user.usu_Correo;
-        token.usu_NomApellidos = user.usu_NomApellidos;
-        token.rol_Nombre = user.rol_Nombre;
-        token.usu_FecHoraRegistro = user.usu_FecHoraRegistro;
-        token.usu_Estado = user.usu_Estado;
+    async jwt({ token, user, trigger }) {
+      try {
+        if (trigger === "signIn") {
+          token.token = user.token;
+          token.refreshToken = user.refreshToken;
+          token.isValidToken = user.isValidToken;
+          return token;
+        }
+        if (Date.now() < Date.now() + 1) {
+          return token;
+        }
+        const dataRefreshToken = await getTokenRefresh({
+          token: String(token.token),
+          refreshToken: String(token.refreshToken),
+        });
+        token.token = String(dataRefreshToken.token);
+        token.refreshToken = String(dataRefreshToken.refreshToken);
+        token.isValidToken = true;
+
+        return token;
+      } catch (error) {
+        token.isValidToken = false;
+        return token;
       }
-      return token;
     },
     async session({ session, token }) {
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
-      session.user.usu_Correo = String(token?.usu_Correo);
-      session.user.usu_NomApellidos = String(token?.usu_NomApellidos);
-      session.user.rol_Nombre = String(token?.rol_Nombre);
-      session.user.usu_FecHoraRegistro = String(token?.usu_FecHoraRegistro);
-      session.user.usu_Estado = String(token?.usu_Estado);
+      session.user.isValidToken = !!token?.isValidToken;
       return session;
     },
     async authorized({ auth, request }) {
-      // console.log("request :::>", request.url);
-      // console.log("auth?.user :::>", auth?.user);
-      const isThereIsSessionInformation = !!auth?.user;
+      const isValidSession = !!auth?.user && auth.user.isValidToken;
       if (request.nextUrl.pathname.startsWith("/dashboard")) {
-        return isThereIsSessionInformation ? true : false;
-      } else if (isThereIsSessionInformation) {
+        return isValidSession ? true : false;
+      } else if (isValidSession) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
       } else {
-        return false;
+        return true;
       }
     },
   },
@@ -67,57 +72,34 @@ export const {
           .object({ user: z.string(), password: z.string().min(1) })
           .safeParse(credentials);
 
-        if (verifiedTypeCredentials.success) {
-          const responseLogin = await fetch(
-            `${process.env.NEXT_PUBLIC_URL_API}/Accounts/Login`,
-            {
-              headers: {
-                Accept: "*/*",
-                "Content-Type": "application/json",
-              },
-              method: "POST",
-              body: JSON.stringify({
-                usu_Correo: verifiedTypeCredentials.data.user,
-                usu_Clave: verifiedTypeCredentials.data.password,
-              }),
+        try {
+          if (verifiedTypeCredentials.success) {
+            const dataLogin = await getToken({
+              user: verifiedTypeCredentials.data.user,
+              password: verifiedTypeCredentials.data.password,
+            });
+            if (dataLogin.isAuthSuccessful) {
+              const dataInfoUser = await getUserLogged({
+                token: dataLogin.token,
+              });
+              return {
+                name: dataInfoUser.data.rol_Nombre,
+                email: dataInfoUser.data.usu_Correo,
+                token: dataLogin.token,
+                refreshToken: dataLogin.refreshToken,
+                isValidToken: true,
+              };
             }
-          );
-          const dataLogin = await responseLogin.json();
-
-          if (dataLogin.isAuthSuccessful) {
-            const responseInfoUser = await fetch(
-              `${process.env.NEXT_PUBLIC_URL_API}/Usuario/Obten_Usuario_Logeado`,
-              {
-                headers: {
-                  Accept: "*/*",
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${dataLogin.token}`,
-                },
-                method: "GET",
-              }
-            );
-            const dataInfoUser = await responseInfoUser.json();
-
-            return {
-              name: dataInfoUser.data.rol_Nombre,
-              email: dataInfoUser.data.usu_Correo,
-              token: dataLogin.token,
-              refreshToken: dataLogin.refreshToken,
-              usu_Correo: dataInfoUser.data.usu_Correo,
-              usu_NomApellidos: dataInfoUser.data.usu_NomApellidos,
-              rol_Nombre: dataInfoUser.data.rol_Nombre,
-              usu_FecHoraRegistro: dataInfoUser.data.usu_FecHoraRegistro,
-              usu_Estado: dataInfoUser.data.usu_Estado,
-            };
           }
+          return null;
+        } catch (error) {
+          return null;
         }
-        return null;
       },
     }),
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
-    updateAge: 24 * 60 * 60,
+    maxAge: 1 * 24 * 60 * 60, //1 día
   },
 });

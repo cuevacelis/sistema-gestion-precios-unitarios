@@ -1,6 +1,6 @@
 "use client";
 
-import { getSessionAsync } from "@/app/_utils/actionsAuthenticate";
+import { getSessionActionServer } from "@/app/_utils/actionsAuthenticate";
 import {
   Modal,
   ModalBody,
@@ -135,7 +135,7 @@ export default function Page() {
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [totalOfItems, setTotalOfItems] = useState<number>(0);
-  const sessionAsync = getSessionAsync();
+  const sessionAsync = getSessionActionServer();
 
   let tableData = useAsyncList<ITableData["data"][0]>({
     async load({ signal }) {

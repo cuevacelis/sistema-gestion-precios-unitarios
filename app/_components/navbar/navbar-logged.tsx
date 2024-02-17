@@ -1,23 +1,21 @@
 "use client";
 
-import { signOutServer } from "@/app/_utils/actionsAuthenticate";
+import { signOutActionServer } from "@/app/_utils/actionsAuthenticate";
+import { AcmeLogo } from "@/app/dashboard/_components/acmeLogo";
+import { Avatar } from "@nextui-org/avatar";
 import {
-  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-} from "@nextui-org/react";
+} from "@nextui-org/dropdown";
+import { Link } from "@nextui-org/link";
+import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/navbar";
 import { Session } from "next-auth";
 import { useTheme } from "next-themes";
-import Link from "next/link";
-import { AcmeLogo } from "./acmeLogo";
 
-export default function NavbarDashboard(props: { session: Session | null }) {
+export default function NavbarLoggedComponent(props: { session: Session }) {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -45,7 +43,7 @@ export default function NavbarDashboard(props: { session: Session | null }) {
               as="button"
               className="transition-transform"
               color="secondary"
-              name={props.session?.user?.usu_NomApellidos}
+              name={String(props.session?.user?.name)}
               showFallback
               size="sm"
             />
@@ -107,7 +105,7 @@ export default function NavbarDashboard(props: { session: Session | null }) {
                 color="danger"
                 className="text-danger"
                 onClick={async () => {
-                  await signOutServer();
+                  await signOutActionServer();
                 }}
               >
                 Cerrar sesión
