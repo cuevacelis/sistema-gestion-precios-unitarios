@@ -21,7 +21,7 @@ export default function NavbarLoggedComponent(props: { session: Session }) {
   return (
     <Navbar isBordered maxWidth="full" position="sticky">
       <NavbarContent justify="start" className="gap-10">
-        <Link href={"/dashboard"}>
+        <Link color="foreground" href={"/dashboard"}>
           <NavbarBrand className="flex-grow-0">
             <AcmeLogo />
             <p className="font-bold text-inherit">SGPU</p>

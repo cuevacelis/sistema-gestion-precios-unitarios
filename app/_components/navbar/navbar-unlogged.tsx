@@ -12,7 +12,7 @@ export default function NavbarUnloggedComponent() {
   return (
     <Navbar isBordered maxWidth="full" position="sticky">
       <NavbarContent justify="start" className="gap-10">
-        <Link href={"/"}>
+        <Link color="foreground" href={"/"}>
           <NavbarBrand className="flex-grow-0">
             <AcmeLogo />
             <p className="font-bold text-inherit">SGPU</p>
@@ -21,22 +21,22 @@ export default function NavbarUnloggedComponent() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <NavbarItem isActive>
+        <NavbarItem className="hidden sm:flex">
           <Link color="foreground" href="/" aria-current="page">
             Home
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link href="/manual" aria-current="page">
+        <NavbarItem className="hidden sm:flex">
+          <Link color="foreground" href="/manual" aria-current="page">
             Manual
           </Link>
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex">
+        <NavbarItem>
           <Button as={Link} color="primary" href="/login" variant="flat">
             Inciar sesión
           </Button>
         </NavbarItem>
-        <NavbarItem>
+        <NavbarItem className="hidden sm:flex">
           <Button
             as={Link}
             color="secondary"

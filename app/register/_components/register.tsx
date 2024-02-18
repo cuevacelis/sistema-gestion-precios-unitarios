@@ -2,7 +2,6 @@
 
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
@@ -82,9 +81,6 @@ export default function Register() {
         >
           Registrate
         </Button>
-        <Link href={"/"} className="opacity-70">
-          cancelar
-        </Link>
       </div>
     </form>
   );
