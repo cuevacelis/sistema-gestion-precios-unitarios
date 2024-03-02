@@ -3,7 +3,10 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "SGPU",
+  title: {
+    template: "%s | SGPU",
+    default: "SGPU",
+  },
   description: "SISTEMA DE GESTION DE PRECIOS UNITARIOS",
 };
 

@@ -1,14 +1,14 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import { getToken, getTokenRefresh } from "./app/_utils/fetchApi/token";
-import { getUserLogged } from "./app/_utils/fetchApi/user";
+import { getToken, getTokenRefresh } from "./app/_lib/fetch-api/token";
 
 declare module "next-auth" {
   interface User {
     token: string;
     refreshToken: string;
     isValidToken: boolean;
+    expires: Date;
   }
 }
 
@@ -28,11 +28,18 @@ export const {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
           token.isValidToken = user.isValidToken;
+          token.expires = user.expires;
+          console.log("token 11111111111111111111111111", token);
           return token;
         }
-        if (Date.now() < Date.now() + 1) {
+        if (
+          new Date().getTime() <
+          new Date(new Date(String(token.expires)).toISOString()).getTime()
+        ) {
+          console.log("token no vencidooooooooooooooo");
           return token;
         }
+        console.log("token si vencidooooooooooooooo");
         const dataRefreshToken = await getTokenRefresh({
           token: String(token.token),
           refreshToken: String(token.refreshToken),
@@ -50,6 +57,7 @@ export const {
     async session({ session, token }) {
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
+      session.user.expires = new Date(String(token?.expires));
       session.user.isValidToken = !!token?.isValidToken;
       return session;
     },
@@ -79,14 +87,12 @@ export const {
               password: verifiedTypeCredentials.data.password,
             });
             if (dataLogin.isAuthSuccessful) {
-              const dataInfoUser = await getUserLogged({
-                token: dataLogin.token,
-              });
               return {
-                name: dataInfoUser.data.rol_Nombre,
-                email: dataInfoUser.data.usu_Correo,
+                name: "",
+                email: "",
                 token: dataLogin.token,
                 refreshToken: dataLogin.refreshToken,
+                expires: dataLogin.expires,
                 isValidToken: true,
               };
             }

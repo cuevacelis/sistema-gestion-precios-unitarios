@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import MenuLateral from "./_components/menuLateral";
+import MenuLateralComponent from "./_components/MenuLateralComponent";
 
 export const metadata: Metadata = {
-  title: "SGPU Dashboard",
+  title: "Dashboard",
 };
 
 export default function DashboardLayout({
@@ -12,7 +12,7 @@ export default function DashboardLayout({
 }) {
   return (
     <>
-      <MenuLateral>{children}</MenuLateral>
+      <MenuLateralComponent>{children}</MenuLateralComponent>
     </>
   );
 }

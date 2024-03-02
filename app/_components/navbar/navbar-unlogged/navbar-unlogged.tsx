@@ -1,4 +1,3 @@
-import { AcmeLogo } from "@/app/dashboard/_components/acmeLogo";
 import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 import {
@@ -7,6 +6,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/navbar";
+import { AcmeLogoComponent } from "../../logo/acme-logo";
 
 export default function NavbarUnloggedComponent() {
   return (
@@ -14,7 +14,7 @@ export default function NavbarUnloggedComponent() {
       <NavbarContent justify="start" className="gap-10">
         <Link color="foreground" href={"/"}>
           <NavbarBrand className="flex-grow-0">
-            <AcmeLogo />
+            <AcmeLogoComponent />
             <p className="font-bold text-inherit">SGPU</p>
           </NavbarBrand>
         </Link>
@@ -34,17 +34,6 @@ export default function NavbarUnloggedComponent() {
         <NavbarItem>
           <Button as={Link} color="primary" href="/login" variant="flat">
             Inciar sesión
-          </Button>
-        </NavbarItem>
-        <NavbarItem className="hidden sm:flex">
-          <Button
-            as={Link}
-            color="secondary"
-            href="/register"
-            variant="flat"
-            disabled
-          >
-            Registrarse
           </Button>
         </NavbarItem>
       </NavbarContent>

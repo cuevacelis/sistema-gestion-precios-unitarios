@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SGPU Login",
+  title: "Login",
   description: "Logueate en el SGPU",
 };
 

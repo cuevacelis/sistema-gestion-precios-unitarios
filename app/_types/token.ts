@@ -8,6 +8,7 @@ export interface IGetTokenResp {
   errorMessage: any;
   token: string;
   refreshToken: string;
+  expires: Date;
 }
 
 export interface IGetTokenRefreshParams {

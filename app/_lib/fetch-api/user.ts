@@ -1,14 +1,12 @@
-// "use server";
-
 import {
-  IGetUserLoggedParams,
-  IGetUserLoggedResp,
-} from "@/app/_types/userTypes";
+  IfetchUserLoggedParams,
+  IfetchUserLoggedResp,
+} from "@/app/_types/user";
 import { FetchError } from "../customTypeError/fetchError";
 
-export async function getUserLogged(
-  params: IGetUserLoggedParams
-): Promise<IGetUserLoggedResp> {
+export async function fetchUserLogged(
+  params: IfetchUserLoggedParams
+): Promise<IfetchUserLoggedResp> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/Usuario/Obten_Usuario_Logeado`,
@@ -31,18 +29,6 @@ export async function getUserLogged(
     }
     return await res.json();
   } catch (error) {
-    // console.log("fffffff");
-    // console.error(error);
-    // if (error instanceof FetchError) {
-    //   console.log("type", error.type);
-    //   switch (error.type) {
-    //     case "Unauthorized":
-    //       console.log("no  estas  autorizado");
-    //       await signOutOnlyServer();
-    //     default:
-    //       await signOutOnlyServer();
-    //   }
-    // }
     console.error(error);
     throw error;
   }

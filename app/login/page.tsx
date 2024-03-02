@@ -1,4 +1,4 @@
-import LoginFormComponent from "./_components/form/login-form";
+import LoginComponent from "./_components/form/login";
 
 export default function LoginPage() {
   return (
@@ -6,7 +6,7 @@ export default function LoginPage() {
       <h1 className="text-black dark:text-stone-300 text-4xl text-center">
         Login
       </h1>
-      <LoginFormComponent />
+      <LoginComponent />
     </main>
   );
 }

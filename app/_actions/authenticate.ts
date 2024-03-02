@@ -1,15 +1,13 @@
 "use server";
 
-import { auth, signIn, signOut } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-// import "server-only";
 
-export async function authenticateCredentialsOnlyServer(
+export async function actionsSignInCredentials(
   prevState: string | undefined,
   formData: FormData
 ) {
   try {
-    console.log(formData);
     await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
@@ -24,35 +22,26 @@ export async function authenticateCredentialsOnlyServer(
   }
 }
 
-export async function authenticateGoogleOnlyServer() {
+export async function actionsSignOut() {
+  try {
+    await signOut();
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function actionsSignInGoogle() {
   try {
     await signIn("google");
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return "Credenciales invalidas.";
         default:
-          return "Something went wrong.";
+          return "Algo salió mal.";
       }
     }
-    throw error;
-  }
-}
-
-export async function getSessionActionServer() {
-  try {
-    const session = await auth();
-    return session;
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function signOutActionServer() {
-  try {
-    await signOut();
-  } catch (error) {
     throw error;
   }
 }

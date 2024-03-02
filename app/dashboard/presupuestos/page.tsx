@@ -1,6 +1,7 @@
 "use client";
 
-import { getSessionActionServer } from "@/app/_utils/actionsAuthenticate";
+import { PlusIconComponent } from "@/app/_components/icon/plus-icon";
+import { auth } from "@/auth";
 import {
   Modal,
   ModalBody,
@@ -32,7 +33,6 @@ import {
 import { useAsyncList } from "@react-stately/data";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ChevronDownIcon } from "./ChevronDownIcon";
-import { PlusIcon } from "./PlusIcon";
 import { SearchIcon } from "./SearchIcon";
 import { DeleteIcon } from "./_iconsAction/DeleteIcon";
 import { EditIcon } from "./_iconsAction/EditIcon";
@@ -124,7 +124,7 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-export default function Page() {
+export default async function Page() {
   // const [rowsPerPage, setRowsPerPage] = useState<number>(3);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const currentPageRef = useRef<number>(1);
@@ -135,11 +135,10 @@ export default function Page() {
     new Set(INITIAL_VISIBLE_COLUMNS)
   );
   const [totalOfItems, setTotalOfItems] = useState<number>(0);
-  const sessionAsync = getSessionActionServer();
+  const session = await auth();
 
   let tableData = useAsyncList<ITableData["data"][0]>({
     async load({ signal }) {
-      const session = await sessionAsync;
       let res = await fetch(
         `${process.env.NEXT_PUBLIC_URL_API}/Presupuesto/Obten_Paginado/${currentRowsPerPageRef.current}/${currentPageRef.current}/%20`,
         {
@@ -290,7 +289,11 @@ export default function Page() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button onClick={onOpen} color="primary" endContent={<PlusIcon />}>
+            <Button
+              onClick={onOpen}
+              color="primary"
+              endContent={<PlusIconComponent />}
+            >
               Agregar
             </Button>
           </div>

@@ -1,15 +1,15 @@
 "use client";
 
+import { actionsSignInCredentials } from "@/app/_actions/authenticate";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
-import { authenticateCredentialsOnlyServer } from "../../../_utils/actionsAuthenticate";
+import SubmitButtonComponent from "./button-submit";
 import InputPassComponent from "./input-pass";
 import InputUserComponent from "./input-user";
-import SubmitButtonComponent from "./submit";
 
-export default function LoginFormComponent() {
+export default function LoginComponent() {
   const [errorMessage, formActionSignInCredentials] = useFormState(
-    authenticateCredentialsOnlyServer,
+    actionsSignInCredentials,
     undefined
   );
 

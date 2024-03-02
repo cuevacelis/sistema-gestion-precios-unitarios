@@ -10,11 +10,11 @@ export type TUser = {
   password?: string;
 };
 
-export interface IGetUserLoggedParams {
+export interface IfetchUserLoggedParams {
   token: string;
 }
 
-export interface IGetUserLoggedResp {
+export interface IfetchUserLoggedResp {
   isSuccessful: boolean;
   errorMessage: any;
   data: {
