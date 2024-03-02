@@ -1,7 +1,10 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import { getToken, getTokenRefresh } from "./app/_lib/fetch-api/token";
+import {
+  fetchApiLogin,
+  fetchApiTokenRefresh,
+} from "./app/_lib/fetch-api/token";
 
 declare module "next-auth" {
   interface User {
@@ -40,7 +43,7 @@ export const {
           return token;
         }
         console.log("token si vencidooooooooooooooo");
-        const dataRefreshToken = await getTokenRefresh({
+        const dataRefreshToken = await fetchApiTokenRefresh({
           token: String(token.token),
           refreshToken: String(token.refreshToken),
         });
@@ -82,7 +85,7 @@ export const {
 
         try {
           if (verifiedTypeCredentials.success) {
-            const dataLogin = await getToken({
+            const dataLogin = await fetchApiLogin({
               user: verifiedTypeCredentials.data.user,
               password: verifiedTypeCredentials.data.password,
             });
