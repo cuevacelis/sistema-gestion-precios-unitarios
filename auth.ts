@@ -1,3 +1,4 @@
+process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
@@ -25,24 +26,25 @@ export const {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, session }) {
       try {
         if (trigger === "signIn") {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
           token.isValidToken = user.isValidToken;
           token.expires = user.expires;
-          console.log("token 11111111111111111111111111", token);
           return token;
         }
+
         if (
           new Date().getTime() <
-          new Date(new Date(String(token.expires)).toISOString()).getTime()
+          new Date(
+            String(token.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
+          ).getTime()
         ) {
-          console.log("token no vencidooooooooooooooo");
           return token;
         }
-        console.log("token si vencidooooooooooooooo");
+
         const dataRefreshToken = await fetchApiTokenRefresh({
           token: String(token.token),
           refreshToken: String(token.refreshToken),
