@@ -1,6 +1,6 @@
 "use client";
 import { actionsSignOut } from "@/app/_actions/authenticate";
-import { IfetchUserLoggedResp } from "@/app/_types/user";
+import { IFetchUserLogged } from "@/app/_types/user";
 import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
@@ -13,7 +13,7 @@ import { NavbarContent } from "@nextui-org/navbar";
 import { useTheme } from "next-themes";
 
 export default function NavbarLoggedContent(props: {
-  dataInfoUser: IfetchUserLoggedResp;
+  dataInfoUser: IFetchUserLogged;
 }) {
   const { theme, setTheme } = useTheme();
   return (
@@ -31,7 +31,7 @@ export default function NavbarLoggedContent(props: {
             as="button"
             className="transition-transform"
             color="secondary"
-            name={String(props.dataInfoUser.data.usu_NomApellidos)}
+            name={String(props.dataInfoUser?.data?.usu_NomApellidos)}
             showFallback
             size="sm"
           />
