@@ -9,7 +9,7 @@ import create from "./_actionsCreate";
 //   title: "Crear presupuestos",
 // };
 
-export default async function Page() {
+export default function Page() {
   const customers = "";
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(create as any, initialState);
