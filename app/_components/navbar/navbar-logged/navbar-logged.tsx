@@ -8,7 +8,6 @@ import NavbarLoggedContent from "./_components/navbar-logged-content";
 export default async function NavbarLoggedComponent(props: {
   session: Session;
 }) {
-  await new Promise((resolve, reject) => setTimeout(resolve, 1000));
   const dataInfoUser = await fetchUserLogged({
     token: String(props.session.user?.token),
   });

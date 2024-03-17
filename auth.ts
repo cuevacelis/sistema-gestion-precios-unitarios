@@ -88,16 +88,16 @@ export const {
         try {
           if (verifiedTypeCredentials.success) {
             const dataLogin = await fetchApiLogin({
-              user: verifiedTypeCredentials.data.user,
-              password: verifiedTypeCredentials.data.password,
+              usu_Correo: verifiedTypeCredentials.data.user,
+              usu_Clave: verifiedTypeCredentials.data.password,
             });
-            if (dataLogin.isAuthSuccessful) {
+            if (dataLogin?.isAuthSuccessful) {
               return {
                 name: "",
                 email: "",
-                token: dataLogin.token,
-                refreshToken: dataLogin.refreshToken,
-                expires: dataLogin.expires,
+                token: String(dataLogin?.token),
+                refreshToken: String(dataLogin?.refreshToken),
+                expires: new Date(String(dataLogin?.expires)),
                 isValidToken: true,
               };
             }

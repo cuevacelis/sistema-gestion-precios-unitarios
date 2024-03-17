@@ -1,14 +1,7 @@
-import {
-  IGetTokenParams,
-  IGetTokenRefreshParams,
-  IGetTokenResp,
-} from "@/app/_types/token";
-//import "server-only";
+import { IBodyLogin, IBodyTokenRefresh, IFetchLogin } from "@/app/_types/login";
 import { FetchError } from "../customTypeError/fetchError";
 
-export async function fetchApiLogin(
-  params: IGetTokenParams
-): Promise<IGetTokenResp> {
+export async function fetchApiLogin(params: IBodyLogin): Promise<IFetchLogin> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/Accounts/Login`,
@@ -19,8 +12,8 @@ export async function fetchApiLogin(
         },
         method: "POST",
         body: JSON.stringify({
-          usu_Correo: params.user,
-          usu_Clave: params.password,
+          usu_Correo: params.usu_Correo,
+          usu_Clave: params.usu_Clave,
         }),
       }
     );
@@ -38,7 +31,7 @@ export async function fetchApiLogin(
   }
 }
 
-export async function fetchApiTokenRefresh(params: IGetTokenRefreshParams) {
+export async function fetchApiTokenRefresh(params: IBodyTokenRefresh) {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/Token/refresh`,

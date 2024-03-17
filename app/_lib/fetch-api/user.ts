@@ -1,12 +1,7 @@
-import {
-  IfetchUserLoggedParams,
-  IfetchUserLoggedResp,
-} from "@/app/_types/user";
+import { IFetchUserLogged } from "@/app/_types/user";
 import { FetchError } from "../customTypeError/fetchError";
 
-export async function fetchUserLogged(
-  params: IfetchUserLoggedParams
-): Promise<IfetchUserLoggedResp> {
+export async function fetchUserLogged(params: any): Promise<IFetchUserLogged> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_URL_API}/Usuario/Obten_Usuario_Logeado`,
