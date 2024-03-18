@@ -50,11 +50,11 @@ export default async function Page({
     {
       method: "GET",
       headers: {
-        Accept: "*/*",
         "Content-Type": "application/json",
         Authorization: `Bearer ${session?.user?.token}`,
       },
       redirect: "follow",
+      next: { revalidate: 86400 },
     }
   );
 

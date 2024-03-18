@@ -6,6 +6,7 @@ import { fetchLogged, fetchTokenRefresh } from "./app/_fetch/logged";
 
 declare module "next-auth" {
   interface User {
+    isSuccess: boolean;
     token: string;
     refreshToken: string;
     expires: Date;
@@ -28,6 +29,7 @@ export const {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
           token.expires = user.expires;
+          token.isSuccess = true;
           return token;
         }
 
@@ -39,11 +41,14 @@ export const {
           token: String(token.token),
           refreshToken: String(token.refreshToken),
         });
+
         token.token = String(dataRefreshToken.token);
         token.refreshToken = String(dataRefreshToken.refreshToken);
-
+        token.expires = String(dataRefreshToken.expires);
+        token.isSuccess = true;
         return token;
       } catch (error) {
+        token.isSuccess = false;
         return token;
       }
     },
@@ -51,10 +56,12 @@ export const {
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
       session.user.expires = new Date(String(token?.expires));
+      session.user.isSuccess = Boolean(token?.isSuccess);
       return session;
     },
     async authorized({ auth, request }) {
-      const isValidSession = Boolean(auth?.user);
+      const isValidSession =
+        Boolean(auth?.user) && Boolean(auth?.user?.isSuccess);
       if (request.nextUrl.pathname.startsWith("/dashboard")) {
         return isValidSession ? true : false;
       } else if (isValidSession) {
@@ -80,6 +87,7 @@ export const {
             });
             if (dataLogin?.isAuthSuccessful) {
               return {
+                isSuccess: true,
                 name: "",
                 email: "",
                 token: String(dataLogin?.token),
