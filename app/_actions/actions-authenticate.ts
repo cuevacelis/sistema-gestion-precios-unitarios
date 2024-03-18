@@ -4,7 +4,7 @@ import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 
 export async function actionsSignInCredentials(
-  prevState: string | undefined,
+  prevState: { isError: boolean; message: string } | undefined,
   formData: FormData
 ) {
   try {
@@ -13,9 +13,12 @@ export async function actionsSignInCredentials(
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Credenciales invalidas.";
+          return {
+            isError: true,
+            message: "Credenciales inválidas.",
+          };
         default:
-          return "Algo salió mal.";
+          return { isError: true, message: "Algo salió mal." };
       }
     }
     throw error;
@@ -37,7 +40,7 @@ export async function actionsSignInGoogle() {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Credenciales invalidas.";
+          return "Credenciales inválidas.";
         default:
           return "Algo salió mal.";
       }

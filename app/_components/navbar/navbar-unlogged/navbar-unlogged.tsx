@@ -6,7 +6,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/navbar";
-import { AcmeLogoComponent } from "../../logo/acme-logo";
+import LogoComponent from "../../ui/logo/logo";
 
 export default function NavbarUnloggedComponent() {
   return (
@@ -14,7 +14,7 @@ export default function NavbarUnloggedComponent() {
       <NavbarContent justify="start" className="gap-10">
         <Link color="foreground" href={"/"}>
           <NavbarBrand className="flex-grow-0">
-            <AcmeLogoComponent />
+            <LogoComponent />
             <p className="font-bold text-inherit">SGPU</p>
           </NavbarBrand>
         </Link>

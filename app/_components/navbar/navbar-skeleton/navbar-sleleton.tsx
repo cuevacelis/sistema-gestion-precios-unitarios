@@ -1,7 +1,7 @@
 import { Link } from "@nextui-org/link";
 import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/navbar";
 import { Skeleton } from "@nextui-org/react";
-import { AcmeLogoComponent } from "../../logo/acme-logo";
+import { AcmeLogoComponent } from "../../ui/logo/acme-logo";
 
 export default function NavbarSkeletonComponent() {
   return (

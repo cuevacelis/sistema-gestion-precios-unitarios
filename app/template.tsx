@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import NavbarLoggedComponent from "./_components/navbar/navbar-logged/navbar-logged";
 import NavbarSkeletonComponent from "./_components/navbar/navbar-skeleton/navbar-sleleton";
 import NavbarUnloggedComponent from "./_components/navbar/navbar-unlogged/navbar-unlogged";
+import { fetchLoggedUser } from "./_fetch/user";
 
 export default async function Template({
   children,
@@ -19,10 +20,13 @@ export default async function Template({
       </>
     );
   } else {
+    const dataInfoUser = await fetchLoggedUser({
+      token: String(session.user?.token),
+    });
     return (
       <>
         <Suspense fallback={<NavbarSkeletonComponent />}>
-          <NavbarLoggedComponent session={session} />
+          <NavbarLoggedComponent dataInfoUser={dataInfoUser} />
         </Suspense>
         {children}
       </>

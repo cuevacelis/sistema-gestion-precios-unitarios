@@ -1,22 +1,44 @@
 "use client";
 
+import { EyeIconComponent } from "@/app/_components/ui/icon/eye";
+import { EyeSlashIconComponent } from "@/app/_components/ui/icon/eye-slash";
+import { KeyIcon } from "@heroicons/react/24/outline";
 import { Input } from "@nextui-org/input";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
 export default function InputPassComponent() {
   const { pending } = useFormStatus();
+  const [isVisiblePass, setIsVisiblePass] = useState<boolean>(false);
+
   return (
     <Input
-      type="password"
       label="Contraseña"
-      color="primary"
       name="password"
-      readOnly={pending}
+      placeholder="Ingresa tu contraseña."
       required
-      // errorMessage={formState.errors.password?.message?.toString()}
-      // isInvalid={formState.errors.password ? true : false}
+      readOnly={pending}
+      color="primary"
+      variant="underlined"
+      size="lg"
+      type={isVisiblePass ? "text" : "password"}
+      // isInvalid={true}
       autoComplete="password"
-      className="w-64 mb-4"
+      className="w-full mb-6"
+      startContent={<KeyIcon className="text-default-400 w-5" />}
+      endContent={
+        <button
+          className="focus:outline-none"
+          type="button"
+          onClick={() => setIsVisiblePass((prev) => !prev)}
+        >
+          {isVisiblePass ? (
+            <EyeSlashIconComponent className="text-lg text-default-400 pointer-events-none" />
+          ) : (
+            <EyeIconComponent className="text-lg text-default-400 pointer-events-none" />
+          )}
+        </button>
+      }
     />
   );
 }

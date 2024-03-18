@@ -2,16 +2,12 @@ process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import {
-  fetchApiLogin,
-  fetchApiTokenRefresh,
-} from "./app/_lib/fetch-api/token";
+import { fetchLogged, fetchTokenRefresh } from "./app/_fetch/logged";
 
 declare module "next-auth" {
   interface User {
     token: string;
     refreshToken: string;
-    isValidToken: boolean;
     expires: Date;
   }
 }
@@ -26,36 +22,28 @@ export const {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger }) {
       try {
         if (trigger === "signIn") {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
-          token.isValidToken = user.isValidToken;
           token.expires = user.expires;
           return token;
         }
 
-        if (
-          new Date().getTime() <
-          new Date(
-            String(token.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
-          ).getTime()
-        ) {
+        if (new Date().getTime() < new Date(String(token.expires)).getTime()) {
           return token;
         }
 
-        const dataRefreshToken = await fetchApiTokenRefresh({
+        const dataRefreshToken = await fetchTokenRefresh({
           token: String(token.token),
           refreshToken: String(token.refreshToken),
         });
         token.token = String(dataRefreshToken.token);
         token.refreshToken = String(dataRefreshToken.refreshToken);
-        token.isValidToken = true;
 
         return token;
       } catch (error) {
-        token.isValidToken = false;
         return token;
       }
     },
@@ -63,11 +51,10 @@ export const {
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
       session.user.expires = new Date(String(token?.expires));
-      session.user.isValidToken = !!token?.isValidToken;
       return session;
     },
     async authorized({ auth, request }) {
-      const isValidSession = !!auth?.user && auth.user.isValidToken;
+      const isValidSession = Boolean(auth?.user);
       if (request.nextUrl.pathname.startsWith("/dashboard")) {
         return isValidSession ? true : false;
       } else if (isValidSession) {
@@ -87,7 +74,7 @@ export const {
 
         try {
           if (verifiedTypeCredentials.success) {
-            const dataLogin = await fetchApiLogin({
+            const dataLogin = await fetchLogged({
               usu_Correo: verifiedTypeCredentials.data.user,
               usu_Clave: verifiedTypeCredentials.data.password,
             });
@@ -97,8 +84,12 @@ export const {
                 email: "",
                 token: String(dataLogin?.token),
                 refreshToken: String(dataLogin?.refreshToken),
-                expires: new Date(String(dataLogin?.expires)),
-                isValidToken: true,
+                expires: new Date(
+                  String(dataLogin?.expires).replace(
+                    /(-\d{2}:\d{2})$/,
+                    "-05:00"
+                  )
+                ),
               };
             }
           }
