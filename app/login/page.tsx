@@ -7,7 +7,7 @@ export default function LoginPage() {
     <main className="flex flex-col items-center justify-between">
       <Card shadow="sm" radius="sm" className="mt-10 mb-10">
         <CardBody className="flex flex-row items-center px-10 w-96 bg-blue-500">
-          <LogoComponent colorIcon={"white"} />
+          <LogoComponent coloricon={"white"} />
           <p className="text-white">SGPU</p>
         </CardBody>
       </Card>

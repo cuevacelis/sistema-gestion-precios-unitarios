@@ -11,7 +11,7 @@ export default function NotFound() {
         <p>
           Vamos a <Link href="/">SGPU Home</Link>
         </p>
-        <Image src={img} alt={"not-found"} />
+        <Image src={img} alt={"not-found"} placeholder="blur" />
       </div>
     </section>
   );

@@ -10,7 +10,7 @@ export async function fetchLoggedUser(params: { token: string }) {
         Authorization: `Bearer ${params.token}`,
       },
       method: "GET",
-      next: { tags: ["user", "logged"], revalidate: 86400 },
+      next: { tags: ["user-logged"], revalidate: 86400 },
     });
     if (!res.ok) {
       throw new FetchError({
