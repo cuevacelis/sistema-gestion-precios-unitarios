@@ -1,10 +1,11 @@
-import { FetchError } from "../_lib/customTypeError/fetchError";
+import { FetchError } from "../../types/classFetchError";
 import {
   IBodyLogin,
   IBodyTokenRefresh,
   IFetchLogin,
   IFetchTokenRefresh,
-} from "../_types/login";
+} from "../../types/login";
+
 const BASE_URL = process.env.URL_API;
 
 export async function fetchLogged(params: IBodyLogin) {

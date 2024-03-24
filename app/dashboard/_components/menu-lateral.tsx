@@ -28,9 +28,7 @@ export default function MenuLateralComponent(props: {
           <Link href={"/dashboard/usuarios"}>Usuarios</Link>
         </li>
       </ul>
-      <main className="contenido-principal overflow-y-auto flex flex-col bg-slate-100 dark:bg-[#111] px-2">
-        {props.children}
-      </main>
+      <>{props.children}</>
     </section>
   );
 }

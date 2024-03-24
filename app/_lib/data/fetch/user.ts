@@ -1,5 +1,6 @@
-import { FetchError } from "../_lib/customTypeError/fetchError";
-import { IFetchUserLogged } from "../_types/user";
+import { IFetchUserLogged } from "@/app/_lib/types/user";
+import { FetchError } from "../../types/classFetchError";
+
 const BASE_URL = process.env.URL_API;
 
 export async function fetchLoggedUser(params: { token: string }) {

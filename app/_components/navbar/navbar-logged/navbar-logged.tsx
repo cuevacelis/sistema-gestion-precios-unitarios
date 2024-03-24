@@ -1,6 +1,6 @@
 "use client";
-import { actionsSignOut } from "@/app/_actions/actions-authenticate";
-import { IFetchUserLogged } from "@/app/_types/user";
+import { actionsSignOut } from "@/app/_lib/actions/actions-authenticate";
+import { IFetchUserLogged } from "@/app/_lib/types/user";
 import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
@@ -14,7 +14,7 @@ import { Navbar, NavbarBrand, NavbarContent } from "@nextui-org/navbar";
 import { useTheme } from "next-themes";
 import LogoComponent from "../../ui/logo/logo";
 
-export default async function NavbarLoggedComponent(props: {
+export default function NavbarLoggedComponent(props: {
   dataInfoUser: IFetchUserLogged;
 }) {
   const { theme, setTheme } = useTheme();

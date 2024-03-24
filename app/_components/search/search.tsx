@@ -1,6 +1,7 @@
 "use client";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { SearchIcon } from "@/app/dashboard/presupuestos/_components/SearchIcon";
+import { Input } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -10,10 +11,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
   const pathname = usePathname();
 
   const handleSearch = useDebouncedCallback((term) => {
-    console.log(`Buscando... ${term}`);
-
     const params = new URLSearchParams(searchParams);
-
     params.set("page", "1");
 
     if (term) {
@@ -27,17 +25,24 @@ export default function Search({ placeholder }: { placeholder: string }) {
   return (
     <div className="relative flex flex-1 flex-shrink-0">
       <label htmlFor="search" className="sr-only">
-        Search
+        Buscador
       </label>
-      <input
-        className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+      <Input
+        classNames={{
+          base: "max-w-full h-10",
+          mainWrapper: "h-full",
+          input: "text-small",
+          inputWrapper:
+            "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+        }}
         placeholder={placeholder}
         onChange={(e) => {
           handleSearch(e.target.value);
         }}
+        startContent={<SearchIcon size={18} />}
+        type="search"
         defaultValue={searchParams.get("query")?.toString()}
       />
-      <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
     </div>
   );
 }

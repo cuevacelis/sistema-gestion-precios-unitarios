@@ -2,7 +2,7 @@ process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import { fetchLogged, fetchTokenRefresh } from "./app/_fetch/logged";
+import { fetchLogged, fetchTokenRefresh } from "./app/_lib/data/fetch/logged";
 
 declare module "next-auth" {
   interface User {
@@ -28,7 +28,9 @@ export const {
         if (trigger === "signIn") {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
-          token.expires = user.expires;
+          token.expires = new Date(
+            String(user.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
+          );
           token.isSuccess = true;
           return token;
         }
@@ -44,7 +46,9 @@ export const {
 
         token.token = String(dataRefreshToken.token);
         token.refreshToken = String(dataRefreshToken.refreshToken);
-        token.expires = String(dataRefreshToken.expires);
+        token.expires = new Date(
+          String(dataRefreshToken?.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
+        );
         token.isSuccess = true;
         return token;
       } catch (error) {
@@ -92,12 +96,7 @@ export const {
                 email: "",
                 token: String(dataLogin?.token),
                 refreshToken: String(dataLogin?.refreshToken),
-                expires: new Date(
-                  String(dataLogin?.expires).replace(
-                    /(-\d{2}:\d{2})$/,
-                    "-05:00"
-                  )
-                ),
+                expires: new Date(String(dataLogin?.expires)),
               };
             }
           }

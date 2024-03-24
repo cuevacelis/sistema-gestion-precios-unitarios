@@ -61,7 +61,7 @@ export default async function Page({
   const presupuesto_paginado: IFetchPresupuestoPaginado = await res.json();
 
   return (
-    <div className="w-full">
+    <main className="w-full mt-4 ml-5">
       <div className="flex w-full items-center justify-between">
         <h1 className={`text-2xl`}>Presupuestos</h1>
       </div>
@@ -79,6 +79,6 @@ export default async function Page({
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={presupuesto_paginado.totalDePagina} />
       </div>
-    </div>
+    </main>
   );
 }

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import NavbarLoggedComponent from "./_components/navbar/navbar-logged/navbar-logged";
 import NavbarSkeletonComponent from "./_components/navbar/navbar-skeleton/navbar-sleleton";
 import NavbarUnloggedComponent from "./_components/navbar/navbar-unlogged/navbar-unlogged";
-import { fetchLoggedUser } from "./_fetch/user";
+import { fetchLoggedUser } from "./_lib/data/fetch/user";
 
 export default async function Template({
   children,
