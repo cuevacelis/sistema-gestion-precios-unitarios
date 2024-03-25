@@ -2,7 +2,7 @@ import Search from "@/app/_components/search/search";
 import { auth } from "@/auth";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import Pagination from "./_components/pagination";
+import Pagination from "../../_components/pagination/pagination";
 import InvoicesTable, { CreateInvoice } from "./_components/table";
 
 export interface IFetchPresupuestoPaginado {
@@ -61,7 +61,7 @@ export default async function Page({
   const presupuesto_paginado: IFetchPresupuestoPaginado = await res.json();
 
   return (
-    <main className="w-full mt-4 ml-5">
+    <section className="mt-4 mx-5">
       <div className="flex w-full items-center justify-between">
         <h1 className={`text-2xl`}>Presupuestos</h1>
       </div>
@@ -79,6 +79,6 @@ export default async function Page({
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={presupuesto_paginado.totalDePagina} />
       </div>
-    </main>
+    </section>
   );
 }

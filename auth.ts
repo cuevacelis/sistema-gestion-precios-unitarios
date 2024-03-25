@@ -2,14 +2,13 @@ process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import { fetchLogged, fetchTokenRefresh } from "./app/_lib/data/fetch/logged";
+import { fetchLogged, fetchTokenRefresh } from "./app/_lib/data/fetch";
 
 declare module "next-auth" {
   interface User {
-    isSuccess: boolean;
     token: string;
     refreshToken: string;
-    expires: Date;
+    expires: string;
   }
 }
 
@@ -28,9 +27,7 @@ export const {
         if (trigger === "signIn") {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
-          token.expires = new Date(
-            String(user.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
-          );
+          token.expires = user.expires;
           token.isSuccess = true;
           return token;
         }
@@ -46,33 +43,36 @@ export const {
 
         token.token = String(dataRefreshToken.token);
         token.refreshToken = String(dataRefreshToken.refreshToken);
-        token.expires = new Date(
-          String(dataRefreshToken?.expires).replace(/(-\d{2}:\d{2})$/, "-05:00")
+        token.expires = String(dataRefreshToken?.expires).replace(
+          /(-\d{2}:\d{2})$/,
+          "-05:00"
         );
-        token.isSuccess = true;
         return token;
       } catch (error) {
-        token.isSuccess = false;
-        return token;
+        return null;
       }
     },
     async session({ session, token }) {
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
-      session.user.expires = new Date(String(token?.expires));
-      session.user.isSuccess = Boolean(token?.isSuccess);
+      session.user.expires = String(token?.expires);
       return session;
     },
     async authorized({ auth, request }) {
-      const isValidSession =
-        Boolean(auth?.user) && Boolean(auth?.user?.isSuccess);
-      if (request.nextUrl.pathname.startsWith("/dashboard")) {
-        return isValidSession ? true : false;
-      } else if (isValidSession) {
-        return Response.redirect(new URL("/dashboard", request.nextUrl));
-      } else {
+      const pathname = request.nextUrl.pathname;
+      const isValidSession = Boolean(auth?.user);
+
+      if (pathname === "/") {
         return true;
       }
+      if (pathname.startsWith("/dashboard")) {
+        return isValidSession;
+      }
+      if (!pathname.startsWith("/dashboard") && isValidSession) {
+        return Response.redirect(new URL("/dashboard", request.nextUrl));
+      }
+
+      return isValidSession;
     },
   },
   providers: [
@@ -89,6 +89,7 @@ export const {
               usu_Correo: verifiedTypeCredentials.data.user,
               usu_Clave: verifiedTypeCredentials.data.password,
             });
+
             if (dataLogin?.isAuthSuccessful) {
               return {
                 isSuccess: true,
@@ -96,7 +97,10 @@ export const {
                 email: "",
                 token: String(dataLogin?.token),
                 refreshToken: String(dataLogin?.refreshToken),
-                expires: new Date(String(dataLogin?.expires)),
+                expires: String(dataLogin?.expires).replace(
+                  /(-\d{2}:\d{2})$/,
+                  "-05:00"
+                ),
               };
             }
           }

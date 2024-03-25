@@ -51,72 +51,69 @@ export default async function InvoicesTable({
   const invoices = data;
 
   return (
-    <div className="rounded-lg bg-gray-50 p-2 mt-6 w-full overflow-x-scroll">
-      <table className="text-gray-900 flex flex-col">
-        <thead className="rounded-lg text-left text-sm font-normal">
-          <tr>
-            <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+    <div className="overflow-x-auto mt-5">
+      <table className="min-w-max w-full table-auto">
+        <thead>
+          <tr className="uppercase text-sm leading-normal">
+            <th className="text-left px-3 py-3" scope="col">
               usu_NomApellidos
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               pre_Nombre
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               cli_NomApeRazSocial
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               ubi_Departamento
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               ubi_Provincia
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               ubi_Distrito
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               pre_Jornal
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               pre_FecHorRegistro
             </th>
-            <th scope="col" className="px-3 py-5 font-medium">
+            <th className="text-left px-3 py-3" scope="col">
               Acciones
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody>
           {invoices?.map((invoice) => (
-            <tr
-              key={invoice.pre_Id}
-              className="border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
-            >
-              <td className="whitespace-nowrap py-3 pl-6 pr-3">
-                <div className="flex items-center gap-3">
+            <tr key={invoice.pre_Id}>
+              <td className="text-left whitespace-nowrap px-3 py-3">
+                <div>
                   <p>{invoice.usu_NomApellidos}</p>
                 </div>
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.pre_Nombre}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.cli_NomApeRazSocial}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.ubi_Departamento}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.ubi_Provincia}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.ubi_Distrito}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.pre_Jornal}
               </td>
-              <td className="whitespace-nowrap px-3 py-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 {invoice.pre_FecHorRegistro}
               </td>
-              <td className="whitespace-nowrap py-3 pl-6 pr-3">
+              <td className="text-left whitespace-nowrap px-3 py-3">
                 <div className="flex justify-end gap-3">
                   <UpdateInvoice id={invoice.pre_Id} />
                   <DeleteInvoice id={invoice.pre_Id} />

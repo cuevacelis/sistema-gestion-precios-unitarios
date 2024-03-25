@@ -1,6 +1,6 @@
 "use client";
 
-import { actionsSignInCredentials } from "@/app/_lib/actions/actions-authenticate";
+import { actionsSignInCredentials } from "@/app/_lib/actions/actionsServer";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";

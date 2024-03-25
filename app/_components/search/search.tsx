@@ -1,9 +1,9 @@
 "use client";
 
-import { SearchIcon } from "@/app/dashboard/presupuestos/_components/SearchIcon";
 import { Input } from "@nextui-org/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
+import { SearchIcon } from "../ui/icon/search-icon";
 
 export default function Search({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();

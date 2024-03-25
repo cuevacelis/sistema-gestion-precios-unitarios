@@ -1,6 +1,6 @@
 "use client";
-import { actionsSignOut } from "@/app/_lib/actions/actions-authenticate";
-import { IFetchUserLogged } from "@/app/_lib/types/user";
+import { actionsSignOut } from "@/app/_lib/actions/actionsServer";
+import { IFetchUserLogged } from "@/app/_lib/types/types";
 import { Avatar } from "@nextui-org/avatar";
 import {
   Dropdown,
