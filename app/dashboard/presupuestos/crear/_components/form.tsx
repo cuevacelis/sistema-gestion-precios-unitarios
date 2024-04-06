@@ -1,7 +1,7 @@
 "use client";
 
-import { Input } from "@nextui-org/input";
-import { Button } from "@nextui-org/react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/react";
 import Link from "next/link";
 import { useFormState } from "react-dom";
 import create from "../_actionsCreate";

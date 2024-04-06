@@ -1,6 +1,8 @@
+import { ThemeProvider } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 import type { Metadata } from "next";
-import "./globals.css";
-import { Providers } from "./providers";
+import { Inter as FontSans } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
@@ -10,6 +12,11 @@ export const metadata: Metadata = {
   description: "SISTEMA DE GESTION DE PRECIOS UNITARIOS",
 };
 
+const fontSans = FontSans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
 export default function RootLayout({
   children,
 }: {
@@ -17,8 +24,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="dark" style={{ colorScheme: "dark" }}>
-      <body>
-        <Providers>{children}</Providers>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable
+        )}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

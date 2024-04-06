@@ -1,5 +1,5 @@
-import Breadcrumbs from "@/app/_components/breadcrumbs/breadcrumbs";
 import { auth } from "@/auth";
+import Breadcrumbs from "@/components/breadcrumbs/breadcrumbs";
 import { Metadata } from "next";
 import FormEdit from "./_form";
 

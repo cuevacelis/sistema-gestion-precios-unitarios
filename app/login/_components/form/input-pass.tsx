@@ -1,9 +1,9 @@
 "use client";
 
-import { EyeIconComponent } from "@/app/_components/ui/icon/eye";
-import { EyeSlashIconComponent } from "@/app/_components/ui/icon/eye-slash";
+import { EyeIconComponent } from "@/components/ui/icon/eye";
+import { EyeSlashIconComponent } from "@/components/ui/icon/eye-slash";
+import { Input } from "@/components/ui/input";
 import { KeyIcon } from "@heroicons/react/24/outline";
-import { Input } from "@nextui-org/input";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 

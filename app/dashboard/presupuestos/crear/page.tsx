@@ -1,4 +1,4 @@
-import Breadcrumbs from "@/app/_components/breadcrumbs/breadcrumbs";
+import Breadcrumbs from "@/components/breadcrumbs/breadcrumbs";
 import { Metadata } from "next";
 import FormCreateComponent from "./_components/form";
 

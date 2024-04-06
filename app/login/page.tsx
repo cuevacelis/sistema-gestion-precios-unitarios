@@ -1,5 +1,5 @@
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
-import LogoComponent from "../_components/ui/logo/logo";
+import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import LogoComponent from "../../components/ui/logo/logo";
 import LoginComponent from "./_components/form/login";
 
 export default function LoginPage() {

@@ -1,5 +1,6 @@
-import { Button } from "@nextui-org/button";
-import { Link } from "@nextui-org/link";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/components/ui/link";
+import { db } from "@/scripts/db";
 import { Metadata } from "next";
 import Image from "next/image";
 import imgBeneficio1 from "./_resources/images/beneficios1.jpg";
@@ -14,6 +15,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  try {
+    const result = await db.$queryRaw`SELECT * FROM usuario`;
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
   return (
     <main className="flex flex-col items-center justify-between">
       <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center md:flex-row md:gap-40">

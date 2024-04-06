@@ -1,4 +1,4 @@
-import { Link } from "@nextui-org/link";
+import { Link } from "@/components/ui/link";
 import Image from "next/image";
 import img from "./_resources/images/not-found.png";
 

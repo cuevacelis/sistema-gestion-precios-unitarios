@@ -2,7 +2,7 @@ process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { z } from "zod";
-import { fetchLogged, fetchTokenRefresh } from "./app/_lib/data/fetch";
+import { fetchLogged, fetchTokenRefresh } from "./lib/data/fetch";
 
 declare module "next-auth" {
   interface User {

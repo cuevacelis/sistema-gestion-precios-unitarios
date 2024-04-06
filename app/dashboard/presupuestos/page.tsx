@@ -1,8 +1,8 @@
-import Search from "@/app/_components/search/search";
 import { auth } from "@/auth";
+import Pagination from "@/components/pagination/pagination";
+import Search from "@/components/search/search";
 import { Metadata } from "next";
 import { Suspense } from "react";
-import Pagination from "../../_components/pagination/pagination";
 import InvoicesTable, { CreateInvoice } from "./_components/table";
 
 export interface IFetchPresupuestoPaginado {

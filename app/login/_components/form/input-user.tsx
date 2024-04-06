@@ -1,7 +1,7 @@
 "use client";
 
-import { MailIconComponent } from "@/app/_components/ui/icon/mail";
-import { Input } from "@nextui-org/input";
+import { MailIconComponent } from "@/components/ui/icon/mail";
+import { Input } from "@/components/ui/input";
 import { useFormStatus } from "react-dom";
 
 export default function InputUserComponent() {

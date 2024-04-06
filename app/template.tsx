@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import { Suspense } from "react";
-import NavbarLoggedComponent from "./_components/navbar/navbar-logged/navbar-logged";
-import NavbarSkeletonComponent from "./_components/navbar/navbar-skeleton/navbar-sleleton";
-import NavbarUnloggedComponent from "./_components/navbar/navbar-unlogged/navbar-unlogged";
-import { fetchLoggedUser } from "./_lib/data/fetch";
+import NavbarLoggedComponent from "../components/navbar/navbar-logged/navbar-logged";
+import NavbarSkeletonComponent from "../components/navbar/navbar-skeleton/navbar-sleleton";
+import NavbarUnloggedComponent from "../components/navbar/navbar-unlogged/navbar-unlogged";
+import { fetchLoggedUser } from "../lib/data/fetch";
 
 export default async function Template({
   children,
