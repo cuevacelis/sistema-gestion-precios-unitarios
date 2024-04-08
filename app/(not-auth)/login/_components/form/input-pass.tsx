@@ -25,6 +25,7 @@ export default function InputPassComponent() {
       <div className="relative">
         <Input
           id="password"
+          name="password"
           readOnly={pending}
           autoComplete="password"
           type={isVisiblePass ? "text" : "password"}

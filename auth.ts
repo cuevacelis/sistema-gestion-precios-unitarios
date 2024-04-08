@@ -1,14 +1,15 @@
 process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { z } from "zod";
 import { fetchLogged, fetchTokenRefresh } from "./lib/data/fetch";
+import { findUserByUsernameAndPassword } from "./lib/data/sql-queries";
+import { credentialsSchema } from "./lib/validations/validations-zod";
 
 declare module "next-auth" {
   interface User {
-    token: string;
-    refreshToken: string;
-    expires: string;
+    token?: string | null;
+    refreshToken?: string | null;
+    expires?: string | null;
   }
 }
 
@@ -28,7 +29,6 @@ export const {
           token.token = user.token;
           token.refreshToken = user.refreshToken;
           token.expires = user.expires;
-          token.isSuccess = true;
           return token;
         }
 
@@ -62,42 +62,50 @@ export const {
       const pathname = request.nextUrl.pathname;
       const isValidSession = Boolean(auth?.user);
 
-      // if (pathname === "/" || pathname === "/manual") {
-      //   return true;
-      // }
-      // if (pathname.startsWith("/dashboard")) {
-      //   return isValidSession;
-      // }
-      // if (!pathname.startsWith("/dashboard") && isValidSession) {
-      //   return Response.redirect(new URL("/dashboard", request.nextUrl));
-      // }
+      if (pathname.startsWith("/dashboard")) {
+        return isValidSession;
+      }
+      if (!pathname.startsWith("/dashboard") && isValidSession) {
+        return Response.redirect(new URL("/dashboard", request.nextUrl));
+      }
+      if (!pathname.startsWith("/dashboard") && !isValidSession) {
+        return true;
+      }
 
-      // return isValidSession;
-      return true;
+      return isValidSession;
     },
   },
   providers: [
     CredentialsProvider({
       name: "Credentials",
       async authorize(credentials) {
-        const verifiedTypeCredentials = z
-          .object({ user: z.string(), password: z.string().min(1) })
-          .safeParse(credentials);
+        console.log(credentials);
+
+        const credentialsValidate = credentialsSchema.safeParse({
+          user: credentials.user,
+          password: credentials.password,
+        });
 
         try {
-          if (verifiedTypeCredentials.success) {
-            const dataLogin = await fetchLogged({
-              usu_Correo: verifiedTypeCredentials.data.user,
-              usu_Clave: verifiedTypeCredentials.data.password,
-            });
+          if (credentialsValidate.success) {
+            const [dataLogin, dataUser] = await Promise.all([
+              fetchLogged({
+                usu_Correo: credentialsValidate.data.user,
+                usu_Clave: credentialsValidate.data.password,
+              }),
+              findUserByUsernameAndPassword({
+                username: credentialsValidate.data.user,
+                password: credentialsValidate.data.password,
+              }),
+            ]);
 
             if (dataLogin?.isAuthSuccessful) {
               return {
-                isSuccess: true,
-                name: "",
-                email: "",
-                token: String(dataLogin?.token),
-                refreshToken: String(dataLogin?.refreshToken),
+                id: String(dataUser?.Usu_Id),
+                name: dataUser?.Usu_NomApellidos,
+                email: dataUser?.Usu_Correo,
+                token: dataLogin?.token,
+                refreshToken: dataLogin?.refreshToken,
                 expires: String(dataLogin?.expires).replace(
                   /(-\d{2}:\d{2})$/,
                   "-05:00"

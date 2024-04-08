@@ -8,7 +8,10 @@ export async function actionsSignInCredentials(
   formData: FormData
 ) {
   try {
-    await signIn("credentials", formData);
+    await signIn("credentials", {
+      user: formData.get("user"),
+      password: formData.get("password"),
+    });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

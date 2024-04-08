@@ -12,13 +12,7 @@ export const metadata: Metadata = {
     "Programa de precios unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
 };
 
-export default async function HomePage() {
-  // try {
-  //   const result = await db.$queryRaw`SELECT * FROM usuario`;
-  //   console.log(result);
-  // } catch (error) {
-  //   console.log(error);
-  // }
+export default function HomePage() {
   return (
     <main className="flex flex-col items-center justify-between">
       <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center lg:flex-row md:gap-40">

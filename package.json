@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "db-generate": "prisma generate",
     "db-pull": "prisma db pull"
   },
   "dependencies": {
@@ -78,7 +79,7 @@
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",
     "dotenv": "^16.4.5",
-    "eslint": "9.0.0",
+    "eslint": "8.57.0",
     "eslint-config-next": "14.1.4",
     "prettier": "^3.2.5",
     "prisma": "^5.12.1"

@@ -12,6 +12,7 @@ export default function InputUserComponent() {
       <Label htmlFor="user">Usuario</Label>
       <Input
         id="user"
+        name="user"
         type="text"
         autoComplete="username user"
         readOnly={pending}
