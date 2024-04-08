@@ -1,56 +1,52 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "@/components/ui/link";
-import { db } from "@/scripts/db";
+import imgBeneficio1 from "@/resources/images/beneficios1.jpg";
+import imgBeneficio2 from "@/resources/images/beneficios2.jpg";
+import imgHome from "@/resources/images/logo.jpeg";
+import backgroundSection1 from "@/resources/images/mejores-construccion-software.png";
 import { Metadata } from "next";
 import Image from "next/image";
-import imgBeneficio1 from "./_resources/images/beneficios1.jpg";
-import imgBeneficio2 from "./_resources/images/beneficios2.jpg";
-import imgHome from "./_resources/images/logo.jpeg";
-import backgroundSection1 from "./_resources/images/mejores-construccion-software.png";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Inicio",
+  title: "SGPU",
   description:
     "Programa de precios unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
 };
 
 export default async function HomePage() {
-  try {
-    const result = await db.$queryRaw`SELECT * FROM usuario`;
-    console.log(result);
-  } catch (error) {
-    console.log(error);
-  }
+  // try {
+  //   const result = await db.$queryRaw`SELECT * FROM usuario`;
+  //   console.log(result);
+  // } catch (error) {
+  //   console.log(error);
+  // }
   return (
     <main className="flex flex-col items-center justify-between">
-      <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center md:flex-row md:gap-40">
+      <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center lg:flex-row md:gap-40">
         <div className="flex flex-col">
-          <h1 className="text-black dark:text-stone-300 text-5xl text-center sm:text-left">
+          <h1 className="text-foreground text-4xl lg:text-5xl text-center sm:text-left">
             La Plataforma Colaborativa para Presupuestos de Obra y Precios
             Unitarios
             <br />
           </h1>
-          <p className="text-black dark:text-[#EDEDED] text-lg opacity-50 mt-5">
+          <p className="text-foreground/80 dark:text-foreground/60 text-lg mt-5">
             Software que permite elaborar presupuestos por obra, y considera los
             de tipo venta, meta y línea Base.
           </p>
-          <p className="text-black dark:text-[#EDEDED] text-lg opacity-50 mt-5">
+          <p className="text-foreground/80 dark:text-foreground/60 text-lg mt-5">
             Los cuales son asignados a proyectos que serán realizados para la
             planificación y control de labores que se realizan en el modulo de
             gerencia de proyectos
           </p>
-          <Button
+          <Link
             href="/login"
-            as={Link}
-            color="primary"
-            className="w-fit mt-5"
+            className="transition-colors hover:text-foreground/80 text-foreground/60 bg-primary text-white px-4 py-2 rounded-md mt-4 items-center justify-center flex sm:hidden"
           >
-            Inicia sesión
-          </Button>
+            Iniciar sesión
+          </Link>
         </div>
         <div className="flex justify-center">
           <Image
-            className="w-1/2 sm:w-full"
+            className="w-70 md:w-80 lg:w-full"
             src={imgHome}
             alt="sistema de gestion de precios unitarios"
             placeholder="blur"
@@ -73,14 +69,12 @@ export default async function HomePage() {
             Gestiona tus proyectos de construcción de manera efectiva y
             eficiente
           </p>
-          <Button
+          <Link
             href="/login"
-            as={Link}
-            color="primary"
-            className="w-fit mt-5"
+            className="transition-colors hover:text-foreground/80 text-foreground bg-primary text-white px-4 py-2 rounded-md mt-4 items-center justify-center flex"
           >
-            Inicia sesión
-          </Button>
+            Iniciar sesión
+          </Link>
         </div>
       </section>
 

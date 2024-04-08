@@ -6,10 +6,9 @@ import { Inter as FontSans } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | SGPU",
+    template: "%s | Acme",
     default: "SGPU",
   },
-  description: "SISTEMA DE GESTION DE PRECIOS UNITARIOS",
 };
 
 const fontSans = FontSans({

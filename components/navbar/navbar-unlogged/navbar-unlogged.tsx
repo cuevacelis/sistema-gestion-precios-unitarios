@@ -1,42 +1,39 @@
-import { Button } from "@/components/ui/button";
-import { Link } from "@/components/ui/link";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-} from "@/components/ui/navbar";
-import LogoComponent from "../../ui/logo/logo";
+import { ModeToggle } from "@/components/theme-switch/mode-toggle";
+import LogoComponent from "@/components/ui/logo/logo";
+import Link from "next/link";
 
 export default function NavbarUnloggedComponent() {
   return (
-    <Navbar isBordered maxWidth="full" position="sticky">
-      <NavbarContent justify="start" className="gap-10">
-        <Link color="foreground" href={"/"}>
-          <NavbarBrand className="flex-grow-0">
-            <LogoComponent />
-            <p className="font-bold text-inherit">SGPU</p>
-          </NavbarBrand>
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-14 max-w-screen-2xl items-center justify-between">
+        <Link href="/" className="mr-6 flex items-center space-x-2">
+          <LogoComponent />
+          <span className="font-bold">SGPU</span>
         </Link>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden sm:flex">
-          <Link color="foreground" href="/" aria-current="page">
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem className="hidden sm:flex">
-          <Link color="foreground" href="/manual" aria-current="page">
-            Manual
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="/login" variant="flat">
-            Inciar sesión
-          </Button>
-        </NavbarItem>
-      </NavbarContent>
-    </Navbar>
+        <div className="flex items-center gap-4 text-sm lg:gap-6 justify-end">
+          <nav className="items-center gap-4 text-sm lg:gap-6 hidden sm:flex">
+            <Link
+              href="/"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Home
+            </Link>
+            <Link
+              href="/manual"
+              className="transition-colors hover:text-foreground/80 text-foreground"
+            >
+              Manual
+            </Link>
+            <Link
+              href="/login"
+              className="transition-colors hover:text-foreground/80 text-foreground bg-primary text-white px-4 py-2 rounded-md"
+            >
+              Iniciar sesión
+            </Link>
+          </nav>
+          <ModeToggle />
+        </div>
+      </div>
+    </header>
   );
 }

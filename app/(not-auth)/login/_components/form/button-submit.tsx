@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useFormStatus } from "react-dom";
 
 export default function SubmitButtonComponent() {
@@ -9,13 +8,9 @@ export default function SubmitButtonComponent() {
   return (
     <Button
       type="submit"
-      isLoading={pending}
+      className="w-full"
       aria-disabled={pending}
-      className="w-full mt-4"
-      color="primary"
-      variant="solid"
-      radius="sm"
-      endContent={<ArrowRightIcon className="w-4 ml-auto" />}
+      disabled={pending}
     >
       {pending ? "Validando..." : "Iniciar sesión"}
     </Button>

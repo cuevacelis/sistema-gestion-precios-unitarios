@@ -62,17 +62,18 @@ export const {
       const pathname = request.nextUrl.pathname;
       const isValidSession = Boolean(auth?.user);
 
-      if (pathname === "/") {
-        return true;
-      }
-      if (pathname.startsWith("/dashboard")) {
-        return isValidSession;
-      }
-      if (!pathname.startsWith("/dashboard") && isValidSession) {
-        return Response.redirect(new URL("/dashboard", request.nextUrl));
-      }
+      // if (pathname === "/" || pathname === "/manual") {
+      //   return true;
+      // }
+      // if (pathname.startsWith("/dashboard")) {
+      //   return isValidSession;
+      // }
+      // if (!pathname.startsWith("/dashboard") && isValidSession) {
+      //   return Response.redirect(new URL("/dashboard", request.nextUrl));
+      // }
 
-      return isValidSession;
+      // return isValidSession;
+      return true;
     },
   },
   providers: [

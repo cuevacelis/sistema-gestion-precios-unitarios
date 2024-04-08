@@ -14,13 +14,10 @@ export default function LoginComponent() {
   );
 
   return (
-    <form action={formActionSignInCredentials} className="flex flex-col w-full">
+    <form className="grid gap-4" action={formActionSignInCredentials}>
       <InputUserComponent />
       <InputPassComponent />
-
-      <div className="flex flex-col text-center">
-        <SubmitButtonComponent />
-      </div>
+      <SubmitButtonComponent />
       <div
         className="flex h-8 items-end space-x-1"
         aria-live="polite"

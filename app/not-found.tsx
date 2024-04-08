@@ -1,6 +1,6 @@
-import { Link } from "@/components/ui/link";
+import img from "@/resources/images/not-found.png";
 import Image from "next/image";
-import img from "./_resources/images/not-found.png";
+import Link from "next/link";
 
 export default function NotFound() {
   return (

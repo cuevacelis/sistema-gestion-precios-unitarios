@@ -53,3 +53,11 @@ export const generatePagination = (currentPage: number, totalPages: number) => {
     totalPages,
   ];
 };
+
+export function simulateLongWait(timeInMillis: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("Tiempo de espera completado");
+    }, timeInMillis);
+  });
+}
