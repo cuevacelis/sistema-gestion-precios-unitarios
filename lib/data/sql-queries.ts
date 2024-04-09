@@ -2,6 +2,7 @@ import db from "@/scripts/db";
 import { modulo, usuario } from "@prisma/client";
 import "server-only";
 
+//LOGIN
 interface UserCredentials {
   username: string;
   password: string;
@@ -25,6 +26,7 @@ export async function findUserByUsernameAndPassword(
   }
 }
 
+//SIDEBAR
 export async function getModulosByUserId(userId: number): Promise<modulo[]> {
   try {
     const modulos = await db.$queryRaw<modulo[]>`
@@ -43,6 +45,7 @@ export async function getModulosByUserId(userId: number): Promise<modulo[]> {
   }
 }
 
+//PRESUPUESTOS
 interface PresupuestosPaginados {
   totalElementos: number;
   elementosPorPagina: number;
@@ -116,3 +119,5 @@ export async function obtenerPresupuestosPaginados(
     throw error;
   }
 }
+
+//PROYECTOS

@@ -18,27 +18,6 @@ export default async function DashboardPage() {
         proyectos. También puedes generar reportes de tus precios unitarios.
         ¡Comienza a gestionar tus precios unitarios ahora! 🚀
       </p>
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Exercitationem
-      adipisci deleniti, aliquid illum suscipit ratione iusto pariatur fuga
-      autem tenetur ducimus laudantium aliquam facilis numquam, mollitia ea!
-      Qui, exercitationem amet? Lorem ipsum dolor sit, amet consectetur
-      adipisicing elit. Exercitationem adipisci deleniti, aliquid illum suscipit
-      ratione iusto pariatur fuga autem tenetur ducimus laudantium aliquam
-      facilis numquam, mollitia ea! Qui, exercitationem amet? Lorem ipsum dolor
-      sit, amet consectetur adipisicing elit. Exercitationem adipisci deleniti,
-      aliquid illum suscipit ratione iusto pariatur fuga autem tenetur ducimus
-      laudantium aliquam facilis numquam, mollitia ea! Qui, exercitationem amet?
-      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Exercitationem
-      adipisci deleniti, aliquid illum suscipit ratione iusto pariatur fuga
-      autem tenetur ducimus laudantium aliquam facilis numquam, mollitia ea!
-      Qui, exercitationem amet? Lorem ipsum dolor sit, amet consectetur
-      adipisicing elit. Exercitationem adipisci deleniti, aliquid illum suscipit
-      ratione iusto pariatur fuga autem tenetur ducimus laudantium aliquam
-      facilis numquam, mollitia ea! Qui, exercitationem amet?Lorem ipsum dolor
-      sit, amet consectetur adipisicing elit. Exercitationem adipisci deleniti,
-      aliquid illum suscipit ratione iusto pariatur fuga autem tenetur ducimus
-      laudantium aliquam facilis numquam, mollitia ea! Qui, exercitationem amet?
-      <p>fsdfsdgsd</p>
     </main>
   );
 }

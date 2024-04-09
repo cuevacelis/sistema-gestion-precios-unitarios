@@ -1,9 +1,9 @@
+import LoginComponent from "@/components/form-login/login";
 import img_login_dark from "@/resources/images/img-login-dark2.webp";
 import img_login_light from "@/resources/images/img-login-light.webp";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import LoginComponent from "./_components/form/login";
 
 export const metadata: Metadata = {
   title: "Login",
