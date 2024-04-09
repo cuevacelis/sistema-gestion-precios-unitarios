@@ -1,7 +1,7 @@
 process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { fetchLogged, fetchTokenRefresh } from "./lib/data/fetch";
+import { fetchLogged, fetchTokenRefresh } from "./lib/data/fetch-api";
 import { findUserByUsernameAndPassword } from "./lib/data/sql-queries";
 import { credentialsSchema } from "./lib/validations/validations-zod";
 
@@ -26,9 +26,13 @@ export const {
     async jwt({ token, user, trigger }) {
       try {
         if (trigger === "signIn") {
+          token.id = user.id;
           token.token = user.token;
           token.refreshToken = user.refreshToken;
-          token.expires = user.expires;
+          token.expires = String(user.expires).replace(
+            /(-\d{2}:\d{2})$/,
+            "-05:00"
+          );
           return token;
         }
 
@@ -41,6 +45,7 @@ export const {
           refreshToken: String(token.refreshToken),
         });
 
+        token.id = token.id;
         token.token = String(dataRefreshToken.token);
         token.refreshToken = String(dataRefreshToken.refreshToken);
         token.expires = String(dataRefreshToken?.expires).replace(
@@ -53,6 +58,7 @@ export const {
       }
     },
     async session({ session, token }) {
+      session.user.id = String(token?.id);
       session.user.token = String(token?.token);
       session.user.refreshToken = String(token?.refreshToken);
       session.user.expires = String(token?.expires);
@@ -79,8 +85,6 @@ export const {
     CredentialsProvider({
       name: "Credentials",
       async authorize(credentials) {
-        console.log(credentials);
-
         const credentialsValidate = credentialsSchema.safeParse({
           user: credentials.user,
           password: credentials.password,
@@ -106,10 +110,7 @@ export const {
                 email: dataUser?.Usu_Correo,
                 token: dataLogin?.token,
                 refreshToken: dataLogin?.refreshToken,
-                expires: String(dataLogin?.expires).replace(
-                  /(-\d{2}:\d{2})$/,
-                  "-05:00"
-                ),
+                expires: dataLogin?.expires,
               };
             }
           }
@@ -124,4 +125,5 @@ export const {
     strategy: "jwt",
     maxAge: 1 * 24 * 60 * 60, //1 día
   },
+  secret: process.env.AUTH_SECRET,
 });

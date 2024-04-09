@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const session = await auth();
 
-  const res = await fetch(`https://apusoft.online/api/v1/Presupuesto/${id}`, {
+  const res = await fetch(`${process.env.URL_API}/Presupuesto/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

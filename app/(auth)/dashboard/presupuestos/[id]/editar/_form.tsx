@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useFormState } from "react-dom";
 import update from "./_actionsUpdate";

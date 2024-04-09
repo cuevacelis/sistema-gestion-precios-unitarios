@@ -1,40 +1,52 @@
-import { Badge } from "@/components/ui/badge";
+"use client";
+
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { actionsSignOut } from "@/lib/actions/actionsServer";
+import { modulo } from "@/lib/types/@prisma/client";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   CircleUser,
-  Home,
-  LineChart,
+  ComputerIcon,
+  LifeBuoy,
+  LogOut,
   Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
+  MoonIcon,
+  Settings,
+  SunIcon,
+  User,
 } from "lucide-react";
+import { Session } from "next-auth";
+import { useTheme } from "next-themes";
 import Link from "next/link";
+import ModuleIconsComponent from "./module-icons";
 
-{
-  /*sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6*/
+interface IProps {
+  modulesByUser: modulo[];
+  session: Session | null;
 }
 
-export default function TopBarComponent() {
+export default function TopBarComponent(props: IProps) {
+  const { theme, setTheme } = useTheme();
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -46,72 +58,23 @@ export default function TopBarComponent() {
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-lg font-medium">
-            <Link
-              href="#"
-              className="flex items-center gap-2 text-lg font-semibold"
-            >
-              <Package2 className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Home className="h-5 w-5" />
-              Dashboard
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Package className="h-5 w-5" />
-              Products
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Users className="h-5 w-5" />
-              Customers
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <LineChart className="h-5 w-5" />
-              Analytics
-            </Link>
+            {props.modulesByUser.map((module) => {
+              return (
+                <Link
+                  href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
+                  key={module.Mod_Id}
+                  className="flex items-center gap-2 text-lg font-semibold"
+                >
+                  <ModuleIconsComponent modNombre={module.Mod_Nombre} />
+                  {module.Mod_Nombre + "s"}
+                </Link>
+              );
+            })}
           </nav>
-          <div className="mt-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle>Upgrade to Pro</CardTitle>
-                <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button size="sm" className="w-full">
-                  Upgrade
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
         </SheetContent>
       </Sheet>
       <div className="w-full flex-1">
-        <form>
+        {/* <form>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -120,8 +83,9 @@ export default function TopBarComponent() {
               className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
             />
           </div>
-        </form>
+        </form> */}
       </div>
+
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
@@ -129,13 +93,97 @@ export default function TopBarComponent() {
             <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel className="space-y-1">
+            <h4 className="text-sm font-medium leading-none">
+              {props.session?.user?.name}
+            </h4>
+            <p className="text-sm text-muted-foreground">
+              {props.session?.user?.email}
+            </p>
+          </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>Perfil</span>
+              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                href="/dashboard/configuracion"
+                className="flex items-center w-full"
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Configuración</span>
+                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <span>Tema</span>
+              <DropdownMenuShortcut>
+                <Select
+                  defaultValue={theme}
+                  onValueChange={(newValue) => setTheme(newValue)}
+                >
+                  <SelectTrigger className="w-auto">
+                    <SelectValue placeholder="Seleccione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="system">
+                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
+                          <ComputerIcon className="w-3" />
+                          <span className="text-xs">Sistema</span>
+                        </SelectLabel>
+                      </SelectItem>
+                      <SelectItem value="light">
+                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
+                          <SunIcon className="w-3" />
+                          <span className="text-xs">Claro</span>
+                        </SelectLabel>
+                      </SelectItem>
+                      <SelectItem value="dark">
+                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
+                          <MoonIcon className="w-3" />
+                          <span className="text-xs">Oscuro</span>
+                        </SelectLabel>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <a
+              className="flex items-center w-full"
+              target="_blank"
+              href="https://github.com/cuevacelis/sistema-gestion-precios-unitarios"
+            >
+              <GitHubLogoIcon className="mr-2 h-4 w-4" />
+              <span>GitHub</span>
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <LifeBuoy className="mr-2 h-4 w-4" />
+            <span>Soporte</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            className="cursor-pointer text-red-500 hover:text-red-600"
+            onClick={async () => {
+              await actionsSignOut();
+            }}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Cerrar sesión</span>
+            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

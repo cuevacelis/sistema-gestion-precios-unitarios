@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import Pagination from "@/components/pagination/pagination";
 import Search from "@/components/search/search";
+import { obtenerPresupuestosPaginados } from "@/lib/data/sql-queries";
 import { Metadata } from "next";
 import { Suspense } from "react";
 import InvoicesTable, { CreateInvoice } from "./_components/table";
@@ -41,24 +42,17 @@ export default async function Page({
   };
 }) {
   const session = await auth();
-  const query = searchParams?.query || "%20";
+  const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const elementsPerPage = 2;
+  const elementsPerPage = 1;
 
-  const res = await fetch(
-    `https://apusoft.online/api/v1/Presupuesto/Obten_Paginado/${elementsPerPage}/${currentPage}/${query}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.user?.token}`,
-      },
-      redirect: "follow",
-      next: { revalidate: 86400 },
-    }
+  const presupuesto_paginado = await obtenerPresupuestosPaginados(
+    elementsPerPage,
+    currentPage,
+    Number(session?.user?.id),
+    query
   );
-
-  const presupuesto_paginado: IFetchPresupuestoPaginado = await res.json();
+  console.log(presupuesto_paginado);
 
   return (
     <section className="mt-4 mx-5">
@@ -77,7 +71,7 @@ export default async function Page({
         />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={presupuesto_paginado.totalDePagina} />
+        <Pagination totalPages={presupuesto_paginado.totalElementos} />
       </div>
     </section>
   );

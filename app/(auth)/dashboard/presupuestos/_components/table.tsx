@@ -1,6 +1,6 @@
+import { Presupuesto } from "@/lib/data/sql-queries";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { IDataPresupuestoPginado } from "../page";
 
 export function CreateInvoice() {
   return (
@@ -14,7 +14,7 @@ export function CreateInvoice() {
   );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateInvoice({ id }: { id: number }) {
   return (
     <Link
       href={`/dashboard/presupuestos/${id}/editar`}
@@ -26,7 +26,7 @@ export function UpdateInvoice({ id }: { id: string }) {
   );
 }
 
-export function DeleteInvoice({ id }: { id: string }) {
+export function DeleteInvoice({ id }: { id: number }) {
   // const deletePresupuestosWithId = deletePresupuestosId.bind(null, id);
   const deletePresupuestosWithId = "";
   return (
@@ -46,7 +46,7 @@ export default async function InvoicesTable({
 }: {
   query: string;
   currentPage: number;
-  data: IDataPresupuestoPginado[];
+  data: Presupuesto[];
 }) {
   const invoices = data;
 
@@ -86,37 +86,37 @@ export default async function InvoicesTable({
         </thead>
         <tbody>
           {invoices?.map((invoice) => (
-            <tr key={invoice.pre_Id}>
+            <tr key={invoice.Pre_Id}>
               <td className="text-left whitespace-nowrap px-3 py-3">
                 <div>
-                  <p>{invoice.usu_NomApellidos}</p>
+                  <p>{invoice.Usu_NomApellidos}</p>
                 </div>
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.pre_Nombre}
+                {invoice.Pre_Nombre}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.cli_NomApeRazSocial}
+                {invoice.Cli_NomApeRazSocial}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.ubi_Departamento}
+                {invoice.Ubi_Departamento}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.ubi_Provincia}
+                {invoice.Ubi_Provincia}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.ubi_Distrito}
+                {invoice.Ubi_Distrito}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.pre_Jornal}
+                {invoice.Pre_Jornal}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.pre_FecHorRegistro}
+                {invoice.Pre_FecHorRegistro}
               </td>
               <td className="text-left whitespace-nowrap px-3 py-3">
                 <div className="flex justify-end gap-3">
-                  <UpdateInvoice id={invoice.pre_Id} />
-                  <DeleteInvoice id={invoice.pre_Id} />
+                  <UpdateInvoice id={invoice.Pre_Id} />
+                  <DeleteInvoice id={invoice.Pre_Id} />
                 </div>
               </td>
             </tr>

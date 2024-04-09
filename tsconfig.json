@@ -33,6 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
+    "app/(auth)/not-found.tjs",
   ],
   "exclude": [
     "node_modules"

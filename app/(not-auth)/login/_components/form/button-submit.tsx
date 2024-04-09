@@ -8,7 +8,7 @@ export default function SubmitButtonComponent() {
   return (
     <Button
       type="submit"
-      className="w-full"
+      className="w-full text-white"
       aria-disabled={pending}
       disabled={pending}
     >
