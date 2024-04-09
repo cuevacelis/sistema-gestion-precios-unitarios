@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   return (
-    <main className="">
+    <main className="flex flex-1 flex-col p-4 lg:p-6">
       <h1 className="text-black dark:text-stone-300 text-4xl text-center mb-10">
         SISTEMA DE GESTION DE PRECIOS UNITARIOS <br />
         (SGPU)

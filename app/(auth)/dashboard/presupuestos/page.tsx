@@ -55,8 +55,8 @@ export default async function Page({
   console.log(presupuesto_paginado);
 
   return (
-    <section className="mt-4 mx-5">
-      <div className="flex w-full items-center justify-between">
+    <main className="flex flex-1 flex-col p-4 lg:p-6">
+      <div className="">
         <h1 className={`text-2xl`}>Presupuestos</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
@@ -64,15 +64,17 @@ export default async function Page({
         <CreateInvoice />
       </div>
       <Suspense key={query + currentPage} fallback={<p>cargando...</p>}>
-        <InvoicesTable
-          data={presupuesto_paginado.data}
-          query={query}
-          currentPage={currentPage}
-        />
+        <div className="">
+          <InvoicesTable
+            data={presupuesto_paginado.data}
+            query={query}
+            currentPage={currentPage}
+          />
+        </div>
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={presupuesto_paginado.totalElementos} />
       </div>
-    </section>
+    </main>
   );
 }

@@ -1,3 +1,4 @@
+//Estas funciones por temas de seguridad siempre se ejecutan en el servidor
 import db from "@/scripts/db";
 import { modulo, usuario } from "@prisma/client";
 import "server-only";

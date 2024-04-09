@@ -1,9 +1,11 @@
 process.env.TZ = "America/Lima";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { CredentialsError } from "./lib/custom-error/auth-error";
+import { FetchError } from "./lib/custom-error/fetch-error";
 import { fetchLogged, fetchTokenRefresh } from "./lib/data/fetch-api";
 import { findUserByUsernameAndPassword } from "./lib/data/sql-queries";
-import { credentialsSchema } from "./lib/validations/validations-zod";
+import { credentialsSchema } from "./lib/validations-zod";
 
 declare module "next-auth" {
   interface User {
@@ -85,12 +87,11 @@ export const {
     CredentialsProvider({
       name: "Credentials",
       async authorize(credentials) {
-        const credentialsValidate = credentialsSchema.safeParse({
-          user: credentials.user,
-          password: credentials.password,
-        });
-
         try {
+          const credentialsValidate = credentialsSchema.safeParse({
+            user: credentials.user,
+            password: credentials.password,
+          });
           if (credentialsValidate.success) {
             const [dataLogin, dataUser] = await Promise.all([
               fetchLogged({
@@ -113,10 +114,25 @@ export const {
                 expires: dataLogin?.expires,
               };
             }
+            throw new CredentialsError({
+              message: "Credenciales inválidas.",
+            });
           }
-          return null;
+          throw new CredentialsError({ message: "La validación falló." });
         } catch (error) {
-          return null;
+          if (error instanceof FetchError) {
+            switch (error.type) {
+              case "Unauthorized":
+                throw new CredentialsError({
+                  message: "Credenciales inválidas.",
+                });
+              default:
+                throw new CredentialsError({
+                  message: "El servicio no respondio correctamente.",
+                });
+            }
+          }
+          throw error;
         }
       },
     }),

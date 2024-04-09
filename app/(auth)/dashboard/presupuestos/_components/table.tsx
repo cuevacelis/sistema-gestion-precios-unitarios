@@ -1,3 +1,12 @@
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Presupuesto } from "@/lib/data/sql-queries";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -51,78 +60,49 @@ export default async function InvoicesTable({
   const invoices = data;
 
   return (
-    <div className="overflow-x-auto mt-5">
-      <table className="min-w-max w-full table-auto">
-        <thead>
-          <tr className="uppercase text-sm leading-normal">
-            <th className="text-left px-3 py-3" scope="col">
-              usu_NomApellidos
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              pre_Nombre
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              cli_NomApeRazSocial
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              ubi_Departamento
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              ubi_Provincia
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              ubi_Distrito
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              pre_Jornal
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              pre_FecHorRegistro
-            </th>
-            <th className="text-left px-3 py-3" scope="col">
-              Acciones
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {invoices?.map((invoice) => (
-            <tr key={invoice.Pre_Id}>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                <div>
-                  <p>{invoice.Usu_NomApellidos}</p>
-                </div>
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Pre_Nombre}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Cli_NomApeRazSocial}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Ubi_Departamento}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Ubi_Provincia}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Ubi_Distrito}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Pre_Jornal}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                {invoice.Pre_FecHorRegistro}
-              </td>
-              <td className="text-left whitespace-nowrap px-3 py-3">
-                <div className="flex justify-end gap-3">
-                  <UpdateInvoice id={invoice.Pre_Id} />
-                  <DeleteInvoice id={invoice.Pre_Id} />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table>
+      <TableCaption>A list of your recent invoices.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>usu_NomApellidos</TableHead>
+          <TableHead>pre_Nombre</TableHead>
+          <TableHead>cli_NomApeRazSocial</TableHead>
+          <TableHead>ubi_Departamento</TableHead>
+          <TableHead>ubi_Provincia</TableHead>
+          <TableHead>ubi_Distrito</TableHead>
+          <TableHead>pre_Jornal</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>pre_FecHorRegistro</TableHead>
+          <TableHead>Acciones</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {invoices?.map((invoice) => (
+          <TableRow key={invoice.Pre_Id}>
+            <TableCell>{invoice.Usu_NomApellidos}</TableCell>
+            <TableCell>{invoice.Pre_Nombre}</TableCell>
+            <TableCell>{invoice.Cli_NomApeRazSocial}</TableCell>
+            <TableCell>{invoice.Ubi_Departamento}</TableCell>
+            <TableCell>{invoice.Ubi_Provincia}</TableCell>
+            <TableCell>{invoice.Ubi_Distrito}</TableCell>
+            <TableCell>{invoice.Pre_Jornal}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell>{invoice.Pre_FecHorRegistro}</TableCell>
+            <TableCell className="flex flex-row justify-end gap-3">
+              <UpdateInvoice id={invoice.Pre_Id} />
+              <DeleteInvoice id={invoice.Pre_Id} />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }

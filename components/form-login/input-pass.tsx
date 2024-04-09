@@ -29,8 +29,8 @@ export default function InputPassComponent() {
           readOnly={pending}
           autoComplete="password"
           type={isVisiblePass ? "text" : "password"}
-          required
           className="pr-10"
+          // required
         />
         <button
           type="button"

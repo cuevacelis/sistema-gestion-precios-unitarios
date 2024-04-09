@@ -6,7 +6,7 @@ import { Inter as FontSans } from "next/font/google";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Acme",
+    template: "%s | SGPU",
     default: "SGPU",
   },
 };
