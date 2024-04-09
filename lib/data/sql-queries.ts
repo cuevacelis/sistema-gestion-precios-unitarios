@@ -1,6 +1,6 @@
 import db from "@/scripts/db";
+import { modulo, usuario } from "@prisma/client";
 import "server-only";
-import { modulo, usuario } from "../types/@prisma/client";
 
 interface UserCredentials {
   username: string;

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { actionsSignOut } from "@/lib/actions/actionsServer";
-import { modulo } from "@/lib/types/@prisma/client";
+import { modulo } from "@prisma/client";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   CircleUser,

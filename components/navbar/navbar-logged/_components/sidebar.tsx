@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import LogoComponent from "@/components/ui/logo/logo";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { modulo } from "@/lib/types/@prisma/client";
+import { modulo } from "@prisma/client";
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import ModuleIconsComponent from "./module-icons";
