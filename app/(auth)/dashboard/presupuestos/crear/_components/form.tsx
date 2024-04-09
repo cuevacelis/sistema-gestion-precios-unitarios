@@ -14,8 +14,6 @@ export default function FormCreateComponent() {
     <form action={dispatch}>
       <section className="flex flex-col gap-4">
         <Input
-          label="usu_NomApellidos"
-          labelPlacement="outside-left"
           id="usu_NomApellidos"
           name="usu_NomApellidos"
           type="text"
@@ -24,8 +22,6 @@ export default function FormCreateComponent() {
         />
 
         <Input
-          label="pre_Nombre"
-          labelPlacement="outside-left"
           id="pre_Nombre"
           name="pre_Nombre"
           type="text"
@@ -34,8 +30,6 @@ export default function FormCreateComponent() {
         />
 
         <Input
-          label="cli_NomApeRazSocial"
-          labelPlacement="outside-left"
           id="cli_NomApeRazSocial"
           name="cli_NomApeRazSocial"
           type="text"
@@ -44,8 +38,6 @@ export default function FormCreateComponent() {
         />
 
         <Input
-          label="ubi_Departamento"
-          labelPlacement="outside-left"
           id="ubi_Departamento"
           name="ubi_Departamento"
           type="text"
@@ -54,8 +46,6 @@ export default function FormCreateComponent() {
         />
 
         <Input
-          label="ubi_Provincia"
-          labelPlacement="outside-left"
           id="ubi_Provincia"
           name="ubi_Provincia"
           type="text"
@@ -64,8 +54,6 @@ export default function FormCreateComponent() {
         />
 
         <Input
-          label="ubi_Distrito"
-          labelPlacement="outside-left"
           id="ubi_Distrito"
           name="ubi_Distrito"
           type="text"
@@ -73,8 +61,6 @@ export default function FormCreateComponent() {
           aria-describedby="amount-error"
         />
         <Input
-          label="pre_Jornal"
-          labelPlacement="outside-left"
           id="pre_Jornal"
           name="pre_Jornal"
           type="text"
