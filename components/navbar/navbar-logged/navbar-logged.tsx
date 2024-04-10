@@ -10,11 +10,10 @@ interface IProps {
 export default async function NavbarLoggedComponent(props: IProps) {
   const session = await auth();
   const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
-  //overflow-auto grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]
   return (
-    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]">
+    <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[240px_1fr]">
       <SidebarComponent {...{ modulesByUser }} />
-      <div className="overflow-auto">
+      <div className="overflow-auto bg-muted dark:bg-muted/50">
         <TopBarComponent {...{ session, modulesByUser }} />
         {props.children}
       </div>

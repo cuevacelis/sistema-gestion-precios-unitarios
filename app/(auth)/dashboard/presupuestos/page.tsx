@@ -52,7 +52,6 @@ export default async function Page({
     Number(session?.user?.id),
     query
   );
-  console.log(presupuesto_paginado);
 
   return (
     <main className="flex flex-1 flex-col p-4 lg:p-6">

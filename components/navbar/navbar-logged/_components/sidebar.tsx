@@ -17,7 +17,7 @@ export default function SidebarComponent(props: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 z-20 h-screen hidden border-r bg-muted/40 md:block">
+    <aside className="sticky top-0 z-20 hidden border-r md:block bg-background">
       <div className="flex h-full flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -40,7 +40,7 @@ export default function SidebarComponent(props: SidebarProps) {
                     "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 text-muted-foreground transition-all hover:text-primary",
                     pathname.startsWith(
                       `/dashboard/${module.Mod_Nombre.toLowerCase()}s`
-                    ) && "bg-muted"
+                    ) && "bg-muted text-primary"
                   )}
                 >
                   <ModuleIconsComponent modNombre={module.Mod_Nombre} />

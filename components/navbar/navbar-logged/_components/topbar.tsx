@@ -48,7 +48,7 @@ interface IProps {
 export default function TopBarComponent(props: IProps) {
   const { theme, setTheme } = useTheme();
   return (
-    <header className="sticky top-0 z-10 w-full flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+    <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 bg-background">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
