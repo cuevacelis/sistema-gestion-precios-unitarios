@@ -30,7 +30,7 @@ export default function InputPassComponent() {
           autoComplete="password"
           type={isVisiblePass ? "text" : "password"}
           className="pr-10"
-          // required
+          required
         />
         <button
           type="button"

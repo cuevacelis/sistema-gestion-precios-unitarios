@@ -17,7 +17,7 @@ export default function InputUserComponent() {
         autoComplete="username user"
         readOnly={pending}
         placeholder="Ingresa tu usuario."
-        // required
+        required
       />
     </div>
   );
