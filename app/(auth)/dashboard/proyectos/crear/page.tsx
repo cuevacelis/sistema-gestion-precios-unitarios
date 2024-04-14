@@ -1,88 +1,116 @@
-import TableManager from "./partidas";
+"use client";
 
-interface Subrow {
-  name: string;
-  value: string;
-  subrows: Subrow[];
-}
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useState } from "react";
+export default function NuevoProyectoPage() {
+  // Estado para almacenar los valores del formulario
+  const [formData, setFormData] = useState({
+    codigo: "ABC123", // Valor predeterminado para el ejemplo
+    nombre: "",
+    ubicacion: "",
+    cliente: "",
+    jornal: 0,
+  });
 
-export default function ProyectNewPage() {
+  // Datos ficticios para la tabla de Grupo de Partidas
+  const partidas = [
+    { codigo: "001", nombre: "partida1", precioUnitario: 100 },
+    { codigo: "002", nombre: "partida2", precioUnitario: 200 },
+    { codigo: "003", nombre: "partida3", precioUnitario: 300 },
+  ];
+
+  // Manejar cambios en los inputs del formulario
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
   return (
-    <div className="max-w-3xl mx-auto mt-8">
-      {/* Title */}
-      <h1 className="text-2xl font-bold mb-4">Create Project</h1>
-      {/* Form */}
-      <form className="mb-8">
-        {/* Code */}
-        <div className="flex mb-4">
-          <label htmlFor="code" className="w-1/4">
-            Code
-          </label>
-          <input
-            id="code"
+    <div className="p-4">
+      <h1 className="text-lg font-semibold mb-6">Nuevo Proyecto</h1>
+      <form className="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <label>Código</label>
+          <div className="flex items-center">
+            <Input type="text" name="codigo" value={formData.codigo} readOnly />
+            <Button onClick={() => console.log("Guardar")}>Guardar</Button>
+          </div>
+        </div>
+        <div>
+          <label>Nombre</label>
+          <Input
             type="text"
-            readOnly
-            className="w-3/4 border rounded px-2 py-1"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
           />
         </div>
-        {/* Name */}
-        <div className="flex mb-4">
-          <label htmlFor="name" className="w-1/4">
-            Name
-          </label>
-          <input
-            id="name"
-            type="text"
-            className="w-3/4 border rounded px-2 py-1"
-          />
-        </div>
-        {/* Location */}
-        <div className="flex mb-4">
-          <label htmlFor="location" className="w-1/4">
-            Location
-          </label>
-          <select id="location" className="w-3/4 border rounded px-2 py-1">
-            <option selected>Select location</option>
-            <option value="location1">Location 1</option>
-            <option value="location2">Location 2</option>
+        <div>
+          <label>Ubicación</label>
+          <select
+            name="ubicacion"
+            value={formData.ubicacion}
+            onChange={handleChange}
+          >
+            {/* Opciones de ubicación */}
           </select>
         </div>
-        {/* Client */}
-        <div className="flex mb-4">
-          <label htmlFor="client" className="w-1/4">
-            Client
-          </label>
-          <select id="client" className="w-3/4 border rounded px-2 py-1">
-            <option selected>Select client</option>
-            <option value="client1">Client 1</option>
-            <option value="client2">Client 2</option>
+        <div>
+          <label>Cliente</label>
+          <select
+            name="cliente"
+            value={formData.cliente}
+            onChange={handleChange}
+          >
+            {/* Opciones de cliente */}
           </select>
         </div>
-        {/* Daily Wage */}
-        <div className="flex mb-4">
-          <label htmlFor="daily-wage" className="w-1/4">
-            Daily Wage
-          </label>
-          <input
-            id="daily-wage"
-            type="text"
-            className="w-3/4 border rounded px-2 py-1"
+        <div>
+          <label>Jornal</label>
+          <Input
+            type="number"
+            name="jornal"
+            value={formData.jornal}
+            onChange={handleChange}
           />
         </div>
       </form>
-      {/* Group of Items */}
-      <h2 className="text-lg font-bold mb-4">Group of Items</h2>
-      {/* Table of Items */}
 
-      <TableManager />
+      <h2 className="text-lg font-semibold mb-4">Grupo Partidas</h2>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHeader>Código</TableHeader>
+            <TableHeader>Nombre</TableHeader>
+            <TableHeader>Precio Unitario</TableHeader>
+            <TableHeader>Acciones</TableHeader>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {partidas.map((partida) => (
+            <TableRow key={partida.codigo}>
+              <TableCell>{partida.codigo}</TableCell>
+              <TableCell>{partida.nombre}</TableCell>
+              <TableCell>{partida.precioUnitario}</TableCell>
+              <TableCell>
+                <Button>Editar</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-      <div className="flex justify-end mt-8">
-        <div className="flex items-center">
-          <label htmlFor="budget" className="mr-2">
-            Budget
-          </label>
-          <input id="budget" type="text" className="border rounded px-2 py-1" />
-        </div>
+      <div className="mt-6">
+        <label>Presupuesto</label>
+        <Input type="text" readOnly value="Calcular desde partidas..." />
       </div>
     </div>
   );

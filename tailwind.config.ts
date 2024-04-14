@@ -22,6 +22,9 @@ const config = {
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
+      height: {
+        home: "calc(100vh - 57px)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

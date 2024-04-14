@@ -24,10 +24,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark" style={{ colorScheme: "dark" }}>
       <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}
+        className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
         <ThemeProvider
           attribute="class"
