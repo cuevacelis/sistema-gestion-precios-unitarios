@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 
 // Supongamos que obtienes los detalles del proyecto a editar de algún servicio o contexto
-export function fetchProjectDetails(projectId: any) {
+function fetchProjectDetails(_projectId: any) {
   // Esta función debería devolver los detalles de un proyecto dado su ID
   // Aquí se retorna un ejemplo estático
   return {
