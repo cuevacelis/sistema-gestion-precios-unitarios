@@ -5,6 +5,7 @@ import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { PresupuestosPaginados } from "@/lib/data/sql-queries";
 import {
   SortingState,
   getCoreRowModel,
@@ -15,28 +16,17 @@ import {
 import { File, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Payment, columns } from "./columns";
+import { columns } from "./columns";
 
-const dataTable: Payment[] = [
-  {
-    id: "728ed52f",
-    amount: 100,
-    status: "success",
-    email: "m@example.com",
-  },
-  {
-    id: "728ed52f",
-    amount: 100,
-    status: "pending",
-    email: "a@example.com",
-  },
-];
+interface IProps {
+  data: PresupuestosPaginados;
+}
 
-export default function ProyectosComponent() {
+export default function ProyectosComponent(props: IProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const table = useReactTable({
-    data: dataTable,
+    data: props.data.data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -73,14 +63,16 @@ export default function ProyectosComponent() {
       </div>
       <Card x-chunk="dashboard-06-chunk-0 overflow-auto">
         <CardContent>
-          <DataTable columns={columns} data={dataTable} table={table} />
+          <DataTable columns={columns} data={props.data.data} table={table} />
         </CardContent>
         <CardFooter>
           <DataTablePagination
             table={table}
             serverPagination={{
-              totalData: 100,
-              totalPages: 10,
+              totalData: props.data.totalElementos,
+              totalPages: Math.round(
+                props.data.totalElementos / props.data.elementosPorPagina
+              ),
             }}
           />
         </CardFooter>

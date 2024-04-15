@@ -1,8 +1,5 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,18 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Presupuesto } from "@/lib/data/sql-queries";
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Presupuesto>[] = [
   {
-    id: "select",
+    id: "Pre_Id",
     header: ({ table }) => (
       <Checkbox
         checked={
@@ -47,26 +40,40 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "Pre_Codigo",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
+      <DataTableColumnHeader column={column} title="Código" />
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "Usu_NomApellidos",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Usuario" />
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "Pre_Nombre",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Nombre" />
     ),
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
+    accessorKey: "Cli_NomApeRazSocial",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Razón social" />
+    ),
+  },
+  {
+    accessorKey: "Pre_Jornal",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Jornal" />
+    ),
+  },
+  {
+    accessorKey: "Pre_FecHorRegistro",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Fecha" />
+    ),
   },
   {
     id: "actions",
@@ -83,7 +90,7 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(payment.Pre_Codigo)}
             >
               Copiar ID
             </DropdownMenuItem>

@@ -47,7 +47,7 @@ export async function getModulosByUserId(userId: number): Promise<modulo[]> {
 }
 
 //PRESUPUESTOS
-interface PresupuestosPaginados {
+export interface PresupuestosPaginados {
   totalElementos: number;
   elementosPorPagina: number;
   paginaActual: number;
@@ -65,6 +65,22 @@ export interface Presupuesto {
   Ubi_Distrito: string;
   Pre_Jornal: number;
   Pre_FecHorRegistro: string;
+}
+
+export async function obtenerPresupuestosPaginadosSP(
+  elementosPorPagina: number,
+  paginaActual: number,
+  busqueda: string
+): Promise<any> {
+  try {
+    const presupuesto = await db.$queryRaw<
+      Presupuesto[]
+    >`EXEC [dbo].[SP_Presupuesto_Obten_Paginado] @RegistroPagina = ${elementosPorPagina}, @NumeroPagina = ${paginaActual}, @PorNombre = ${busqueda}, @TotalPagina = ${10}, @TotalRegistro = ${20}, @TienePaginaAnterior = ${true}, @TienePaginaProximo = ${true}`;
+    return presupuesto;
+  } catch (error) {
+    console.error("Error al obtener presupuestos paginados:", error);
+    throw error;
+  }
 }
 
 export async function obtenerPresupuestosPaginados(
@@ -120,5 +136,16 @@ export async function obtenerPresupuestosPaginados(
     throw error;
   }
 }
+
+// export async function crearPresupuesto(
+//   formData: FormData
+// ): Promise<any> {
+//   try {
+//     const presupuesto = await db.$queryRaw<Presupuesto[]>`EXEC [dbo].[SP_Presupuesto_Crea] @param1 = ${req.body.param1}, @param2 = ${req.body.param2}`
+//   } catch (error) {
+//     console.error("Error al crear presupuesto:", error);
+//     throw error;
+//   }
+// }
 
 //PROYECTOS
