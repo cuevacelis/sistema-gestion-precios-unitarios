@@ -16,6 +16,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "sourceMap": true,
     "incremental": true,
     "plugins": [
       {
@@ -30,10 +31,9 @@
   },
   "include": [
     "next-env.d.ts",
+    ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "app/(auth)/not-found.tjs",
   ],
   "exclude": [
     "node_modules"

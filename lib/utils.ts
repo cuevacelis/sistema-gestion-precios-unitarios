@@ -1,4 +1,5 @@
-import { clsx, type ClassValue } from "clsx";
+import clsx, { ClassValue } from "clsx";
+import { IResult } from "mssql";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -60,4 +61,26 @@ export function simulateLongWait(timeInMillis: number) {
       resolve("Tiempo de espera completado");
     }, timeInMillis);
   });
+}
+
+export function convertDecimalToNumber(data: any[], objectToConvert: string) {
+  return data.forEach((item: any) => {
+    if ((item[objectToConvert] as any).toStringTag === "[object Decimal]") {
+      const decimal = item.Pre_Jornal as any;
+      item.Pre_Jornal =
+        parseFloat(decimal.d.join("")) *
+        (decimal.s < 0 ? -1 : 1) *
+        Math.pow(10, decimal.e);
+    }
+  });
+}
+
+export function returnEssencialDataQuery<T>(resultQuery: IResult<T>) {
+  return {
+    data: resultQuery.recordset.map((row: any) => {
+      const { columns, ...rest } = row;
+      return rest;
+    }),
+    moreInfo: resultQuery.output,
+  };
 }

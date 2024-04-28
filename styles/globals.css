@@ -58,3 +58,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  border-top-color: #3490dc; /* Blue */
+  animation: spinner 1s infinite;
+}

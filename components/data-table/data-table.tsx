@@ -1,16 +1,10 @@
 "use client";
 
 import {
-  ColumnDef,
-  SortingState,
-  Table,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   TableBody,
   TableCell,
@@ -19,78 +13,66 @@ import {
   TableRow,
   Table as TableUI,
 } from "@/components/ui/table";
-import { useState } from "react";
+import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import { Table, flexRender } from "@tanstack/react-table";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  table?: Table<TData>;
+interface DataTableProps<TData> {
+  table: Table<TData>;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  table,
-}: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = useState({});
-
-  const internalTable = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      rowSelection,
-    },
-  });
-
-  const usedTable = table || internalTable;
-
+export function DataTable<TData>({ table }: DataTableProps<TData>) {
   return (
-    <>
-      <TableUI>
-        <TableHeader>
-          {usedTable.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {usedTable.getRowModel().rows?.length ? (
-            usedTable.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <div>No existen datos disponibles.</div>
-          )}
-        </TableBody>
-      </TableUI>
-    </>
+    <TableUI>
+      <TableHeader>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              return (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              );
+            })}
+          </TableRow>
+        ))}
+      </TableHeader>
+      <TableBody>
+        {table.getRowModel().rows?.length ? (
+          table.getRowModel().rows.map((row) => (
+            <ContextMenu key={row.id}>
+              <ContextMenuTrigger key={row.id} asChild>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </ContextMenuTrigger>
+              <ContextMenuPrimitive.Portal>
+                <ContextMenuPrimitive.Content className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                  <ContextMenuItem>Duplicar</ContextMenuItem>
+                  <ContextMenuItem>Editar</ContextMenuItem>
+                  <ContextMenuItem>Eliminar</ContextMenuItem>
+                </ContextMenuPrimitive.Content>
+              </ContextMenuPrimitive.Portal>
+            </ContextMenu>
+          ))
+        ) : (
+          <p>No existen datos disponibles.</p>
+        )}
+      </TableBody>
+    </TableUI>
   );
 }

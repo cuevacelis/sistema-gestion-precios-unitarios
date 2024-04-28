@@ -11,12 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Presupuesto } from "@/lib/data/sql-queries";
+import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<Presupuesto>[] = [
+export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
   {
     id: "Pre_Id",
     header: ({ table }) => (

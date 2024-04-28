@@ -3,14 +3,14 @@ import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-export default async function create(prevState: any, formData: FormData) {
+export default async function create(formData: FormData) {
   try {
     const session = await auth();
     const res = await fetch(`https://apusoft.online/api/v1/Presupuesto/Crea`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session?.user?.token}`,
+        Authorization: `Bearer ${session?.user}`,
       },
       body: JSON.stringify({
         usu_NomApellidos: formData.get("usu_NomApellidos"),

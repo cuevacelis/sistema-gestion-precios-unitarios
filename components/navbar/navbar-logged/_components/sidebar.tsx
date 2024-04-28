@@ -2,15 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import LogoComponent from "@/components/ui/logo/logo";
+import { IDataDBSidebar } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { modulo } from "@prisma/client";
 import { Bell } from "lucide-react";
+import { IResult } from "mssql";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ModuleIconsComponent from "./module-icons";
 
 interface SidebarProps {
-  modulesByUser: modulo[];
+  modulesByUser: IResult<IDataDBSidebar>;
 }
 
 export default function SidebarComponent(props: SidebarProps) {
@@ -31,7 +32,7 @@ export default function SidebarComponent(props: SidebarProps) {
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            {props.modulesByUser.map((module) => {
+            {props.modulesByUser.recordset.map((module) => {
               return (
                 <Link
                   key={module.Mod_Id}

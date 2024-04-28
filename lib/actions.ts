@@ -1,7 +1,4 @@
 "use server";
-//Estas acciones se pueden llamar desde el servidor o el cliente
-//Las acciones se ejecutan siempre en el servidor
-
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
@@ -11,6 +8,7 @@ export async function actionsSignInCredentials(
   formData: FormData
 ) {
   try {
+    console.log("prevState", prevState);
     await signIn("credentials", {
       redirect: true,
       redirectTo: "/dashboard",
@@ -20,23 +18,11 @@ export async function actionsSignInCredentials(
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
-    } else if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return {
-            isError: true,
-            message: error.message,
-          };
-        default:
-          return {
-            isError: true,
-            message: "La autenticación presenta un error no controlado.",
-          };
-      }
     } else {
+      const errors = error as any;
       return {
         isError: true,
-        message: "Algo salió mal.",
+        message: errors?.message || "Algo salió mal.",
       };
     }
   }

@@ -22,7 +22,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className="dark" style={{ colorScheme: "dark" }}>
+    <html
+      lang="es"
+      className="dark"
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >

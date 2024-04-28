@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Presupuesto } from "@/lib/data/sql-queries";
+// import { Presupuesto } from "@/lib/data/sql-queries";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
@@ -35,7 +35,7 @@ export function UpdateInvoice({ id }: { id: number }) {
   );
 }
 
-export function DeleteInvoice({ id }: { id: number }) {
+export function DeleteInvoice({}: { id: number }) {
   // const deletePresupuestosWithId = deletePresupuestosId.bind(null, id);
   const deletePresupuestosWithId = "";
   return (
@@ -49,13 +49,12 @@ export function DeleteInvoice({ id }: { id: number }) {
 }
 
 export default async function InvoicesTable({
-  query,
-  currentPage,
   data,
 }: {
   query: string;
   currentPage: number;
-  data: Presupuesto[];
+  // data: Presupuesto[];
+  data: any;
 }) {
   const invoices = data;
 
@@ -81,7 +80,7 @@ export default async function InvoicesTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {invoices?.map((invoice) => (
+        {invoices?.map((invoice: any) => (
           <TableRow key={invoice.Pre_Id}>
             <TableCell>{invoice.Usu_NomApellidos}</TableCell>
             <TableCell>{invoice.Pre_Nombre}</TableCell>

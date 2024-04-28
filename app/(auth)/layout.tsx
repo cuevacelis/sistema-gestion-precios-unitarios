@@ -1,6 +1,10 @@
-import NavbarLoggedComponent from "@/components/navbar/navbar-logged/navbar-logged";
 import NavbarSkeletonComponent from "@/components/navbar/navbar-skeleton/navbar-sleleton";
+import dynamic from "next/dynamic";
 import { Suspense } from "react";
+
+const NavbarLoggedComponent = dynamic(
+  () => import("@/components/navbar/navbar-logged/navbar-logged")
+);
 
 export default function DashboardLayout({
   children,

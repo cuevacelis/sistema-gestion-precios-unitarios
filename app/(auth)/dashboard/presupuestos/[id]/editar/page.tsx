@@ -15,7 +15,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session?.user?.token}`,
+      Authorization: `Bearer ${session?.user}`,
     },
     redirect: "follow",
   });

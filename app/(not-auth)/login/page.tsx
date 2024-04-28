@@ -1,7 +1,7 @@
-import LoginComponent from "@/components/form-login/login";
 import img_login_dark from "@/resources/images/img-login-dark2.webp";
 import img_login_light from "@/resources/images/img-login-light.webp";
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description:
     "Ingrese su usuario a continuación para iniciar sesión en su cuenta.",
 };
+
+const LoginComponent = dynamic(() => import("@/components/form-login/login"));
 
 export default function LoginPage() {
   return (

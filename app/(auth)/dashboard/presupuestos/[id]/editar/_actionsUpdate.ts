@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 
 export default async function update(
   id: string,
-  prevState: any,
   formData: FormData
 ) {
   try {
@@ -16,7 +15,7 @@ export default async function update(
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.user?.token}`,
+          Authorization: `Bearer ${session?.user}`,
         },
         body: JSON.stringify({
           usu_NomApellidos: formData.get("usu_NomApellidos"),

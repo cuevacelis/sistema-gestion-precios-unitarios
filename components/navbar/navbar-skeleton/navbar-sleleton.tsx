@@ -1,7 +1,6 @@
-import { CircleUser } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CircleUser } from "lucide-react";
 
 export default function NavbarSkeletonComponent() {
   return (
@@ -41,7 +40,9 @@ export default function NavbarSkeletonComponent() {
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="mx-auto grid w-full max-w-6xl gap-2">
-            <Skeleton className="text-3xl font-semibold h-8 w-40" />
+            <section className="h-home flex justify-center items-center">
+              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8"></div>
+            </section>
           </div>
         </main>
       </div>

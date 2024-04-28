@@ -1,10 +1,17 @@
 "use client";
-
+import { cn } from "@/lib/utils";
+import { SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Input } from "../ui/input";
 
-export default function Search({ placeholder }: { placeholder: string }) {
+export default function Search({
+  placeholder,
+  className,
+}: {
+  placeholder?: string;
+  className?: string;
+}) {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -21,25 +28,25 @@ export default function Search({ placeholder }: { placeholder: string }) {
     replace(`${pathname}?${params.toString()}`);
   }, 300);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSearch.flush();
+    }
+  };
+
   return (
-    <div className="relative flex flex-1 flex-shrink-0">
-      <label htmlFor="search" className="sr-only">
-        Buscador
-      </label>
+    <div className={cn("relative ml-auto flex-1 md:grow-0", className)}>
+      <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
-        // classNames={{
-        //   base: "max-w-full h-10",
-        //   mainWrapper: "h-full",
-        //   input: "text-small",
-        //   inputWrapper:
-        //     "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-        // }}
-        placeholder={placeholder}
+        autoFocus
+        autoComplete="on"
+        type="search"
+        placeholder={placeholder || "Busqueda..."}
         onChange={(e) => {
           handleSearch(e.target.value);
         }}
-        // startContent={<SearchIcon size={18} />}
-        type="search"
+        onKeyDown={handleKeyDown}
+        className="w-full rounded-lg bg-background pl-8"
         defaultValue={searchParams.get("query")?.toString()}
       />
     </div>

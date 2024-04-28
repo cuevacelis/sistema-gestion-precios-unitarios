@@ -1,10 +1,4 @@
-import { auth } from "@/auth";
-import Pagination from "@/components/pagination/pagination";
-import Search from "@/components/search/search";
-import { obtenerPresupuestosPaginados } from "@/lib/data/sql-queries";
 import { Metadata } from "next";
-import { Suspense } from "react";
-import InvoicesTable, { CreateInvoice } from "./_components/table";
 
 export interface IFetchPresupuestoPaginado {
   paginaActual: number;
@@ -41,21 +35,15 @@ export default async function Page({
     page?: string;
   };
 }) {
-  const session = await auth();
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
-  const elementsPerPage = 1;
-
-  const presupuesto_paginado = await obtenerPresupuestosPaginados(
-    elementsPerPage,
-    currentPage,
-    Number(session?.user?.id),
-    query
-  );
+  // const presupuesto_paginado = await obtenerPresupuestosPaginados(
+  //   elementsPerPage,
+  //   currentPage,
+  //   query
+  // );
 
   return (
     <main className="flex flex-1 flex-col p-4 lg:p-6">
-      <div className="">
+      {/* <div className="">
         <h1 className={`text-2xl`}>Presupuestos</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
@@ -73,7 +61,7 @@ export default async function Page({
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={presupuesto_paginado.totalElementos} />
-      </div>
+      </div> */}
     </main>
   );
 }

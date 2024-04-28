@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { actionsSignOut } from "@/lib/actions";
-import { modulo } from "@prisma/client";
+import { IDataDBSidebar } from "@/lib/types";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   CircleUser,
@@ -35,13 +35,14 @@ import {
   SunIcon,
   User,
 } from "lucide-react";
+import { IResult } from "mssql";
 import { Session } from "next-auth";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import ModuleIconsComponent from "./module-icons";
 
 interface IProps {
-  modulesByUser: modulo[];
+  modulesByUser:  IResult<IDataDBSidebar>;
   session: Session | null;
 }
 
@@ -58,7 +59,7 @@ export default function TopBarComponent(props: IProps) {
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
           <nav className="grid gap-2 text-lg font-medium">
-            {props.modulesByUser.map((module) => {
+            {props.modulesByUser.recordset.map((module) => {
               return (
                 <Link
                   href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
