@@ -2,7 +2,6 @@ import Search from "@/components/search/search";
 import { obtenerPresupuestosPaginados } from "@/lib/data/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { TableProvider } from "./context-table";
 
 const TableComponent = dynamic(() => import("./data-table"), { ssr: false });
 const OptionsTable = dynamic(() => import("./options-table"), { ssr: false });
@@ -21,7 +20,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   const rowsPerPage = Number(searchParams?.rowsPerPage) || 10;
 
   return (
-    <TableProvider>
+    <>
       <main className="block p-4 lg:p-6">
         <div className="flex items-center mb-6">
           <h1 className="text-lg font-semibold md:text-2xl">Proyectos</h1>
@@ -42,7 +41,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
           <GetDataTable {...{ query, currentPage, rowsPerPage }} />
         </Suspense>
       </main>
-    </TableProvider>
+    </>
   );
 }
 

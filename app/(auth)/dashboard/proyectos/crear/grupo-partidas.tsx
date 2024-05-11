@@ -14,22 +14,23 @@ import {
   TableRow,
   Table as TableUI,
 } from "@/components/ui/table";
+import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBGrupoDePartidas } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
 import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
-import { useTableContext } from "./context-table-grupo-partidas";
 
 interface IGrupoPartidas {
   dataGrupoDePartidas: IProcedureResult<IDataDBGrupoDePartidas>;
 }
 
 export default function GrupoPartidas(props: IGrupoPartidas) {
-  const { table, rowSelection } = useTableContext({
+  const { table, rowSelection } = useUpdateTableComplete({
     data: props.dataGrupoDePartidas.recordset,
     rowCount: props.dataGrupoDePartidas.output.TotalRegistro,
     columns: columns,
+    identifierField: "NomGruPar_Nombre",
   });
 
   return (

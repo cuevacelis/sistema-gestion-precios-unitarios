@@ -16,22 +16,23 @@ import {
   TableRow,
   Table as TableUI,
 } from "@/components/ui/table";
+import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
 import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
-import { useTableContext } from "./context-table";
 
 interface IProps {
   dataPresupuestos: IProcedureResult<IDataDBObtenerPresupuestosPaginados>;
 }
 
 export default function TableComponent(props: IProps) {
-  const { table, rowSelection, setRowSelection } = useTableContext({
+  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
     data: props.dataPresupuestos.recordset,
     columns: columns,
     rowCount: props.dataPresupuestos.output.TotalRegistro,
+    identifierField: "Pre_Id",
   });
 
   return (

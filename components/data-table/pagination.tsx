@@ -37,6 +37,7 @@ export function DataTablePagination<TData>({
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
+              // table.resetRowSelection();
               table.setPagination({ pageSize: Number(value), pageIndex: 0 });
             }}
           >

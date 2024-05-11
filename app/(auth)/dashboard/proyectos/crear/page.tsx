@@ -8,7 +8,6 @@ import {
 } from "@/lib/data/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { TableProvider } from "./context-table-grupo-partidas";
 
 const NuevoProyecto = dynamic(() => import("./nuevo-proyecto"), { ssr: false });
 const GrupoPartidas = dynamic(() => import("./grupo-partidas"), { ssr: false });
@@ -27,14 +26,12 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
   const rowsPerPage = Number(props.searchParams?.rowsPerPage) || 10;
 
   return (
-    <TableProvider>
+    <>
       <div className="block p-4 lg:p-6">
         <h1 className="text-lg font-semibold mb-6">Nuevo Proyecto</h1>
         <Card x-chunk="overflow-auto">
           <CardContent>
-            <Suspense
-              fallback={<p>cargando...</p>}
-            >
+            <Suspense fallback={<p>cargando...</p>}>
               <GetDataNuevoProyecto />
             </Suspense>
             <Separator className="my-10" />
@@ -55,7 +52,7 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
           </div>
         </div>
       </div>
-    </TableProvider>
+    </>
   );
 }
 
