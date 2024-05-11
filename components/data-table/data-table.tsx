@@ -62,6 +62,9 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
               </ContextMenuTrigger>
               <ContextMenuPrimitive.Portal>
                 <ContextMenuPrimitive.Content className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                  <ContextMenuItem className="text-red-500">
+                    Esta seccción aún esta en desarrollo
+                  </ContextMenuItem>
                   <ContextMenuItem>Duplicar</ContextMenuItem>
                   <ContextMenuItem>Editar</ContextMenuItem>
                   <ContextMenuItem>Eliminar</ContextMenuItem>

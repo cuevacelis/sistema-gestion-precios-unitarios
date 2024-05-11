@@ -1,5 +1,5 @@
 "use client";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { IDataDBGrupoDePartidas } from "@/lib/types";
 import {
   ColumnDef,
   PaginationState,
@@ -20,7 +20,7 @@ import React, {
   useState,
 } from "react";
 
-type DataService = IDataDBObtenerPresupuestosPaginados & RowData;
+type DataService = IDataDBGrupoDePartidas & RowData;
 
 interface TableContextType<TData extends DataService> {
   table: Table<TData>;
@@ -78,7 +78,7 @@ export const TableProvider = <TData extends DataService>(
     onSortingChange: setSorting,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: handlePaginationChange,
-    getRowId: (row) => row.Pre_Id.toString(),
+    getRowId: (row) => row.NomGruPar_Nombre.toString(),
     state: {
       sorting,
       rowSelection,

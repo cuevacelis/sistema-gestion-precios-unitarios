@@ -1,4 +1,5 @@
-//LOGIN
+export type TMultipleSelect = Array<{ key: string; name: string }>;
+// #region LOGIN
 export interface IBodyLogin {
   username: string;
   password: string;
@@ -17,7 +18,7 @@ export interface IDataDBLogin {
   Usu_FecHoraTokenActualizado: string;
 }
 
-//USER LOGGED
+// #region LOGGED
 
 export interface IDataDBSidebar {
   Mod_Id: number;
@@ -25,7 +26,7 @@ export interface IDataDBSidebar {
   Mod_Estado: number;
 }
 
-//USER Presupuestos
+// #region Presupuestos
 
 export interface IDataDBObtenerPresupuestosPaginados {
   Pre_Id: number;
@@ -39,4 +40,25 @@ export interface IDataDBObtenerPresupuestosPaginados {
   Pre_Jornal: number;
   Pre_FecHorRegistro: string;
   Pre_Estado: number;
+}
+
+// #region Ubicación
+
+export interface IDataDBUbicacion {
+  Ubi_Id: number;
+  Ubi_Departamento: string;
+  Ubi_Provincia: string;
+  Ubi_Distrito: string;
+}
+
+// #region Cliente
+
+export interface IDataDBCliente {
+  Cli_NomApeRazSocial: string;
+}
+
+// #region GrupoDePartidas
+
+export interface IDataDBGrupoDePartidas {
+  NomGruPar_Nombre: string
 }

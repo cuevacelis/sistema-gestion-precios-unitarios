@@ -7,18 +7,18 @@ import { TableProvider } from "./context-table";
 const TableComponent = dynamic(() => import("./data-table"), { ssr: false });
 const OptionsTable = dynamic(() => import("./options-table"), { ssr: false });
 
-export default async function ProyectPage({
-  searchParams,
-}: {
+interface IProjectPage {
   searchParams?: {
     query?: string;
     page?: string;
     rowsPerPage?: string;
   };
-}) {
+}
+
+export default async function ProyectPage({ searchParams }: IProjectPage) {
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
-  const elementsPerPage = Number(searchParams?.rowsPerPage) || 10;
+  const rowsPerPage = Number(searchParams?.rowsPerPage) || 10;
 
   return (
     <TableProvider>
@@ -27,21 +27,19 @@ export default async function ProyectPage({
           <h1 className="text-lg font-semibold md:text-2xl">Proyectos</h1>
           <div className="ml-auto flex items-center gap-2">
             <Suspense
-              key={query + currentPage + elementsPerPage}
+              key={query + currentPage + rowsPerPage}
               fallback={<p>cargando...</p>}
             >
-              <GetDataOptionsTable
-                {...{ query, currentPage, elementsPerPage }}
-              />
+              <GetDataOptionsTable />
             </Suspense>
           </div>
         </div>
         <Search className="mb-6" />
         <Suspense
-          key={query + currentPage + elementsPerPage}
+          key={query + currentPage + rowsPerPage}
           fallback={<p>cargando...</p>}
         >
-          <GetDataTable {...{ query, currentPage, elementsPerPage }} />
+          <GetDataTable {...{ query, currentPage, rowsPerPage }} />
         </Suspense>
       </main>
     </TableProvider>
@@ -51,25 +49,16 @@ export default async function ProyectPage({
 async function GetDataTable(props: {
   query: string;
   currentPage: number;
-  elementsPerPage: number;
+  rowsPerPage: number;
 }) {
   const dataPresupuestos = await obtenerPresupuestosPaginados(
-    props.elementsPerPage,
+    props.rowsPerPage,
     props.currentPage,
     props.query
   );
   return <TableComponent {...{ dataPresupuestos }} />;
 }
 
-async function GetDataOptionsTable(props: {
-  query: string;
-  currentPage: number;
-  elementsPerPage: number;
-}) {
-  const dataPresupuestos = await obtenerPresupuestosPaginados(
-    props.elementsPerPage,
-    props.currentPage,
-    props.query
-  );
-  return <OptionsTable {...{ dataPresupuestos }} />;
+async function GetDataOptionsTable() {
+  return <OptionsTable />;
 }

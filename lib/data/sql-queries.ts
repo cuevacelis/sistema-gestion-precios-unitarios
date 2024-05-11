@@ -2,9 +2,12 @@ import { poolPromise, sql } from "@/db/db-mssql";
 import "server-only";
 import cache from "../cache";
 import {
+  IDataDBCliente,
+  IDataDBGrupoDePartidas,
   IDataDBLogin,
   IDataDBObtenerPresupuestosPaginados,
   IDataDBSidebar,
+  IDataDBUbicacion,
 } from "../types";
 
 // #region login
@@ -31,7 +34,7 @@ export const findUserByUsernameAndPassword = cache(
     }
   },
   ["credentials"],
-  { tags: ["credentials"], revalidate: 60 * 60 * 24 }
+  { tags: ["credentials"] }
 );
 
 // #region SIDEBAR
@@ -60,7 +63,7 @@ export const getModulosByUserId = cache(
     }
   },
   ["modulesByUserId"],
-  { tags: ["modulesByUserId"], revalidate: 60 * 60 * 24 }
+  { tags: ["modulesByUserId"] }
 );
 
 // #region Presupuestos
@@ -92,4 +95,55 @@ export const obtenerPresupuestosPaginados = cache(
   { tags: ["presupuestosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
-// #region PROYECTOS
+// #region Ubicacion
+export const obtenerUbicacion = cache(
+  async () => {
+    try {
+      const pool = await poolPromise;
+      return pool.request().execute<IDataDBUbicacion>("SP_Ubicacion_Obten");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["ubicacion"],
+  { tags: ["ubicacion"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+// #region Clientes
+export const obtenerClientes = cache(
+  async () => {
+    try {
+      const pool = await poolPromise;
+      return pool.request().execute<IDataDBCliente>("SP_Cliente_Obten_Nombre");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+// #region Clientes
+export const obtenerGruposDePartidasPaginados = cache(
+  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
+    try {
+      const pool = await poolPromise;
+      return pool
+        .request()
+        .input("RegistroPagina", sql.Int, elementosPorPagina)
+        .input("NumeroPagina", sql.Int, paginaActual)
+        .input("PorNombre", sql.NVarChar, nombre)
+        .output("TotalPagina", sql.Int)
+        .output("TotalRegistro", sql.Int)
+        .output("TienePaginaAnterior", sql.Bit)
+        .output("TienePaginaProximo", sql.Bit)
+        .execute<IDataDBGrupoDePartidas>(
+          "SP_Grupo_Partida_Obten_Paginado_x_Presupuesto"
+        );
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["gruposDePartidasPaginados"],
+  { tags: ["gruposDePartidasPaginados"], revalidate: 60 * 60 * 24 * 30 }
+);
