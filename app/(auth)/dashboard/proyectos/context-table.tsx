@@ -12,32 +12,34 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type DataService = IDataDBObtenerPresupuestosPaginados & RowData;
 
 interface TableContextType<TData extends DataService> {
   table: Table<TData>;
+  data: TData[];
+  columns: ColumnDef<TData>[];
   rowSelection: {};
-  setRowSelection: React.Dispatch<React.SetStateAction<{}>>
-  updateColumns: (columns: ColumnDef<TData>[]) => void;
-  updateData: (data: TData[]) => void;
-  updateRowCount: (rowCount: number) => void;
+  setRowSelection: React.Dispatch<React.SetStateAction<{}>>;
+  setColumns: React.Dispatch<React.SetStateAction<ColumnDef<TData>[]>>;
+  setData: React.Dispatch<React.SetStateAction<TData[]>>;
+  setRowCount: React.Dispatch<React.SetStateAction<number>>;
+}
+
+interface TableProviderProps {
+  children: React.ReactNode;
+}
+
+interface TableSetupProps<TData extends DataService> {
+  data: TData[];
+  columns: ColumnDef<TData>[];
+  rowCount: number;
 }
 
 const TableContext = createContext<TableContextType<any> | undefined>(
   undefined
 );
-
-interface TableProviderProps {
-  children: React.ReactNode;
-}
 
 export const TableProvider = <TData extends DataService>(
   props: TableProviderProps
@@ -89,29 +91,16 @@ export const TableProvider = <TData extends DataService>(
     },
   });
 
-  const updateColumns = (newColumns: ColumnDef<TData>[]) => {
-    setColumns(newColumns);
+  const value = {
+    table,
+    data,
+    columns,
+    rowSelection,
+    setRowSelection,
+    setColumns,
+    setData,
+    setRowCount,
   };
-
-  const updateData = (newData: TData[]) => {
-    setData(newData);
-  };
-
-  const updateRowCount = (newRowCount: number) => {
-    setRowCount(newRowCount);
-  };
-
-  const value = useMemo(
-    () => ({
-      table,
-      rowSelection,
-      setRowSelection,
-      updateColumns,
-      updateData,
-      updateRowCount,
-    }),
-    [table, rowSelection, updateColumns, updateData, updateRowCount]
-  );
 
   return (
     <TableContextTypes.Provider value={value}>
@@ -120,14 +109,8 @@ export const TableProvider = <TData extends DataService>(
   );
 };
 
-interface TableSetupProps<TData extends DataService> {
-  data: TData[];
-  columns: ColumnDef<TData>[];
-  rowCount: number;
-}
-
 export const useTableContext = <TData extends DataService>(
-  props?: TableSetupProps<TData>
+  props: TableSetupProps<TData>
 ) => {
   const context = useContext<TableContextType<TData> | undefined>(TableContext);
 
@@ -136,12 +119,17 @@ export const useTableContext = <TData extends DataService>(
   }
 
   useEffect(() => {
-    if (props?.data && props?.columns) {
-      context.updateData(props.data);
-      context.updateColumns(props.columns);
-      context.updateRowCount(props.rowCount);
-    }
-  }, [props?.data, props?.columns, context.updateData, context.updateColumns]);
+    context.setData(props.data);
+    context.setColumns(props.columns);
+    context.setRowCount(props.rowCount);
+  }, [
+    props.data,
+    props.columns,
+    props.rowCount,
+    context.setData,
+    context.setColumns,
+    context.setRowCount,
+  ]);
 
   return context;
 };

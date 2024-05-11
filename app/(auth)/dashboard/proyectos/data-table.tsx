@@ -30,8 +30,8 @@ interface IProps {
 export default function TableComponent(props: IProps) {
   const { table, rowSelection, setRowSelection } = useTableContext({
     data: props.dataPresupuestos.recordset,
-    rowCount: props.dataPresupuestos.output.TotalRegistro,
     columns: columns,
+    rowCount: props.dataPresupuestos.output.TotalRegistro,
   });
 
   return (
