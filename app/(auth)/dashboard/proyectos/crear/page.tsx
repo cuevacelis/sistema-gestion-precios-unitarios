@@ -5,7 +5,7 @@ import {
   obtenerClientes,
   obtenerGruposDePartidasPaginados,
   obtenerUbicacion,
-} from "@/lib/data/sql-queries";
+} from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 

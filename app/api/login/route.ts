@@ -1,4 +1,4 @@
-import { findUserByUsernameAndPassword } from "@/lib/data/sql-queries";
+import { findUserByUsernameAndPassword } from "@/lib/services/sql-queries";
 
 export async function POST(request: Request) {
   const { username, password } = await request.json();

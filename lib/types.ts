@@ -1,4 +1,5 @@
 export type TMultipleSelect = Array<{ key: string; name: string }>;
+
 // #region LOGIN
 export interface IBodyLogin {
   username: string;
@@ -18,16 +19,25 @@ export interface IDataDBLogin {
   Usu_FecHoraTokenActualizado: string;
 }
 
-// #region LOGGED
-
+// #region SIDEBAR
 export interface IDataDBSidebar {
   Mod_Id: number;
   Mod_Nombre: string;
   Mod_Estado: number;
 }
 
-// #region Presupuestos
+// #region Usuarios
+export interface IDataDBObtenerUsuariosPaginados {
+  Usu_Id: number;
+  Usu_Correo: string;
+  Usu_NomApellidos: string;
+  Rol_Nombre: string;
+  Pre_FecHorRegistro: string;
+  Usu_Observacion: string;
+  Pre_Estado: number;
+}
 
+// #region Presupuestos
 export interface IDataDBObtenerPresupuestosPaginados {
   Pre_Id: number;
   Pre_Codigo: any;
@@ -42,7 +52,18 @@ export interface IDataDBObtenerPresupuestosPaginados {
   Pre_Estado: number;
 }
 
-// #region Ubicación
+// #region Partidas
+export interface IDataDBObtenerPartidasPaginados {}
+
+// #region Clientes
+export interface IDataDBObtenerClientesPaginados {
+  Cli_Id: number;
+  Cli_NomApeRazSocial: string;
+  Cli_Abreviatura: string;
+  TipDoc_Nombre: string;
+  Cli_NumDocumento: string;
+  Pre_Estado: number;
+}
 
 export interface IDataDBUbicacion {
   Ubi_Id: number;
@@ -51,14 +72,11 @@ export interface IDataDBUbicacion {
   Ubi_Distrito: string;
 }
 
-// #region Cliente
-
 export interface IDataDBCliente {
   Cli_NomApeRazSocial: string;
 }
 
 // #region GrupoDePartidas
-
 export interface IDataDBGrupoDePartidas {
-  NomGruPar_Nombre: string
+  NomGruPar_Nombre: string;
 }

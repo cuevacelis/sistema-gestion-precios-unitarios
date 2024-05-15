@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { getModulosByUserId } from "@/lib/data/sql-queries";
+import { getModulosByUserId } from "@/lib/services/sql-queries";
 import SidebarComponent from "./_components/sidebar";
 import TopBarComponent from "./_components/topbar";
 

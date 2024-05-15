@@ -1,67 +1,63 @@
-import { Metadata } from "next";
+import Search from "@/components/search/search";
+import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-export interface IFetchPresupuestoPaginado {
-  paginaActual: number;
-  totalDePagina: number;
-  elementosPorPagina: number;
-  totalDeElementos: number;
-  isSuccessful: boolean;
-  errorMessage: any;
-  data: IDataPresupuestoPginado[];
-}
+const TableComponent = dynamic(() => import("./data-table"), { ssr: false });
+const OptionsTable = dynamic(() => import("./options-table"), { ssr: false });
 
-export interface IDataPresupuestoPginado {
-  pre_Id: string;
-  pre_Codigo: string;
-  usu_NomApellidos: string;
-  pre_Nombre: string;
-  cli_NomApeRazSocial: string;
-  ubi_Departamento: string;
-  ubi_Provincia: string;
-  ubi_Distrito: string;
-  pre_Jornal: string;
-  pre_FecHorRegistro: string;
-}
-
-export const metadata: Metadata = {
-  title: "Presupuestos",
-};
-
-export default async function Page({
-  searchParams,
-}: {
+interface IProjectPage {
   searchParams?: {
     query?: string;
     page?: string;
+    rowsPerPage?: string;
   };
-}) {
-  // const presupuesto_paginado = await obtenerPresupuestosPaginados(
-  //   elementsPerPage,
-  //   currentPage,
-  //   query
-  // );
+}
+
+export default async function ProyectPage({ searchParams }: IProjectPage) {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+  const rowsPerPage = Number(searchParams?.rowsPerPage) || 10;
 
   return (
-    <main className="flex flex-1 flex-col p-4 lg:p-6">
-      {/* <div className="">
-        <h1 className={`text-2xl`}>Presupuestos</h1>
-      </div>
-      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <Search placeholder="Buscar..." />
-        <CreateInvoice />
-      </div>
-      <Suspense key={query + currentPage} fallback={<p>cargando...</p>}>
-        <div className="">
-          <InvoicesTable
-            data={presupuesto_paginado.data}
-            query={query}
-            currentPage={currentPage}
-          />
+    <>
+      <main className="block p-4 lg:p-6">
+        <div className="flex items-center mb-6">
+          <h1 className="text-lg font-semibold md:text-2xl">Presupuestos</h1>
+          <div className="ml-auto flex items-center gap-2">
+            <Suspense
+              key={query + currentPage + rowsPerPage}
+              fallback={<p>cargando...</p>}
+            >
+              <GetDataOptionsTable />
+            </Suspense>
+          </div>
         </div>
-      </Suspense>
-      <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={presupuesto_paginado.totalElementos} />
-      </div> */}
-    </main>
+        <Search className="mb-6" />
+        <Suspense
+          key={query + currentPage + rowsPerPage}
+          fallback={<p>cargando...</p>}
+        >
+          <GetDataTable {...{ query, currentPage, rowsPerPage }} />
+        </Suspense>
+      </main>
+    </>
   );
+}
+
+async function GetDataTable(props: {
+  query: string;
+  currentPage: number;
+  rowsPerPage: number;
+}) {
+  const dataPresupuestos = await obtenerPresupuestosPaginados(
+    props.rowsPerPage,
+    props.currentPage,
+    props.query
+  );
+  return <TableComponent {...{ dataPresupuestos }} />;
+}
+
+async function GetDataOptionsTable() {
+  return <OptionsTable />;
 }

@@ -1,5 +1,5 @@
 import Search from "@/components/search/search";
-import { obtenerPresupuestosPaginados } from "@/lib/data/sql-queries";
+import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 

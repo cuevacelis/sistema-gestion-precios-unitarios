@@ -5,7 +5,9 @@ import {
   IDataDBCliente,
   IDataDBGrupoDePartidas,
   IDataDBLogin,
+  IDataDBObtenerClientesPaginados,
   IDataDBObtenerPresupuestosPaginados,
+  IDataDBObtenerUsuariosPaginados,
   IDataDBSidebar,
   IDataDBUbicacion,
 } from "../types";
@@ -66,6 +68,33 @@ export const getModulosByUserId = cache(
   { tags: ["modulesByUserId"] }
 );
 
+// #region Usuarios
+export const obtenerUsuariosPaginados = cache(
+  async (
+    elementosPorPagina: number,
+    paginaActual: number,
+    busqueda: string
+  ) => {
+    try {
+      const pool = await poolPromise;
+      return pool
+        .request()
+        .input("RegistroPagina", sql.Int, elementosPorPagina)
+        .input("NumeroPagina", sql.Int, paginaActual)
+        .input("PorNombre", sql.NVarChar, busqueda)
+        .output("TotalPagina", sql.Int)
+        .output("TotalRegistro", sql.Int)
+        .output("TienePaginaAnterior", sql.Bit)
+        .output("TienePaginaProximo", sql.Bit)
+        .execute<IDataDBObtenerUsuariosPaginados>("SP_Usuario_Obten_Paginado");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuariosPaginados"],
+  { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
+);
+
 // #region Presupuestos
 export const obtenerPresupuestosPaginados = cache(
   async (
@@ -95,35 +124,7 @@ export const obtenerPresupuestosPaginados = cache(
   { tags: ["presupuestosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Ubicacion
-export const obtenerUbicacion = cache(
-  async () => {
-    try {
-      const pool = await poolPromise;
-      return pool.request().execute<IDataDBUbicacion>("SP_Ubicacion_Obten");
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["ubicacion"],
-  { tags: ["ubicacion"], revalidate: 60 * 60 * 24 * 30 }
-);
-
-// #region Clientes
-export const obtenerClientes = cache(
-  async () => {
-    try {
-      const pool = await poolPromise;
-      return pool.request().execute<IDataDBCliente>("SP_Cliente_Obten_Nombre");
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["clientes"],
-  { tags: ["clientes"] }
-);
-
-// #region Clientes
+// #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
@@ -145,5 +146,54 @@ export const obtenerGruposDePartidasPaginados = cache(
     }
   },
   ["gruposDePartidasPaginados"],
-  { tags: ["gruposDePartidasPaginados"], revalidate: 60 * 60 * 24 * 30 }
+  { tags: ["gruposDePartidasPaginados"] }
+);
+
+// #region Clientes
+export const obtenerClientesPaginados = cache(
+  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
+    try {
+      const pool = await poolPromise;
+      return pool
+        .request()
+        .input("RegistroPagina", sql.Int, elementosPorPagina)
+        .input("NumeroPagina", sql.Int, paginaActual)
+        .input("PorNombre", sql.NVarChar, nombre)
+        .output("TotalPagina", sql.Int)
+        .output("TotalRegistro", sql.Int)
+        .output("TienePaginaAnterior", sql.Bit)
+        .output("TienePaginaProximo", sql.Bit)
+        .execute<IDataDBObtenerClientesPaginados>("SP_Cliente_Obten_Paginado");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientesPaginados"],
+  { tags: ["clientesPaginados"] }
+);
+
+export const obtenerClientes = cache(
+  async () => {
+    try {
+      const pool = await poolPromise;
+      return pool.request().execute<IDataDBCliente>("SP_Cliente_Obten_Nombre");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+export const obtenerUbicacion = cache(
+  async () => {
+    try {
+      const pool = await poolPromise;
+      return pool.request().execute<IDataDBUbicacion>("SP_Ubicacion_Obten");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["ubicacion"],
+  { tags: ["ubicacion"], revalidate: 60 * 60 * 24 * 30 }
 );
