@@ -8,7 +8,7 @@ export async function POST(request: Request) {
       password: password,
     });
 
-    if (Object.keys(res.recordset).length === 0) {
+    if (res.recordset.length === 0) {
       return Response.json({ data: null, status: 400 });
     }
     return Response.json({

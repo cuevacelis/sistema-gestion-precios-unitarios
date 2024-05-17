@@ -53,7 +53,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         try {
           const { user, password } =
             await credentialsSchema.parseAsync(credentials);
-
           const dataLogin = await fetchLogged({
             username: user,
             password: password,

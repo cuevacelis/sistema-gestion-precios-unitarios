@@ -12,6 +12,7 @@ export async function fetchLogged(params: IBodyLogin) {
         username: params.username,
         password: params.password,
       }),
+      cache: "no-store",
     });
     if (!res.ok) {
       throw new FetchError({
