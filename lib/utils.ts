@@ -84,3 +84,20 @@ export function returnEssencialDataQuery<T>(resultQuery: IResult<T>) {
     moreInfo: resultQuery.output,
   };
 }
+
+export const combineFormDatas = (
+  formData1: FormData,
+  formData2: FormData
+): FormData => {
+  const combinedFormData = new FormData();
+
+  for (const [key, value] of formData1.entries()) {
+    combinedFormData.append(key, value);
+  }
+
+  for (const [key, value] of formData2.entries()) {
+    combinedFormData.append(key, value);
+  }
+
+  return combinedFormData;
+};

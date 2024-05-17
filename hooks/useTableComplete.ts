@@ -1,12 +1,12 @@
 import {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-  Table,
-  Updater,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
+    ColumnDef,
+    PaginationState,
+    SortingState,
+    Table,
+    Updater,
+    getCoreRowModel,
+    getSortedRowModel,
+    useReactTable,
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +19,7 @@ interface UseUpdateTableProps<TData extends RowData> {
   data: TData[];
   columns: ColumnDef<TData>[];
   rowCount: number;
-  identifierField: string;
+  identifierField?: string;
 }
 
 function useUpdateTableComplete<TData extends RowData>({
@@ -69,7 +69,7 @@ function useUpdateTableComplete<TData extends RowData>({
     onRowSelectionChange: setRowSelection,
     onPaginationChange: handlePaginationChange,
     getRowId: (row, index) =>
-      row[identifierField]?.toString() || index.toString(),
+      row[identifierField || ""]?.toString() || index.toString(),
     state: {
       sorting,
       rowSelection,

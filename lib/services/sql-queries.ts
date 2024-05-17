@@ -2,14 +2,14 @@ import { poolPromise, sql } from "@/db/db-mssql";
 import "server-only";
 import cache from "../cache";
 import {
-  IDataDBCliente,
-  IDataDBGrupoDePartidas,
-  IDataDBLogin,
-  IDataDBObtenerClientesPaginados,
-  IDataDBObtenerPresupuestosPaginados,
-  IDataDBObtenerUsuariosPaginados,
-  IDataDBSidebar,
-  IDataDBUbicacion,
+    IDataDBCliente,
+    IDataDBGrupoDePartidas,
+    IDataDBLogin,
+    IDataDBObtenerClientesPaginados,
+    IDataDBObtenerPresupuestosPaginados,
+    IDataDBObtenerUsuariosPaginados,
+    IDataDBSidebar,
+    IDataDBUbicacion,
 } from "../types";
 
 // #region login
@@ -65,7 +65,7 @@ export const getModulosByUserId = cache(
     }
   },
   ["modulesByUserId"],
-  { tags: ["modulesByUserId"] }
+  { tags: ["modulesByUserId"], revalidate: 60 * 60 * 24 }
 );
 
 // #region Usuarios
@@ -121,7 +121,38 @@ export const obtenerPresupuestosPaginados = cache(
     }
   },
   ["presupuestosPaginados"],
-  { tags: ["presupuestosPaginados"], revalidate: 60 * 60 * 24 }
+  { tags: ["presupuestosPaginados"] }
+);
+
+export const crearPresupuesto = cache(
+  async (
+    usuNomApellidos: string,
+    preNombre: string,
+    cliNomApeRazSocial: string,
+    ubiDepartamento: string,
+    ubiProvincia: string,
+    ubiDistrito: string,
+    preJornal: number
+  ) => {
+    try {
+      const pool = await poolPromise;
+      return pool
+        .request()
+        .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
+        .input("Pre_Nombre", sql.VarChar, preNombre)
+        .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
+        .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
+        .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
+        .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
+        .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
+        .output("Pre_Id", sql.Int)
+        .execute("SP_Presupuesto_Crea");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["crearPresupuesto"],
+  { tags: ["crearPresupuesto"] }
 );
 
 // #region Partidas

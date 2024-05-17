@@ -45,7 +45,7 @@ export default function SidebarComponent(props: SidebarProps) {
                   )}
                 >
                   <ModuleIconsComponent modNombre={module.Mod_Nombre} />
-                  {module.Mod_Nombre + "s"}
+                  {module.Mod_Nombre}
                 </Link>
               );
             })}

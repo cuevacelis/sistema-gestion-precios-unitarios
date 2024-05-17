@@ -3,8 +3,12 @@ import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const TableComponent = dynamic(() => import("./data-table"), { ssr: false });
-const OptionsTable = dynamic(() => import("./options-table"), { ssr: false });
+const TableComponent = dynamic(() => import("./_components/data-table"), {
+  ssr: false,
+});
+const OptionsTable = dynamic(() => import("./_components/options-table"), {
+  ssr: false,
+});
 
 interface IProjectPage {
   searchParams?: {

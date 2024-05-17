@@ -2,17 +2,17 @@
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuTrigger,
+    ContextMenu,
+    ContextMenuItem,
+    ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Table as TableUI,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+    Table as TableUI,
 } from "@/components/ui/table";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBGrupoDePartidas } from "@/lib/types";
@@ -30,7 +30,7 @@ export default function GrupoPartidas(props: IGrupoPartidas) {
     data: props.dataGrupoDePartidas.recordset,
     rowCount: props.dataGrupoDePartidas.output.TotalRegistro,
     columns: columns,
-    identifierField: "NomGruPar_Nombre",
+    // identifierField: "NomGruPar_Nombre",
   });
 
   return (

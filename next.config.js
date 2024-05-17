@@ -5,15 +5,6 @@ const nextConfig = {
       fullUrl: true,
     },
   },
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/dashboard/presuspuestos",
-  //       destination: "/dashboard/presupuestos",
-  //       permanent: true,
-  //     },
-  //   ];
-  // },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")();
