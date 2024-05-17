@@ -155,6 +155,21 @@ export const crearPresupuesto = cache(
   { tags: ["crearPresupuesto"] }
 );
 
+export const getLastPresupuesto = cache(
+  async () => {
+    try {
+      const pool = await poolPromise;
+      return pool
+        .request()
+        .query("SELECT TOP 1 Pre_Id FROM presupuesto ORDER BY Pre_Id DESC;");
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["lastPresupuesto"],
+  { tags: ["lastPresupuesto"] }
+);
+
 // #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {

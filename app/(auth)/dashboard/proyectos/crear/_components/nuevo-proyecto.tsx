@@ -12,7 +12,7 @@ import {
 import { actionsCrearPresupuesto } from "@/lib/actions";
 import { IDataDBCliente, IDataDBUbicacion } from "@/lib/types";
 import { combineFormDatas } from "@/lib/utils";
-import { IProcedureResult } from "mssql";
+import { IProcedureResult, IResult } from "mssql";
 import { Session } from "next-auth";
 import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
@@ -21,6 +21,7 @@ import SubmitButtonComponent from "./button-submit";
 interface INuevoProyecto {
   dataUbicacion: IProcedureResult<IDataDBUbicacion>;
   dataClientes: IProcedureResult<IDataDBCliente>;
+  lastPresupuesto: IResult<any>;
   session: Session | null;
 }
 
@@ -91,7 +92,9 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       <div className="flex flex-row gap-4 items-center justify-between">
         <div className="flex items-center gap-4">
           <label className="text-sm w-20 truncate">Código</label>
-          <Badge variant="outline">{123}</Badge>
+          <Badge variant="outline">
+            {Number(props.lastPresupuesto?.recordset[0].Pre_Id) + 1}
+          </Badge>
         </div>
         <SubmitButtonComponent />
       </div>
