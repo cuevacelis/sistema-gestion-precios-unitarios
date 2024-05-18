@@ -4,23 +4,24 @@ import { DataTableViewOptions } from "@/components/data-table/view-options";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
-  ContextMenu,
-  ContextMenuItem,
-  ContextMenuTrigger,
+    ContextMenu,
+    ContextMenuItem,
+    ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  Table as TableUI,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+    Table as TableUI,
 } from "@/components/ui/table";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
 import { IProcedureResult } from "mssql";
+import Link from "next/link";
 import { columns } from "./columns-table";
 
 interface IProps {
@@ -96,7 +97,13 @@ export default function TableComponent(props: IProps) {
                           Esta seccción aún esta en desarrollo
                         </ContextMenuItem>
                         <ContextMenuItem>Duplicar</ContextMenuItem>
-                        <ContextMenuItem>Editar</ContextMenuItem>
+                        <ContextMenuItem>
+                          <Link
+                            href={`proyectos/${row.original.Pre_Id}/editar`}
+                          >
+                            Editar
+                          </Link>
+                        </ContextMenuItem>
                         <ContextMenuItem>Eliminar</ContextMenuItem>
                       </ContextMenuPrimitive.Content>
                     </ContextMenuPrimitive.Portal>

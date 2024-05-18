@@ -4,12 +4,12 @@ import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { IDataDBObtenerClientesPaginados } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -100,7 +100,9 @@ export const columns: ColumnDef<IDataDBObtenerClientesPaginados>[] = [
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
+              <Link href={`proyectos/${row.original.Cli_Id}/editar`}>
+                Editar
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

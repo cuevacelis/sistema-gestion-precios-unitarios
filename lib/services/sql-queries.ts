@@ -1,4 +1,5 @@
 import { poolPromise, sql } from "@/db/db-mssql";
+import { unstable_noStore } from "next/cache";
 import "server-only";
 import cache from "../cache";
 import {
@@ -6,6 +7,7 @@ import {
     IDataDBGrupoDePartidas,
     IDataDBLogin,
     IDataDBObtenerClientesPaginados,
+    IDataDBObtenerPresupuestosId,
     IDataDBObtenerPresupuestosPaginados,
     IDataDBObtenerUsuariosPaginados,
     IDataDBSidebar,
@@ -124,51 +126,87 @@ export const obtenerPresupuestosPaginados = cache(
   { tags: ["presupuestosPaginados"] }
 );
 
-export const crearPresupuesto = cache(
-  async (
-    usuNomApellidos: string,
-    preNombre: string,
-    cliNomApeRazSocial: string,
-    ubiDepartamento: string,
-    ubiProvincia: string,
-    ubiDistrito: string,
-    preJornal: number
-  ) => {
-    try {
-      const pool = await poolPromise;
-      return pool
-        .request()
-        .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
-        .input("Pre_Nombre", sql.VarChar, preNombre)
-        .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
-        .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
-        .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
-        .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
-        .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
-        .output("Pre_Id", sql.Int)
-        .execute("SP_Presupuesto_Crea");
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["crearPresupuesto"],
-  { tags: ["crearPresupuesto"] }
-);
+export const obtenerPresupuestosId = async (Pre_Id: number) => {
+  try {
+    unstable_noStore();
+    const pool = await poolPromise;
+    return pool
+      .request()
+      .input("Pre_Id", sql.Int, Pre_Id)
+      .execute<IDataDBObtenerPresupuestosId>("SP_Presupuesto_Obten_x_Id");
+  } catch (error) {
+    throw error;
+  }
+};
 
-export const getLastPresupuesto = cache(
-  async () => {
-    try {
-      const pool = await poolPromise;
-      return pool
-        .request()
-        .query("SELECT TOP 1 Pre_Id FROM presupuesto ORDER BY Pre_Id DESC;");
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["lastPresupuesto"],
-  { tags: ["lastPresupuesto"] }
-);
+export const crearPresupuesto = async (
+  usuNomApellidos: string,
+  preNombre: string,
+  cliNomApeRazSocial: string,
+  ubiDepartamento: string,
+  ubiProvincia: string,
+  ubiDistrito: string,
+  preJornal: number
+) => {
+  try {
+    unstable_noStore();
+    const pool = await poolPromise;
+    return pool
+      .request()
+      .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
+      .input("Pre_Nombre", sql.VarChar, preNombre)
+      .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
+      .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
+      .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
+      .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
+      .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
+      .output("Pre_Id", sql.Int)
+      .execute("SP_Presupuesto_Crea");
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editarPresupuesto = async (
+  Pre_Id: number,
+  usuNomApellidos: string,
+  preNombre: string,
+  cliNomApeRazSocial: string,
+  ubiDepartamento: string,
+  ubiProvincia: string,
+  ubiDistrito: string,
+  preJornal: number
+) => {
+  try {
+    unstable_noStore();
+    const pool = await poolPromise;
+    return pool
+      .request()
+      .input("Pre_Id", sql.Int, Pre_Id)
+      .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
+      .input("Pre_Nombre", sql.VarChar, preNombre)
+      .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
+      .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
+      .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
+      .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
+      .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
+      .execute("SP_Presupuesto_Actualiza");
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getLastPresupuesto = async () => {
+  try {
+    unstable_noStore();
+    const pool = await poolPromise;
+    return pool
+      .request()
+      .query("SELECT TOP 1 Pre_Id FROM presupuesto ORDER BY Pre_Id DESC;");
+  } catch (error) {
+    throw error;
+  }
+};
 
 // #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(

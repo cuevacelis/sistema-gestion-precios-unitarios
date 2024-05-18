@@ -1,13 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import { File, PlusCircle } from "lucide-react";
-import { IProcedureResult } from "mssql";
 import Link from "next/link";
-
-interface IProps {
-  dataPresupuestos: IProcedureResult<IDataDBObtenerPresupuestosPaginados>;
-}
 
 export default function OptionsTable() {
   return (

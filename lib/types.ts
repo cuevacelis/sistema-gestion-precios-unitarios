@@ -52,6 +52,20 @@ export interface IDataDBObtenerPresupuestosPaginados {
   Pre_Estado: number;
 }
 
+export interface IDataDBObtenerPresupuestosId {
+  Pre_Id: number;
+  Pre_Codigo: any;
+  Usu_NomApellidos: string;
+  Pre_Nombre: string;
+  Cli_NomApeRazSocial: string;
+  Ubi_Departamento: string;
+  Ubi_Provincia: string;
+  Ubi_Distrito: string;
+  Pre_Jornal: number;
+  Pre_FecHorRegistro: string;
+  Pre_Estado: number;
+}
+
 // #region Partidas
 export interface IDataDBObtenerPartidasPaginados {}
 

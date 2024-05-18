@@ -1,12 +1,15 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
-import { crearPresupuesto } from "./services/sql-queries";
-import { creatPresupuestoSchema } from "./validations-zod";
+import { crearPresupuesto, editarPresupuesto } from "./services/sql-queries";
+import {
+    creatPresupuestoSchema,
+    editPresupuestoSchema,
+} from "./validations-zod";
 
 export async function actionsSignInCredentials(
   _prevState: any,
@@ -89,6 +92,68 @@ export async function actionsCrearPresupuesto(
       Number(jornal)
     );
 
+    revalidatePath("/dashboard/proyectos");
+    redirect("/dashboard/proyectos");
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        errors: error.errors,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        errors: {},
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      errors: {},
+    };
+  }
+}
+
+export async function actionsEditarPresupuesto(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const {
+      id,
+      nameUser,
+      name,
+      departamento,
+      provincia,
+      distrito,
+      client,
+      jornal,
+    } = await editPresupuestoSchema.parseAsync({
+      id: formData.get("id"),
+      nameUser: formData.get("name-user"),
+      name: formData.get("name"),
+      departamento: formData.get("departamento"),
+      provincia: formData.get("provincia"),
+      distrito: formData.get("distrito"),
+      client: formData.get("client"),
+      jornal: formData.get("jornal"),
+    });
+
+    await editarPresupuesto(
+      Number(id),
+      nameUser,
+      name,
+      client,
+      departamento,
+      provincia,
+      distrito,
+      Number(jornal)
+    );
+    revalidateTag("presupuestosPaginados");
     revalidatePath("/dashboard/proyectos");
     redirect("/dashboard/proyectos");
   } catch (error) {
