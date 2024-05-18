@@ -3,15 +3,15 @@ import { unstable_noStore } from "next/cache";
 import "server-only";
 import cache from "../cache";
 import {
-    IDataDBCliente,
-    IDataDBGrupoDePartidas,
-    IDataDBLogin,
-    IDataDBObtenerClientesPaginados,
-    IDataDBObtenerPresupuestosId,
-    IDataDBObtenerPresupuestosPaginados,
-    IDataDBObtenerUsuariosPaginados,
-    IDataDBSidebar,
-    IDataDBUbicacion,
+  IDataDBCliente,
+  IDataDBGrupoDePartidas,
+  IDataDBLogin,
+  IDataDBObtenerClientesPaginados,
+  IDataDBObtenerPresupuestosId,
+  IDataDBObtenerPresupuestosPaginados,
+  IDataDBObtenerUsuariosPaginados,
+  IDataDBSidebar,
+  IDataDBUbicacion,
 } from "../types";
 
 // #region login
@@ -191,6 +191,23 @@ export const editarPresupuesto = async (
       .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
       .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
       .execute("SP_Presupuesto_Actualiza");
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cambioEstadoPresupuesto = async (
+  Pre_Id: number,
+  Pre_Estado: number
+) => {
+  try {
+    unstable_noStore();
+    const pool = await poolPromise;
+    return pool
+      .request()
+      .input("Pre_Id", sql.Int, Pre_Id)
+      .input("Pre_Estado", sql.Int, Pre_Estado)
+      .execute("SP_Presupuesto_Actualiza_Estado");
   } catch (error) {
     throw error;
   }

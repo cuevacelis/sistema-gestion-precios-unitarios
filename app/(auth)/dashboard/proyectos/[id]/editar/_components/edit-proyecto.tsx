@@ -2,18 +2,18 @@
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { actionsEditarPresupuesto } from "@/lib/actions";
 import {
-    IDataDBCliente,
-    IDataDBObtenerPresupuestosId,
-    IDataDBUbicacion,
+  IDataDBCliente,
+  IDataDBObtenerPresupuestosId,
+  IDataDBUbicacion,
 } from "@/lib/types";
 import { combineFormDatas } from "@/lib/utils";
 import { IProcedureResult } from "mssql";
@@ -42,8 +42,12 @@ export default function EditarProyectoPage(props: IEditarProyecto) {
   const [distritos, setDistritos] = useState<string[]>([]);
 
   const initialState = { message: "", errors: {} };
+  const actionsEditarPresupuestoWithId = actionsEditarPresupuesto.bind(
+    null,
+    props.id
+  );
   const [state, dispatch] = useFormState(
-    actionsEditarPresupuesto,
+    actionsEditarPresupuestoWithId,
     initialState
   );
 
@@ -92,7 +96,6 @@ export default function EditarProyectoPage(props: IEditarProyecto) {
         for (const [key, value] of Object.entries(formDataController)) {
           formData2.append(key, String(value));
         }
-        formData2.append("id", props.id);
         const combinedData = combineFormDatas(formData, formData2);
         dispatch(combinedData);
       }}

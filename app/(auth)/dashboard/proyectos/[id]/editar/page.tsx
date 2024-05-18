@@ -2,9 +2,9 @@ import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-    obtenerClientes,
-    obtenerPresupuestosId,
-    obtenerUbicacion,
+  obtenerClientes,
+  obtenerPresupuestosId,
+  obtenerUbicacion,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
@@ -15,8 +15,8 @@ const EditarProyecto = dynamic(() => import("./_components/edit-proyecto"), {
 });
 
 interface IPropsEditProyecto {
-  params?: {
-    id?: string;
+  params: {
+    id: string;
   };
 }
 
@@ -28,7 +28,7 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
         <Card x-chunk="overflow-auto" className="mb-6">
           <CardContent>
             <Suspense key={props.params?.id} fallback={<p>cargando...</p>}>
-              <GetDataEditarProyecto id={props.params?.id} />
+              <GetDataEditarProyecto id={props.params.id} />
             </Suspense>
             <Separator className="my-10" />
           </CardContent>
@@ -38,13 +38,13 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
   );
 }
 
-async function GetDataEditarProyecto(props: { id?: string }) {
-  if (!props.id) {
+async function GetDataEditarProyecto(props: { id: string }) {
+  const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
+  if (dataEditPresupuesto.recordset.length === 0) {
     return notFound();
   }
   const dataUbicacion = await obtenerUbicacion();
   const dataClientes = await obtenerClientes();
-  const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
   const session = await auth();
   return (
     <EditarProyecto

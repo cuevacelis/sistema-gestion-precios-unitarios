@@ -5,10 +5,15 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
-import { crearPresupuesto, editarPresupuesto } from "./services/sql-queries";
 import {
-    creatPresupuestoSchema,
-    editPresupuestoSchema,
+  cambioEstadoPresupuesto,
+  crearPresupuesto,
+  editarPresupuesto,
+} from "./services/sql-queries";
+import {
+  creatPresupuestoSchema,
+  deletePresupuestoSchema,
+  editPresupuestoSchema,
 } from "./validations-zod";
 
 export async function actionsSignInCredentials(
@@ -119,12 +124,12 @@ export async function actionsCrearPresupuesto(
 }
 
 export async function actionsEditarPresupuesto(
+  id: string,
   _prevState: any,
   formData: FormData
 ) {
   try {
     const {
-      id,
       nameUser,
       name,
       departamento,
@@ -133,7 +138,6 @@ export async function actionsEditarPresupuesto(
       client,
       jornal,
     } = await editPresupuestoSchema.parseAsync({
-      id: formData.get("id"),
       nameUser: formData.get("name-user"),
       name: formData.get("name"),
       departamento: formData.get("departamento"),
@@ -156,6 +160,40 @@ export async function actionsEditarPresupuesto(
     revalidateTag("presupuestosPaginados");
     revalidatePath("/dashboard/proyectos");
     redirect("/dashboard/proyectos");
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        errors: error.errors,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        errors: {},
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      errors: {},
+    };
+  }
+}
+
+export async function actionsDeletePresupuesto(Pre_Id: number) {
+  try {
+    const { id } = await deletePresupuestoSchema.parseAsync({
+      id: Pre_Id,
+    });
+
+    await cambioEstadoPresupuesto(id, 0);
+    revalidateTag("presupuestosPaginados");
+    // revalidatePath("/dashboard/proyectos");
+    // redirect("/dashboard/proyectos");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

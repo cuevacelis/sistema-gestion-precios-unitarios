@@ -1,16 +1,16 @@
 "use client";
-
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { actionsDeletePresupuesto } from "@/lib/actions";
 import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
@@ -110,7 +110,17 @@ export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
                 Editar
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>Eliminar</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={async () => {
+                alert("Eliminado");
+                const actionsDeletePresupuestoWithId =
+                  actionsDeletePresupuesto.bind(null, row.original.Pre_Id);
+                await actionsDeletePresupuestoWithId();
+                window.location.reload();
+              }}
+            >
+              Eliminar
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

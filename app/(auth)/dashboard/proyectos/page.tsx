@@ -11,17 +11,15 @@ const OptionsTable = dynamic(() => import("./_components/options-table"), {
 });
 
 interface IProjectPage {
-  searchParams?: {
-    query?: string;
-    page?: string;
-    rowsPerPage?: string;
+  searchParams: {
+    [key: string]: string | string[] | undefined;
   };
 }
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
-  const rowsPerPage = Number(searchParams?.rowsPerPage) || 10;
+  const query = String(searchParams.query || "");
+  const currentPage = Number(searchParams.page) || 1;
+  const rowsPerPage = Number(searchParams.rowsPerPage) || 10;
 
   return (
     <>
