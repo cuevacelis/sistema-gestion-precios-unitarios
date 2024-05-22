@@ -5,6 +5,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
+import { changeSidebarState } from "./services/kv";
 import {
   cambioEstadoPresupuesto,
   crearPresupuesto,
@@ -194,6 +195,39 @@ export async function actionsDeletePresupuesto(Pre_Id: number) {
     revalidateTag("presupuestosPaginados");
     // revalidatePath("/dashboard/proyectos");
     // redirect("/dashboard/proyectos");
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        errors: error.errors,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        errors: {},
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      errors: {},
+    };
+  }
+}
+
+export async function actionsAddConfigurationNavbar(
+  sidebarState: boolean,
+  userId: number
+) {
+  try {
+    await changeSidebarState({
+      sidebarState: sidebarState,
+      userId: userId,
+    });
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

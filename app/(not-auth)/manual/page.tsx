@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Inicio",
+  title: "Manual",
   description:
     "Programa de precios unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
 };
 
-export default function ManualPage() {
+export default async function ManualPage() {
   return (
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">

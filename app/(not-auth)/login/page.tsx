@@ -11,9 +11,11 @@ export const metadata: Metadata = {
     "Ingrese su usuario a continuación para iniciar sesión en su cuenta.",
 };
 
-const LoginComponent = dynamic(() => import("@/components/form-login/login"));
+const LoginComponent = dynamic(() => import("@/components/form-login/login"), {
+  ssr: true,
+});
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <section className="w-full h-home flex items-center justify-center lg:grid lg:grid-cols-2">
       <section className="h-home items-center w-full justify-center hidden lg:flex">

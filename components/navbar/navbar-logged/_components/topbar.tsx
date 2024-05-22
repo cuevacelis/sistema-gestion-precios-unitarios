@@ -2,43 +2,48 @@
 
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiantes-logged";
 import { actionsSignOut } from "@/lib/actions";
 import { IDataDBSidebar } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
-    CircleUser,
-    ComputerIcon,
-    LifeBuoy,
-    LogOut,
-    Menu,
-    MoonIcon,
-    Settings,
-    SunIcon,
-    User,
+  CheckIcon,
+  CircleUser,
+  ComputerIcon,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  MoonIcon,
+  Settings,
+  SidebarOpen,
+  SunIcon,
+  User,
 } from "lucide-react";
 import { IResult } from "mssql";
 import { Session } from "next-auth";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import ModuleIconsComponent from "./module-icons";
 
 interface IProps {
@@ -47,9 +52,12 @@ interface IProps {
 }
 
 export default function TopBarComponent(props: IProps) {
+  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const { stateSidebar, setStateSidebar } = useGestionEstudiantesLogged();
+
   return (
-    <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 bg-background">
+    <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 bg-background border-l">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -58,29 +66,53 @@ export default function TopBarComponent(props: IProps) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
-          <nav className="grid gap-2 text-lg font-medium">
+          <nav className="grid gap-2 text-lg font-light">
+            <SheetClose asChild>
+              <Link href="/" className="flex items-center gap-2">
+                <span className="mb-2">SGPU</span>
+              </Link>
+            </SheetClose>
             {props.modulesByUser.recordset.map((module) => {
               return (
-                <Link
-                  href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
-                  key={module.Mod_Id}
-                  className="flex items-center gap-2 text-lg font-semibold"
-                >
-                  <ModuleIconsComponent modNombre={module.Mod_Nombre} />
-                  {module.Mod_Nombre}
-                </Link>
+                <SheetClose asChild key={module.Mod_Id}>
+                  <Link
+                    href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
+                    key={module.Mod_Id}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
+                      pathname.startsWith(
+                        `/dashboard/${module.Mod_Nombre.toLowerCase()}s`
+                      ) && "bg-muted text-primary"
+                    )}
+                  >
+                    <ModuleIconsComponent modNombre={module.Mod_Nombre} />
+                    {module.Mod_Nombre}
+                  </Link>
+                </SheetClose>
               );
             })}
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="w-full flex-1"></div>
+      <div className="w-full flex-1">
+        {!stateSidebar && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 hidden md:flex"
+            onClick={() => {
+              setStateSidebar(!stateSidebar);
+            }}
+          >
+            <SidebarOpen className="h-5 w-5" />
+          </Button>
+        )}
+      </div>
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
             <CircleUser className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
@@ -99,7 +131,7 @@ export default function TopBarComponent(props: IProps) {
               <span>Perfil</span>
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link
                 href="/dashboard/configuracion"
                 className="flex items-center w-full"
@@ -112,46 +144,41 @@ export default function TopBarComponent(props: IProps) {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <span>Tema</span>
-              <DropdownMenuShortcut>
-                <Select
-                  defaultValue={theme}
-                  onValueChange={(newValue) => setTheme(newValue)}
-                >
-                  <SelectTrigger className="w-auto">
-                    <SelectValue placeholder="Seleccione" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="system">
-                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
-                          <ComputerIcon className="w-3" />
-                          <span className="text-xs">Sistema</span>
-                        </SelectLabel>
-                      </SelectItem>
-                      <SelectItem value="light">
-                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
-                          <SunIcon className="w-3" />
-                          <span className="text-xs">Claro</span>
-                        </SelectLabel>
-                      </SelectItem>
-                      <SelectItem value="dark">
-                        <SelectLabel className="flex flex-row gap-1 items-center text-left">
-                          <MoonIcon className="w-3" />
-                          <span className="text-xs">Oscuro</span>
-                        </SelectLabel>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </DropdownMenuShortcut>
-            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem
+                    className="flex items-center gap-2"
+                    onClick={() => setTheme("system")}
+                  >
+                    <ComputerIcon className="w-3" />
+                    <span className="text-xs">Sistema</span>
+                    {theme === "system" && <CheckIcon className="w-3" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center gap-2"
+                    onClick={() => setTheme("light")}
+                  >
+                    <SunIcon className="w-3" />
+                    <span className="text-xs">Claro</span>
+                    {theme === "light" && <CheckIcon className="w-3" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center gap-2"
+                    onClick={() => setTheme("dark")}
+                  >
+                    <MoonIcon className="w-3" />
+                    <span className="text-xs">Oscuro</span>
+                    {theme === "dark" && <CheckIcon className="w-3" />}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <a
-              className="flex items-center w-full"
               target="_blank"
               href="https://github.com/cuevacelis/sistema-gestion-precios-unitarios"
             >

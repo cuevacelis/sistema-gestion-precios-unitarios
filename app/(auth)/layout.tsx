@@ -1,10 +1,7 @@
-import NavbarSkeletonComponent from "@/components/navbar/navbar-skeleton/navbar-sleleton";
-import dynamic from "next/dynamic";
+import NavbarLoggedComponent from "@/components/navbar/navbar-logged/navbar-logged";
+import { GestionEstudiantesLoggedProvider } from "@/context/context-gestion-estudiantes-logged";
 import { Suspense } from "react";
-
-const NavbarLoggedComponent = dynamic(
-  () => import("@/components/navbar/navbar-logged/navbar-logged")
-);
+import Loading from "./loading";
 
 export default function DashboardLayout({
   children,
@@ -12,8 +9,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={<NavbarSkeletonComponent />}>
-      <NavbarLoggedComponent>{children}</NavbarLoggedComponent>
-    </Suspense>
+    <GestionEstudiantesLoggedProvider>
+      <Suspense fallback={<Loading />}>
+        <NavbarLoggedComponent>{children}</NavbarLoggedComponent>
+      </Suspense>
+    </GestionEstudiantesLoggedProvider>
   );
 }

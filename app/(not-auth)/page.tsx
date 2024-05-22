@@ -12,9 +12,9 @@ export const metadata: Metadata = {
     "Programa de precios unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
 };
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
-    <main className="flex flex-col items-center justify-between">
+    <section className="flex flex-col items-center justify-between">
       <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center lg:flex-row md:gap-40">
         <div className="flex flex-col">
           <h1 className="text-foreground text-4xl lg:text-5xl text-center sm:text-left">
@@ -72,21 +72,21 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="flex items-center flex-wrap flex-col mb-20">
+      <section className="flex items-center flex-wrap flex-col mb-20 mx-4 md:mx-10 lg:mx-20">
         <p className="text-lg text-orange-300 mb-5">BENEFICIOS</p>
         <p className="text-4xl mb-5">Sácale más provecho a Presupuestos</p>
-        <p className="text-black dark:text-[#EDEDED] text-lg opacity-50 mb-8">
+        <p className="text-black dark:text-[#EDEDED] text-lg opacity-50 mb-8 text-center">
           Este módulo cuenta con una variedad de funciones que te permitirán
           hacer más que sólo presupuestos
         </p>
-        <div className="flex flex-row gap-3 mb-16">
+        <div className="flex flex-col lg:flex-row gap-3 mb-16">
           <Image
-            className="w-60"
+            className="w-full lg:w-1/2"
             src={imgBeneficio1}
             alt="beneficio 2"
             placeholder="blur"
           />
-          <ul className="list-disc list-inside text-black dark:text-[#EDEDED] text-lg opacity-70">
+          <ul className="list-disc list-inside text-black dark:text-[#EDEDED] text-lg opacity-70 p-4 lg:w-1/2">
             <li>
               Definición de títulos, partidas y recursos por tipo y familia
             </li>
@@ -98,8 +98,8 @@ export default function HomePage() {
           </ul>
         </div>
 
-        <div className="flex flex-row gap-3 mb-10">
-          <ul className="list-disc list-inside text-black dark:text-[#EDEDED] text-lg opacity-70">
+        <div className="flex flex-col lg:flex-row gap-3 mb-10">
+          <ul className="list-disc list-inside text-black dark:text-[#EDEDED] text-lg opacity-70 p-4 lg:w-1/2">
             <li>Registro de proyecto y asignación presupuestos a planificar</li>
             <li>Definición de calendario</li>
             <li>Registro de wbs y asignación de partidas</li>
@@ -111,13 +111,13 @@ export default function HomePage() {
             <li>Reportes varios por análisis y según los formatos de país</li>
           </ul>
           <Image
-            className="w-60"
+            className="w-full lg:w-1/2"
             src={imgBeneficio2}
             alt="beneficio 1"
             placeholder="blur"
           />
         </div>
       </section>
-    </main>
+    </section>
   );
 }

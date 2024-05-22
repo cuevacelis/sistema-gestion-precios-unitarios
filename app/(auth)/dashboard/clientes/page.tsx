@@ -21,26 +21,24 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
   return (
     <>
-      <main className="block p-4 lg:p-6">
-        <div className="flex items-center mb-6">
-          <h1 className="text-lg font-semibold md:text-2xl">Clientes</h1>
-          <div className="ml-auto flex items-center gap-2">
-            <Suspense
-              key={query + currentPage + rowsPerPage}
-              fallback={<p>cargando...</p>}
-            >
-              <GetDataOptionsTable />
-            </Suspense>
-          </div>
+      <div className="flex items-center mb-6">
+        <h1 className="text-lg font-semibold md:text-2xl">Clientes</h1>
+        <div className="ml-auto flex items-center gap-2">
+          <Suspense
+            key={query + currentPage + rowsPerPage}
+            fallback={<p>cargando...</p>}
+          >
+            <GetDataOptionsTable />
+          </Suspense>
         </div>
-        <Search className="mb-6" />
-        <Suspense
-          key={query + currentPage + rowsPerPage}
-          fallback={<p>cargando...</p>}
-        >
-          <GetDataTable {...{ query, currentPage, rowsPerPage }} />
-        </Suspense>
-      </main>
+      </div>
+      <Search className="mb-6" />
+      <Suspense
+        key={query + currentPage + rowsPerPage}
+        fallback={<p>cargando...</p>}
+      >
+        <GetDataTable {...{ query, currentPage, rowsPerPage }} />
+      </Suspense>
     </>
   );
 }

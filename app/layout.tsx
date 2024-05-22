@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { GestionEstudiantesProvider } from "@/context/context-gestion-estudiantes";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import type { Metadata } from "next";
@@ -16,7 +17,7 @@ const fontSans = FontSans({
   variable: "--font-sans",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -26,19 +27,21 @@ export default function RootLayout({
       lang="es"
       className="dark"
       style={{ colorScheme: "dark" }}
-      suppressHydrationWarning
+      // suppressHydrationWarning
     >
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <GestionEstudiantesProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            // disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </GestionEstudiantesProvider>
       </body>
     </html>
   );
