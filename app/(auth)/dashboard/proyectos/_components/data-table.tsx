@@ -20,7 +20,7 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import useUpdateTableComplete from "@/hooks/useTableComplete";
+import { useSetGestionProyectos } from "@/context/context-proyectos";
 import { actionsDeletePresupuesto } from "@/lib/actions";
 import {
   IDataDBObtenerPresupuestosPaginados,
@@ -55,7 +55,6 @@ export default function TableComponent(props: IProps) {
               (table.getIsSomePageRowsSelected() && "indeterminate")
             }
             onCheckedChange={(value) => {
-              console.log(value);
               return table.toggleAllPageRowsSelected(!!value);
             }}
             aria-label="Select all"
@@ -116,7 +115,9 @@ export default function TableComponent(props: IProps) {
     ],
     []
   );
-  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
+  const {
+    dataTable: { table, rowSelection, setRowSelection },
+  } = useSetGestionProyectos({
     identifierField: "Pre_Id",
     data: props.dataPresupuestos.recordset,
     columns,
@@ -160,67 +161,65 @@ export default function TableComponent(props: IProps) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <ContextMenu key={row.id}>
-                    <ContextMenuTrigger key={row.id} asChild>
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && "selected"}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </ContextMenuTrigger>
-                    <ContextMenuPrimitive.Portal>
-                      <ContextMenuPrimitive.Content className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
-                        <ContextMenuItem
-                          className="cursor-pointer"
-                          onClick={() =>
-                            navigator.clipboard.writeText(
-                              row.original.Pre_Codigo
-                            )
-                          }
+              {table.getRowModel().rows?.length
+                ? table.getRowModel().rows.map((row) => (
+                    <ContextMenu key={row.id}>
+                      <ContextMenuTrigger key={row.id} asChild>
+                        <TableRow
+                          key={row.id}
+                          data-state={row.getIsSelected() && "selected"}
                         >
-                          Copiar: {row.original.Pre_Codigo}
-                        </ContextMenuItem>
-                        <ContextMenuItem className="cursor-pointer">
-                          Duplicar
-                        </ContextMenuItem>
-                        <ContextMenuItem asChild className="cursor-pointer">
-                          <Link
-                            href={`proyectos/${row.original.Pre_Id}/editar`}
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </ContextMenuTrigger>
+                      <ContextMenuPrimitive.Portal>
+                        <ContextMenuPrimitive.Content className="z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md">
+                          <ContextMenuItem
+                            className="cursor-pointer"
+                            onClick={() =>
+                              navigator.clipboard.writeText(
+                                row.original.Pre_Codigo
+                              )
+                            }
                           >
-                            Editar
-                          </Link>
-                        </ContextMenuItem>
-                        <ContextMenuItem asChild>
-                          <Button
-                            size="default"
-                            variant="destructive"
-                            className="cursor-pointer h-9 gap-1 w-full justify-start"
-                            onClick={() => {
-                              setRowSelected(row.original);
-                              setIsShowDeleteModal(true);
-                            }}
-                          >
-                            <Trash2 className="w-4" />
-                            <span>Eliminar</span>
-                          </Button>
-                        </ContextMenuItem>
-                      </ContextMenuPrimitive.Content>
-                    </ContextMenuPrimitive.Portal>
-                  </ContextMenu>
-                ))
-              ) : (
-                <p>No existen datos disponibles.</p>
-              )}
+                            Copiar: {row.original.Pre_Codigo}
+                          </ContextMenuItem>
+                          <ContextMenuItem className="cursor-pointer">
+                            Duplicar
+                          </ContextMenuItem>
+                          <ContextMenuItem asChild className="cursor-pointer">
+                            <Link
+                              href={`proyectos/${row.original.Pre_Id}/editar`}
+                            >
+                              Editar
+                            </Link>
+                          </ContextMenuItem>
+                          <ContextMenuItem asChild>
+                            <Button
+                              size="default"
+                              variant="destructive"
+                              className="cursor-pointer h-9 gap-1 w-full justify-start"
+                              onClick={() => {
+                                setRowSelected(row.original);
+                                setIsShowDeleteModal(true);
+                              }}
+                            >
+                              <Trash2 className="w-4" />
+                              <span>Eliminar</span>
+                            </Button>
+                          </ContextMenuItem>
+                        </ContextMenuPrimitive.Content>
+                      </ContextMenuPrimitive.Portal>
+                    </ContextMenu>
+                  ))
+                : null}
             </TableBody>
           </TableUI>
         </CardContent>

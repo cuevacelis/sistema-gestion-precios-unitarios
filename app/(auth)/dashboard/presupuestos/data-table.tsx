@@ -16,7 +16,7 @@ import {
   TableRow,
   Table as TableUI,
 } from "@/components/ui/table";
-import useUpdateTableComplete from "@/hooks/useTableComplete";
+import { useSetGestionPresupuestos } from "@/context/context-presupuestos";
 import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
@@ -28,7 +28,7 @@ interface IProps {
 }
 
 export default function TableComponent(props: IProps) {
-  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
+  const { table, rowSelection, setRowSelection } = useSetGestionPresupuestos({
     data: props.dataPresupuestos.recordset,
     columns: columns,
     rowCount: props.dataPresupuestos.output.TotalRegistro,

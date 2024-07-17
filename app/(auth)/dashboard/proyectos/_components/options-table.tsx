@@ -1,9 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useGetGestionProyectos } from "@/context/context-proyectos";
 import { Copy, Download, Edit, PlusCircle, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 export default function OptionsTable() {
+  const {
+    dataTable: { table, rowSelection, setRowSelection },
+  } = useGetGestionProyectos({});
+
   return (
     <>
       <Button asChild size="default" variant="default" className="h-9 gap-1">
@@ -12,15 +17,30 @@ export default function OptionsTable() {
           <span>Nuevo</span>
         </Link>
       </Button>
-      <Button size="default" variant="secondary" className="h-9 gap-1">
+      <Button
+        size="default"
+        variant="secondary"
+        className="h-9 gap-1"
+        disabled={!(table.getFilteredSelectedRowModel().rows.length === 1)}
+      >
         <Edit className="w-4" />
         <span>Editar</span>
       </Button>
-      <Button size="default" variant="destructive" className="h-9 gap-1">
+      <Button
+        size="default"
+        variant="destructive"
+        className="h-9 gap-1"
+        disabled={!(table.getFilteredSelectedRowModel().rows.length >= 1)}
+      >
         <Trash2 className="w-4" />
         <span>Eliminar</span>
       </Button>
-      <Button size="default" variant="secondary" className="h-9 gap-1">
+      <Button
+        size="default"
+        variant="secondary"
+        className="h-9 gap-1"
+        disabled={!(table.getFilteredSelectedRowModel().rows.length === 1)}
+      >
         <Copy className="w-4" />
         <span>Duplicar</span>
       </Button>

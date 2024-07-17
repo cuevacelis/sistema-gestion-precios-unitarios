@@ -25,7 +25,7 @@ interface UseUpdateTableProps<TData extends RowData> {
 function useUpdateTableComplete<TData extends RowData>({
   data,
   columns,
-  rowCount: initialRowCount,
+  rowCount,
   identifierField,
 }: UseUpdateTableProps<TData>): {
   table: Table<TData>;
@@ -37,7 +37,6 @@ function useUpdateTableComplete<TData extends RowData>({
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const rowsPerPage = Number(searchParams.get("rowsPerPage")) || 10;
-  const [rowCount, _setRowCount] = useState(initialRowCount || 0);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
@@ -58,7 +57,7 @@ function useUpdateTableComplete<TData extends RowData>({
     data,
     columns,
     manualPagination: true,
-    rowCount: rowCount,
+    rowCount: rowCount || 0,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,

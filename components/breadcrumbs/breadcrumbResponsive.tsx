@@ -28,6 +28,7 @@ import {
 import { convertirRutaAItems, divideArrayToBreadcrumbItems } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 export default function BreadcrumbResponsive() {
@@ -107,9 +108,9 @@ export default function BreadcrumbResponsive() {
           </>
         )}
         {endItems.map((item, index) => (
-          <>
+          <Fragment key={"endItem" + index}>
             {mainItems.length > 0 && <BreadcrumbSeparator />}
-            <BreadcrumbItem key={index}>
+            <BreadcrumbItem>
               {item.href ? (
                 <BreadcrumbLink
                   asChild
@@ -123,7 +124,7 @@ export default function BreadcrumbResponsive() {
                 </BreadcrumbPage>
               )}
             </BreadcrumbItem>
-          </>
+          </Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
