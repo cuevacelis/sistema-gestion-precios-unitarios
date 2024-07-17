@@ -46,7 +46,7 @@ export default function Search({
           handleSearch(e.target.value);
         }}
         onKeyDown={handleKeyDown}
-        className="w-full rounded-lg bg-background pl-8"
+        className="w-full rounded-lg bg-background pl-8 shadow"
         defaultValue={searchParams.get("query")?.toString()}
       />
     </div>

@@ -1,5 +1,5 @@
 "use client";
-
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,11 +24,10 @@ import {
 import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiantes-logged";
 import { actionsSignOut } from "@/lib/actions";
 import { IDataDBSidebar } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, obtenerSiglas } from "@/lib/utils";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   CheckIcon,
-  CircleUser,
   ComputerIcon,
   LifeBuoy,
   LogOut,
@@ -42,9 +41,15 @@ import {
 import { IResult } from "mssql";
 import { Session } from "next-auth";
 import { useTheme } from "next-themes";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ModuleIconsComponent from "./module-icons";
+
+const BreadcrumbResponsive = dynamic(
+  () => import("@/components/breadcrumbs/breadcrumbResponsive"),
+  { ssr: false }
+);
 
 interface IProps {
   modulesByUser: IResult<IDataDBSidebar>;
@@ -57,7 +62,7 @@ export default function TopBarComponent(props: IProps) {
   const { stateSidebar, setStateSidebar } = useGestionEstudiantesLogged();
 
   return (
-    <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 bg-background border-l">
+    <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 border-l bg-background">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
@@ -94,7 +99,7 @@ export default function TopBarComponent(props: IProps) {
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="w-full flex-1">
+      <div className="flex flex-row flex-1 items-center gap-x-4">
         {!stateSidebar && (
           <Button
             variant="outline"
@@ -107,13 +112,15 @@ export default function TopBarComponent(props: IProps) {
             <SidebarOpen className="h-5 w-5" />
           </Button>
         )}
+        <BreadcrumbResponsive />
       </div>
-
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUser className="h-5 w-5" />
-          </Button>
+        <DropdownMenuTrigger>
+          <Avatar>
+            <AvatarFallback>
+              {obtenerSiglas(String(props.session?.user?.name))}
+            </AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="space-y-1">

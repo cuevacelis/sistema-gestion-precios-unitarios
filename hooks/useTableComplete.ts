@@ -1,12 +1,12 @@
 import {
-    ColumnDef,
-    PaginationState,
-    SortingState,
-    Table,
-    Updater,
-    getCoreRowModel,
-    getSortedRowModel,
-    useReactTable,
+  ColumnDef,
+  PaginationState,
+  SortingState,
+  Table,
+  Updater,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -23,14 +23,12 @@ interface UseUpdateTableProps<TData extends RowData> {
 }
 
 function useUpdateTableComplete<TData extends RowData>({
-  data: initialData,
-  columns: initialColumns,
+  data,
+  columns,
   rowCount: initialRowCount,
   identifierField,
 }: UseUpdateTableProps<TData>): {
   table: Table<TData>;
-  setTableData: (data: TData[]) => void;
-  setTableColumns: (columns: ColumnDef<TData>[]) => void;
   rowSelection: {};
   setRowSelection: React.Dispatch<React.SetStateAction<{}>>;
 } {
@@ -39,9 +37,7 @@ function useUpdateTableComplete<TData extends RowData>({
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const rowsPerPage = Number(searchParams.get("rowsPerPage")) || 10;
-  const [data, setData] = useState<TData[]>(initialData);
-  const [columns, setColumns] = useState<ColumnDef<TData>[]>(initialColumns);
-  const [rowCount, setRowCount] = useState(initialRowCount || 0);
+  const [rowCount, _setRowCount] = useState(initialRowCount || 0);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
@@ -80,21 +76,10 @@ function useUpdateTableComplete<TData extends RowData>({
     },
   });
 
-  const setTableData = (newData: TData[]) => {
-    setData(newData);
-    setRowCount(newData.length);
-  };
-
-  const setTableColumns = (newColumns: ColumnDef<TData>[]) => {
-    setColumns(newColumns);
-  };
-
   return {
     table,
     rowSelection,
     setRowSelection,
-    setTableData,
-    setTableColumns,
   };
 }
 

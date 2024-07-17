@@ -1,5 +1,11 @@
 export type TMultipleSelect = Array<{ key: string; name: string }>;
 
+export interface ISearchParams {
+  [key: string]: string | string[] | undefined;
+}
+
+export type TStatusResponseActions = "idle" | "pending" | "success" | "error";
+
 // #region LOGIN
 export interface IBodyLogin {
   username: string;

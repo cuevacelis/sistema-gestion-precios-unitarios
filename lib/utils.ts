@@ -101,3 +101,62 @@ export const combineFormDatas = (
 
   return combinedFormData;
 };
+
+export function obtenerSiglas(nombreCompleto: string): string {
+  const palabras = nombreCompleto
+    .split(" ")
+    .filter((palabra) => palabra.length > 0);
+
+  let iniciales: string[] = [];
+
+  if (palabras.length === 1) {
+    iniciales = [
+      palabras[0][0].toUpperCase(),
+      palabras[0][1] ? palabras[0][1].toUpperCase() : "",
+    ];
+  } else {
+    iniciales = palabras.slice(0, 2).map((palabra) => palabra[0].toUpperCase());
+  }
+
+  return iniciales.join("");
+}
+
+export function convertirRutaAItems(
+  ruta: string
+): { href: string; label: string }[] {
+  const segmentos = ruta.split("/").filter((segmento) => segmento.length > 0);
+  const items: { href: string; label: string }[] = [];
+
+  let rutaAcumulada = "";
+
+  for (const segmento of segmentos) {
+    rutaAcumulada += `/${segmento}`;
+    items.push({
+      href: rutaAcumulada,
+      label: segmento.charAt(0).toUpperCase() + segmento.slice(1),
+    });
+  }
+
+  return items;
+}
+
+export function divideArrayToBreadcrumbItems<T>(
+  arr: T[],
+  maxItemsView: number
+): T[][] {
+  if (maxItemsView <= 0) {
+    return [[], arr, []];
+  }
+  const difference = arr.length - maxItemsView;
+  const positionStartMiddleGroup = 1;
+  const positionStartLastGroup =
+    difference > 0 ? difference + positionStartMiddleGroup : 1;
+
+  const firstGroup = arr.slice(0, 1);
+  const middleGroup = arr.slice(
+    positionStartMiddleGroup,
+    positionStartLastGroup
+  );
+  const lastGroup = arr.slice(positionStartLastGroup, arr.length);
+  return [firstGroup, middleGroup, lastGroup];
+}

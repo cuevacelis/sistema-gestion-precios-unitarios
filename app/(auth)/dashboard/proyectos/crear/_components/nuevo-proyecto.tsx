@@ -1,13 +1,14 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { actionsCrearPresupuesto } from "@/lib/actions";
 import { IDataDBCliente, IDataDBUbicacion } from "@/lib/types";
@@ -87,19 +88,17 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         const combinedData = combineFormDatas(formData, formData2);
         dispatch(combinedData);
       }}
-      className="grid grid-cols-1 mt-4 gap-y-6 gap-x-6"
+      className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="flex flex-row gap-4 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <label className="text-sm w-20 truncate">Código</label>
-          <Badge variant="outline">
-            {Number(props.lastPresupuesto?.recordset[0].Pre_Id) + 1}
-          </Badge>
-        </div>
+      <div className="col-span-full">
+        <Label htmlFor="code">Código</Label>
+        <Badge variant={"secondary"}>
+          {Number(props.lastPresupuesto?.recordset[0].Pre_Id) + 1}
+        </Badge>
         <SubmitButtonComponent />
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Nombre usuario</label>
+      <div className="sm:col-span-3">
+        <Label className="text-sm w-20 truncate">Nombre usuario</Label>
         <Input
           type="text"
           name="name-user"
@@ -107,11 +106,11 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           value={String(props.session?.user?.name)}
         />
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Nombre</label>
         <Input type="text" name="name" />
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Departamento</label>
         <Select
           onValueChange={(value) => handleSelectChange("departamento", value)}
@@ -130,7 +129,7 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Provincia</label>
         <Select
           onValueChange={(value) => handleSelectChange("provincia", value)}
@@ -149,7 +148,7 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Distrito</label>
         <Select
           onValueChange={(value) => handleSelectChange("distrito", value)}
@@ -168,7 +167,7 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Cliente</label>
         <Select onValueChange={(value) => handleSelectChange("client", value)}>
           <SelectTrigger>
@@ -188,13 +187,13 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
+      <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Jornal</label>
         <Input type="number" name="jornal" />
       </div>
       <div aria-live="polite" aria-atomic="true">
         {state.message ? (
-          <p className="mt-2 text-sm text-red-500">{state.message}</p>
+          <p className="mt-2 text-sm text-destructive">{state.message}</p>
         ) : null}
       </div>
     </form>

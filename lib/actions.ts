@@ -187,14 +187,14 @@ export async function actionsEditarPresupuesto(
 
 export async function actionsDeletePresupuesto(Pre_Id: number) {
   try {
+    revalidateTag("presupuestosPaginados");
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
     });
-
     await cambioEstadoPresupuesto(id, 0);
-    revalidateTag("presupuestosPaginados");
-    // revalidatePath("/dashboard/proyectos");
-    // redirect("/dashboard/proyectos");
+    revalidatePath("/dashboard/proyectos");
+    redirect("/dashboard/proyectos");
+    // revalidateTag("presupuestosPaginados");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

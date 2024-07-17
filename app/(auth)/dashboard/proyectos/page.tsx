@@ -1,24 +1,28 @@
+import { Skeleton } from "@/components/ui/skeleton";
 import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
+import { ISearchParams } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+const TableComponent = dynamic(() => import("./_components/data-table"), {
+  ssr: false,
+  loading: () => (
+    <section className="min-h-[600px] flex justify-center items-center">
+      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8" />
+    </section>
+  ),
+});
 const Search = dynamic(() => import("@/components/search/search"), {
   ssr: true,
   loading: () => <p>Loading search...</p>,
 });
-const TableComponent = dynamic(() => import("./_components/data-table"), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-});
 const OptionsTable = dynamic(() => import("./_components/options-table"), {
   ssr: false,
-  loading: () => <p>Loading...</p>,
+  loading: () => <Skeleton className="h-4 min-w-20" />,
 });
 
 interface IProjectPage {
-  searchParams: {
-    [key: string]: string | string[] | undefined;
-  };
+  searchParams: ISearchParams;
 }
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
@@ -28,24 +32,32 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
   return (
     <>
-      <div className="flex items-center mb-6">
-        <h1 className="text-lg font-semibold md:text-2xl">Proyectos</h1>
-        <div className="ml-auto flex items-center gap-2">
-          <Suspense
-            key={query + currentPage + rowsPerPage}
-            fallback={<p>cargando...</p>}
-          >
-            <GetDataOptionsTable />
-          </Suspense>
-        </div>
-      </div>
-      <Search className="mb-6" />
-      <Suspense
-        key={query + currentPage + rowsPerPage}
-        fallback={<p>cargando...</p>}
-      >
-        <GetDataTable {...{ query, currentPage, rowsPerPage }} />
-      </Suspense>
+      <section className="flex items-center mb-6">
+        <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
+          Proyectos
+        </h1>
+      </section>
+      <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow">
+        <Suspense
+          key={query + currentPage + rowsPerPage}
+          fallback={<Skeleton className="h-4 min-w-20" />}
+        >
+          <OptionsTable />
+        </Suspense>
+      </section>
+      <Search className="my-6" />
+      <section className="bg-card p-4 rounded-sm border shadow">
+        <Suspense
+          key={query + currentPage + rowsPerPage}
+          fallback={
+            <section className="min-h-[600px] flex justify-center items-center">
+              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8" />
+            </section>
+          }
+        >
+          <GetDataTable {...{ query, currentPage, rowsPerPage }} />
+        </Suspense>
+      </section>
     </>
   );
 }
@@ -61,8 +73,4 @@ async function GetDataTable(props: {
     props.query
   );
   return <TableComponent {...{ dataPresupuestos }} />;
-}
-
-async function GetDataOptionsTable() {
-  return <OptionsTable />;
 }
