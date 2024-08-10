@@ -1,4 +1,6 @@
+import * as Ably from "ably";
 import clsx, { ClassValue } from "clsx";
+import { DateTime } from "luxon";
 import { IResult } from "mssql";
 import { twMerge } from "tailwind-merge";
 
@@ -159,4 +161,44 @@ export function divideArrayToBreadcrumbItems<T>(
   );
   const lastGroup = arr.slice(positionStartLastGroup, arr.length);
   return [firstGroup, middleGroup, lastGroup];
+}
+
+export function getChannel() {
+  let ably = new Ably.Rest(String(process.env.NEXT_PUBLIC_ABLY_API_KEY));
+  return ably.channels.get(String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME));
+}
+
+export function obtenerHoraRelativa(
+  fechaUTC: Date,
+  timeZone: string = DateTime.local().zoneName
+): string {
+  const ahora = DateTime.now().setZone(timeZone);
+  const fechaObjetivo = DateTime.fromJSDate(fechaUTC, { zone: "utc" }).setZone(
+    timeZone
+  );
+
+  const diferenciaEnDias = ahora.diff(fechaObjetivo, "days").days;
+  const diferenciaEnHoras = ahora.diff(fechaObjetivo, "hours").hours;
+  const diferenciaEnMinutos = ahora.diff(fechaObjetivo, "minutes").minutes;
+
+  if (diferenciaEnDias >= 7) {
+    const semanas = Math.floor(diferenciaEnDias / 7);
+    return `hace ${semanas} semana${semanas > 1 ? "s" : ""}`;
+  } else if (diferenciaEnDias >= 1) {
+    return `hace ${Math.floor(diferenciaEnDias)} día${Math.floor(diferenciaEnDias) > 1 ? "s" : ""}`;
+  } else if (diferenciaEnHoras >= 1) {
+    return `hace ${Math.floor(diferenciaEnHoras)} hora${Math.floor(diferenciaEnHoras) > 1 ? "s" : ""}`;
+  } else {
+    return `hace ${Math.floor(diferenciaEnMinutos)} minuto${Math.floor(diferenciaEnMinutos) > 1 ? "s" : ""}`;
+  }
+}
+
+export function formatDateTimeForFilename(
+  dateTime?: DateTime,
+  timeZone: string = DateTime.local().zoneName
+): string {
+  const utcDate = dateTime ? dateTime : DateTime.utc();
+
+  const zonedDate = utcDate.setZone(timeZone);
+  return zonedDate.toFormat("yyyyMMddHHmmss");
 }

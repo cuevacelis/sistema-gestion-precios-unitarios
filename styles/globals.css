@@ -72,3 +72,10 @@
   border-top-color: #3490dc; /* Blue */
   animation: spinner 1s infinite;
 }
+
+.truncate-multiline {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Número de líneas visibles */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

@@ -20,7 +20,7 @@ export default async function NavbarLoggedComponent(props: IProps) {
   const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
 
   return (
-    <div className="flex max-h-screen overflow-hidden">
+    <div className="flex max-h-screen h-screen overflow-hidden">
       <SidebarComponent {...{ session, modulesByUser }} />
       <div className="flex-1 overflow-auto items-start gap-4 p-sm:px-6 sm:py-0 md:gap-8 bg-muted dark:bg-muted/50">
         <TopBarComponent {...{ session, modulesByUser }} />

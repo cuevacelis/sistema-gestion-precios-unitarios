@@ -1,8 +1,15 @@
-import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
@@ -32,26 +39,46 @@ const buttonVariants = cva(
       size: "default",
     },
   }
-)
+);
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
+  tooltip?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
-    return (
+  ({ className, variant, size, asChild = false, tooltip, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    const button = (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       />
-    )
-  }
-)
-Button.displayName = "Button"
+    );
 
-export { Button, buttonVariants }
+    if (props.disabled && tooltip) {
+      return (
+        <TooltipProvider>
+          <Tooltip delayDuration={150}>
+            <TooltipTrigger className="cursor-default">{button}</TooltipTrigger>
+            <TooltipContent
+              side="top"
+              className="bg-primary-foreground text-primary"
+            >
+              <TooltipArrow className={cn("fill-primary-foreground", "")} />
+              {tooltip}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      );
+    }
+
+    return button;
+  }
+);
+Button.displayName = "Button";
+
+export { Button, buttonVariants };

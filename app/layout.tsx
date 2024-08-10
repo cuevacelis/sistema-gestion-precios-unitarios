@@ -1,4 +1,6 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { AblyPimary } from "@/context/ably";
+import { AblySuscriptionProvider } from "@/context/context-ably-suscription";
 import { GestionEstudiantesProvider } from "@/context/context-gestion-estudiantes";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
@@ -23,25 +25,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="es"
-      className="dark"
-      style={{ colorScheme: "dark" }}
-      // suppressHydrationWarning
-    >
+    <html lang="es" className="dark" style={{ colorScheme: "dark" }}>
       <body
         className={cn("bg-background font-sans antialiased", fontSans.variable)}
       >
-        <GestionEstudiantesProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            // disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </GestionEstudiantesProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <AblyPimary>
+            <AblySuscriptionProvider>
+              <GestionEstudiantesProvider>
+                {children}
+              </GestionEstudiantesProvider>
+            </AblySuscriptionProvider>
+          </AblyPimary>
+        </ThemeProvider>
       </body>
     </html>
   );
