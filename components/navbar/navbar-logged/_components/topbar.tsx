@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/sheet";
 import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiantes-logged";
 import { actionsSignOut } from "@/lib/actions";
-import { IDataDBSidebar } from "@/lib/types";
+import { ISpModuloObtenerModulosXPusuario } from "@/lib/types";
 import { cn, obtenerHoraRelativa, obtenerSiglas } from "@/lib/utils";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
@@ -54,7 +54,7 @@ const BreadcrumbResponsive = dynamic(
 );
 
 interface IProps {
-  modulesByUser: IResult<IDataDBSidebar>;
+  modulesByUser: ISpModuloObtenerModulosXPusuario[];
   session: Session | null;
 }
 
@@ -79,21 +79,21 @@ export default function TopBarComponent(props: IProps) {
                 <span className="mb-2">SGPU</span>
               </Link>
             </SheetClose>
-            {props.modulesByUser.recordset.map((module) => {
+            {props.modulesByUser.map((module) => {
               return (
-                <SheetClose asChild key={module.Mod_Id}>
+                <SheetClose asChild key={module.mod_nombre}>
                   <Link
-                    href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
-                    key={module.Mod_Id}
+                    href={`/dashboard/${module.mod_nombre.toLowerCase()}s`}
+                    key={module.mod_nombre}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
                       pathname.startsWith(
-                        `/dashboard/${module.Mod_Nombre.toLowerCase()}s`
+                        `/dashboard/${module.mod_nombre.toLowerCase()}s`
                       ) && "bg-muted text-primary"
                     )}
                   >
-                    <ModuleIconsComponent modNombre={module.Mod_Nombre} />
-                    {module.Mod_Nombre}
+                    <ModuleIconsComponent modNombre={module.mod_nombre} />
+                    {module.mod_nombre}
                   </Link>
                 </SheetClose>
               );

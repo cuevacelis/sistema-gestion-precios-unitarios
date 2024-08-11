@@ -25,11 +25,22 @@ export interface IDataDBLogin {
   Usu_FecHoraTokenActualizado: string;
 }
 
+export interface ISpUsuarioObtenLoginV2 {
+  usu_id: number;
+  usu_correo: string;
+  usu_clave: string;
+  usu_nomapellidos: string;
+  rol_id: number;
+  usu_fechoraregistro: string;
+  usu_observacion: any;
+  usu_estado: number;
+  usu_tokenactualizado: any;
+  usu_fechoratokenactualizado: any;
+}
+
 // #region SIDEBAR
-export interface IDataDBSidebar {
-  Mod_Id: number;
-  Mod_Nombre: string;
-  Mod_Estado: number;
+export interface ISpModuloObtenerModulosXPusuario {
+  mod_nombre: string;
 }
 
 // #region Usuarios

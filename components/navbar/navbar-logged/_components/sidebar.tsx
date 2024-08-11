@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiantes-logged";
-import { IDataDBSidebar } from "@/lib/types";
+import { ISpModuloObtenerModulosXPusuario } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { SidebarClose } from "lucide-react";
 import { IResult } from "mssql";
@@ -12,7 +12,7 @@ import ModuleIconsComponent from "./module-icons";
 
 interface SidebarProps {
   session: Session | null;
-  modulesByUser: IResult<IDataDBSidebar>;
+  modulesByUser: ISpModuloObtenerModulosXPusuario[];
 }
 
 export default function SidebarComponent(props: SidebarProps) {
@@ -46,20 +46,20 @@ export default function SidebarComponent(props: SidebarProps) {
       </div>
       <div className="flex-1">
         <nav className="grid items-start text-sm font-normal">
-          {props.modulesByUser.recordset.map((module) => {
+          {props.modulesByUser.map((module) => {
             return (
               <Link
-                key={module.Mod_Id}
-                href={`/dashboard/${module.Mod_Nombre.toLowerCase()}s`}
+                key={module.mod_nombre}
+                href={`/dashboard/${module.mod_nombre.toLowerCase()}s`}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
                   pathname.startsWith(
-                    `/dashboard/${module.Mod_Nombre.toLowerCase()}s`
+                    `/dashboard/${module.mod_nombre.toLowerCase()}s`
                   ) && "bg-muted text-primary"
                 )}
               >
-                <ModuleIconsComponent modNombre={module.Mod_Nombre} />
-                {module.Mod_Nombre}
+                <ModuleIconsComponent modNombre={module.mod_nombre} />
+                {module.mod_nombre}
               </Link>
             );
           })}

@@ -8,16 +8,16 @@ export async function POST(request: Request) {
       password: password,
     });
 
-    if (res.recordset.length === 0) {
+    if (res.length === 0) {
       return Response.json({ data: null, status: 400 });
     }
     return Response.json({
       data: {
-        Usu_Id: res.recordset[0].Usu_Id,
-        Usu_Correo: res.recordset[0].Usu_Correo,
-        Usu_NomApellidos: res.recordset[0].Usu_NomApellidos,
-        Rol_Id: res.recordset[0].Rol_Id,
-        Usu_FecHoraRegistro: res.recordset[0].Usu_FecHoraRegistro,
+        Usu_Id: res[0]?.usu_id,
+        Usu_Correo: res[0]?.usu_correo,
+        Usu_NomApellidos: res[0]?.usu_nomapellidos,
+        Rol_Id: res[0]?.rol_id,
+        Usu_FecHoraRegistro: res[0]?.usu_fechoraregistro,
       },
       status: 200,
     });
