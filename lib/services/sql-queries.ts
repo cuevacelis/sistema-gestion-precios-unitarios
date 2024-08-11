@@ -11,12 +11,13 @@ import {
   IDataDBObtenerPresupuestosId,
   IDataDBObtenerPresupuestosPaginados,
   IDataDBObtenerUsuariosPaginados,
-  IDataDBSidebar,
+  // IDataDBSidebar,
   IDataDBUbicacion,
   ISpModuloObtenerModulosXPusuario,
   ISpUsuarioObtenLoginV2,
 } from "../types";
 import { getDbPostgres } from "@/db/db-postgres";
+import { poolPromise, sql as sqlMssql } from "@/db/db-mssql";
 
 // #region login
 interface UserCredentials {
@@ -76,13 +77,13 @@ export const obtenerUsuariosPaginados = cache(
       const pool = await poolPromise;
       return pool
         .request()
-        .input("RegistroPagina", sql.Int, elementosPorPagina)
-        .input("NumeroPagina", sql.Int, paginaActual)
-        .input("PorNombre", sql.NVarChar, busqueda)
-        .output("TotalPagina", sql.Int)
-        .output("TotalRegistro", sql.Int)
-        .output("TienePaginaAnterior", sql.Bit)
-        .output("TienePaginaProximo", sql.Bit)
+        .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
+        .input("NumeroPagina", sqlMssql.Int, paginaActual)
+        .input("PorNombre", sqlMssql.VarChar, busqueda)
+        .output("TotalPagina", sqlMssql.Int)
+        .output("TotalRegistro", sqlMssql.Int)
+        .output("TienePaginaAnterior", sqlMssql.Bit)
+        .output("TienePaginaProximo", sqlMssql.Bit)
         .execute<IDataDBObtenerUsuariosPaginados>("SP_Usuario_Obten_Paginado");
     } catch (error) {
       throw error;
@@ -103,13 +104,13 @@ export const obtenerPresupuestosPaginados = cache(
       const pool = await poolPromise;
       return pool
         .request()
-        .input("RegistroPagina", sql.Int, elementosPorPagina)
-        .input("NumeroPagina", sql.Int, paginaActual)
-        .input("PorNombre", sql.NVarChar, busqueda)
-        .output("TotalPagina", sql.Int)
-        .output("TotalRegistro", sql.Int)
-        .output("TienePaginaAnterior", sql.Bit)
-        .output("TienePaginaProximo", sql.Bit)
+        .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
+        .input("NumeroPagina", sqlMssql.Int, paginaActual)
+        .input("PorNombre", sqlMssql.VarChar, busqueda)
+        .output("TotalPagina", sqlMssql.Int)
+        .output("TotalRegistro", sqlMssql.Int)
+        .output("TienePaginaAnterior", sqlMssql.Bit)
+        .output("TienePaginaProximo", sqlMssql.Bit)
         .execute<IDataDBObtenerPresupuestosPaginados>(
           "SP_Presupuesto_Obten_Paginado"
         );
@@ -127,7 +128,7 @@ export const obtenerPresupuestosId = async (Pre_Id: number) => {
     const pool = await poolPromise;
     return pool
       .request()
-      .input("Pre_Id", sql.Int, Pre_Id)
+      .input("Pre_Id", sqlMssql.Int, Pre_Id)
       .execute<IDataDBObtenerPresupuestosId>("SP_Presupuesto_Obten_x_Id");
   } catch (error) {
     throw error;
@@ -148,14 +149,14 @@ export const crearPresupuesto = async (
     const pool = await poolPromise;
     return pool
       .request()
-      .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
-      .input("Pre_Nombre", sql.VarChar, preNombre)
-      .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
-      .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
-      .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
-      .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
-      .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
-      .output("Pre_Id", sql.Int)
+      .input("Usu_NomApellidos", sqlMssql.VarChar, usuNomApellidos)
+      .input("Pre_Nombre", sqlMssql.VarChar, preNombre)
+      .input("Cli_NomApeRazSocial", sqlMssql.VarChar, cliNomApeRazSocial)
+      .input("Ubi_Departamento", sqlMssql.VarChar, ubiDepartamento)
+      .input("Ubi_Provincia", sqlMssql.VarChar, ubiProvincia)
+      .input("Ubi_Distrito", sqlMssql.VarChar, ubiDistrito)
+      .input("Pre_Jornal", sqlMssql.Decimal(18, 2), preJornal)
+      .output("Pre_Id", sqlMssql.Int)
       .execute("SP_Presupuesto_Crea");
   } catch (error) {
     throw error;
@@ -177,14 +178,14 @@ export const editarPresupuesto = async (
     const pool = await poolPromise;
     return pool
       .request()
-      .input("Pre_Id", sql.Int, Pre_Id)
-      .input("Usu_NomApellidos", sql.VarChar, usuNomApellidos)
-      .input("Pre_Nombre", sql.VarChar, preNombre)
-      .input("Cli_NomApeRazSocial", sql.VarChar, cliNomApeRazSocial)
-      .input("Ubi_Departamento", sql.VarChar, ubiDepartamento)
-      .input("Ubi_Provincia", sql.VarChar, ubiProvincia)
-      .input("Ubi_Distrito", sql.VarChar, ubiDistrito)
-      .input("Pre_Jornal", sql.Decimal(18, 2), preJornal)
+      .input("Pre_Id", sqlMssql.Int, Pre_Id)
+      .input("Usu_NomApellidos", sqlMssql.VarChar, usuNomApellidos)
+      .input("Pre_Nombre", sqlMssql.VarChar, preNombre)
+      .input("Cli_NomApeRazSocial", sqlMssql.VarChar, cliNomApeRazSocial)
+      .input("Ubi_Departamento", sqlMssql.VarChar, ubiDepartamento)
+      .input("Ubi_Provincia", sqlMssql.VarChar, ubiProvincia)
+      .input("Ubi_Distrito", sqlMssql.VarChar, ubiDistrito)
+      .input("Pre_Jornal", sqlMssql.Decimal(18, 2), preJornal)
       .execute("SP_Presupuesto_Actualiza");
   } catch (error) {
     throw error;
@@ -200,8 +201,8 @@ export const cambioEstadoPresupuesto = async (
     const pool = await poolPromise;
     return pool
       .request()
-      .input("Pre_Id", sql.Int, Pre_Id)
-      .input("Pre_Estado", sql.Int, Pre_Estado)
+      .input("Pre_Id", sqlMssql.Int, Pre_Id)
+      .input("Pre_Estado", sqlMssql.Int, Pre_Estado)
       .execute("SP_Presupuesto_Actualiza_Estado");
   } catch (error) {
     throw error;
@@ -227,13 +228,13 @@ export const obtenerGruposDePartidasPaginados = cache(
       const pool = await poolPromise;
       return pool
         .request()
-        .input("RegistroPagina", sql.Int, elementosPorPagina)
-        .input("NumeroPagina", sql.Int, paginaActual)
-        .input("PorNombre", sql.NVarChar, nombre)
-        .output("TotalPagina", sql.Int)
-        .output("TotalRegistro", sql.Int)
-        .output("TienePaginaAnterior", sql.Bit)
-        .output("TienePaginaProximo", sql.Bit)
+        .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
+        .input("NumeroPagina", sqlMssql.Int, paginaActual)
+        .input("PorNombre", sqlMssql.NVarChar, nombre)
+        .output("TotalPagina", sqlMssql.Int)
+        .output("TotalRegistro", sqlMssql.Int)
+        .output("TienePaginaAnterior", sqlMssql.Bit)
+        .output("TienePaginaProximo", sqlMssql.Bit)
         .execute<IDataDBGrupoDePartidas>(
           "SP_Grupo_Partida_Obten_Paginado_x_Presupuesto"
         );

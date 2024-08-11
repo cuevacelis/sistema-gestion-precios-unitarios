@@ -10,7 +10,6 @@ import {
   IDataDBObtenerPresupuestosId,
   IDataDBObtenerPresupuestosPaginados,
   IDataDBObtenerUsuariosPaginados,
-  IDataDBSidebar,
   IDataDBUbicacion,
 } from "../types";
 
@@ -42,33 +41,33 @@ export const findUserByUsernameAndPassword = cache(
 );
 
 // #region SIDEBAR
-export const getModulosByUserId = cache(
-  async (userId: number) => {
-    try {
-      const pool = await poolPromise;
-      return pool
-        .request()
-        .input("input_parameter1", sql.Int, userId)
-        .query<IDataDBSidebar>(
-          `SELECT
-          m.* 
-          FROM
-            usuario u
-            JOIN rol r ON u.Rol_Id = r.Rol_Id
-            JOIN detalle_rol_modulo drm ON r.Rol_Id = drm.Rol_Id
-            JOIN modulo m ON drm.Mod_Id = m.Mod_Id 
-          WHERE
-            u.Usu_Id = @input_parameter1
-            AND drm.DetRolMod_Estado = 1 
-            AND m.Mod_Estado = 1`
-        );
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["modulesByUserId"],
-  { tags: ["modulesByUserId"], revalidate: 60 * 60 * 24 }
-);
+// export const getModulosByUserId = cache(
+//   async (userId: number) => {
+//     try {
+//       const pool = await poolPromise;
+//       return pool
+//         .request()
+//         .input("input_parameter1", sql.Int, userId)
+//         .query<IDataDBSidebar>(
+//           `SELECT
+//           m.* 
+//           FROM
+//             usuario u
+//             JOIN rol r ON u.Rol_Id = r.Rol_Id
+//             JOIN detalle_rol_modulo drm ON r.Rol_Id = drm.Rol_Id
+//             JOIN modulo m ON drm.Mod_Id = m.Mod_Id 
+//           WHERE
+//             u.Usu_Id = @input_parameter1
+//             AND drm.DetRolMod_Estado = 1 
+//             AND m.Mod_Estado = 1`
+//         );
+//     } catch (error) {
+//       throw error;
+//     }
+//   },
+//   ["modulesByUserId"],
+//   { tags: ["modulesByUserId"], revalidate: 60 * 60 * 24 }
+// );
 
 // #region Usuarios
 export const obtenerUsuariosPaginados = cache(
