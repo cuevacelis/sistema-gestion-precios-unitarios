@@ -219,7 +219,7 @@ export const getLastPresupuesto = async () => {
   try {
     unstable_noStore();
     return [];
-    const pool = await poolPromise;
+    // const pool = await poolPromise;
     // return pool
     //   .request()
     //   .query("SELECT TOP 1 Pre_Id FROM presupuesto ORDER BY Pre_Id DESC;");
