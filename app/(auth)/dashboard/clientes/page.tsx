@@ -54,7 +54,7 @@ async function GetDataTable(props: {
     props.query
   );
   // return <TableComponent {...{ dataPresupuestos }} />;
-  return null
+  return null;
 }
 
 async function GetDataOptionsTable() {

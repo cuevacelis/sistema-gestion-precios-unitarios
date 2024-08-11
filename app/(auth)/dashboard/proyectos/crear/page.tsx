@@ -71,11 +71,12 @@ async function GetDataNuevoProyecto() {
   const dataClientes = await obtenerClientes();
   const lastPresupuesto = await getLastPresupuesto();
   const session = await auth();
-  return (
-    <NuevoProyecto
-      {...{ dataUbicacion, dataClientes, lastPresupuesto, session }}
-    />
-  );
+  // return (
+  //   <NuevoProyecto
+  //     {...{ dataUbicacion, dataClientes, lastPresupuesto, session }}
+  //   />
+  // );
+  return null;
 }
 
 async function GetDataGrupoPartidas(props: {
@@ -88,5 +89,6 @@ async function GetDataGrupoPartidas(props: {
     props.currentPage,
     props.query
   );
-  return <GrupoPartidas {...{ dataGrupoDePartidas }} />;
+  // return <GrupoPartidas {...{ dataGrupoDePartidas }} />;
+  return null;
 }

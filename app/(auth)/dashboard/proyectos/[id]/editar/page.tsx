@@ -39,22 +39,23 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
 }
 
 async function GetDataEditarProyecto(props: { id: string }) {
-  const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
-  if (dataEditPresupuesto.recordset.length === 0) {
-    return notFound();
-  }
-  const dataUbicacion = await obtenerUbicacion();
-  const dataClientes = await obtenerClientes();
-  const session = await auth();
-  return (
-    <EditarProyecto
-      {...{
-        id: props.id,
-        dataUbicacion,
-        dataClientes,
-        dataEditPresupuesto,
-        session,
-      }}
-    />
-  );
+  // const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
+  // if (dataEditPresupuesto.recordset.length === 0) {
+  //   return notFound();
+  // }
+  // const dataUbicacion = await obtenerUbicacion();
+  // const dataClientes = await obtenerClientes();
+  // const session = await auth();
+  // return (
+  //   <EditarProyecto
+  //     {...{
+  //       id: props.id,
+  //       dataUbicacion,
+  //       dataClientes,
+  //       dataEditPresupuesto,
+  //       session,
+  //     }}
+  //   />
+  // );
+  return null;
 }

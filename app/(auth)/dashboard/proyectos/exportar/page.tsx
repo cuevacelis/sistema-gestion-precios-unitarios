@@ -61,11 +61,11 @@ async function GetDataExportar() {
     return formatted;
   };
 
-  await exportToExcelWithColor(
-    formatHeadersExcel(dataPresupuestos.recordset),
-    "Listado_de_Proyectos",
-    "Datos"
-  );
+  // await exportToExcelWithColor(
+  //   formatHeadersExcel(dataPresupuestos.recordset),
+  //   "Listado_de_Proyectos",
+  //   "Datos"
+  // );
 
   return <></>;
 }

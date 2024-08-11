@@ -53,7 +53,8 @@ async function GetDataTable(props: {
     props.currentPage,
     props.query
   );
-  return <TableComponent {...{ dataPresupuestos }} />;
+  // return <TableComponent {...{ dataPresupuestos }} />;
+  return null;
 }
 
 async function GetDataOptionsTable() {
