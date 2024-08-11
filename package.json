@@ -71,7 +71,7 @@
 		"server-only": "^0.0.1",
 		"sharp": "^0.33.4",
 		"sonner": "^1.5.0",
-		"tailwind-merge": "^2.4.0",
+		"tailwind-merge": "^2.5.0",
 		"tailwindcss": "3.4.9",
 		"tailwindcss-animate": "^1.0.7",
 		"typescript": "5.5.4",
@@ -94,7 +94,7 @@
 		"dotenv": "^16.4.5",
 		"eslint": "8.57.0",
 		"eslint-config-next": "14.2.5",
-		"kysely-codegen": "^0.12.0",
+		"kysely-codegen": "^0.15.0",
 		"prettier": "^3.3.3"
 	}
 }
