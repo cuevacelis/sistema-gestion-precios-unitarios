@@ -270,7 +270,7 @@ export async function sendEmail({
   try {
     const USER = process.env.USER_SMTP;
     const PASSWORD = process.env.PASSWORD_SMTP;
-    // Dynamically load fuse.js
+    // Dynamically load
     const nodemailer = await import("nodemailer");
 
     const transport = nodemailer.createTransport({
@@ -283,18 +283,6 @@ export async function sendEmail({
       },
     });
 
-    transport.verify(async (error, success) => {
-      if (error) {
-        console.log(error);
-      }
-      if (success) {
-        console.log("Connection verified!");
-      } else {
-        console.log("Connection not verified!");
-        console.log(error);
-      }
-    });
-
     const result = await transport.sendMail({
       from: '"SGPU" <no-reply@mail.calculopreciosunitarios.com>',
       to: "cuevacelis@hotmail.com" || to,
@@ -304,8 +292,8 @@ export async function sendEmail({
     });
     return { success: true, result };
   } catch (error) {
-    throw error;
-    return { success: false, error };
+    // throw error;
+    return { success: false, error: error };
   }
 }
 
