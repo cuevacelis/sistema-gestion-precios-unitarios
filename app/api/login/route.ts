@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 
 export async function POST(request: Request) {
   const { username, password, userAgent }: IBodyLogin = await request.json();
-  const clientIp = request.headers.get("x-forwarded-for");
+  // const clientIp = request.headers.get("x-forwarded-for");
   const browserInfo = await getBrowserInfoBackend(userAgent);
   const browserName = browserInfo.browserName;
   const fullVersion = browserInfo.fullVersion;
@@ -28,7 +28,6 @@ export async function POST(request: Request) {
       to: res[0]?.usu_correo,
       subject: "Iniciaste sesión en SGPU",
       text: `Hola, te has iniciado sesión en SGPU desde una nueva ubicación.
-             IP: ${clientIp}
              Navegador: ${userAgent}
              Hora UTC: ${nowUTC}
              Hora Perú: ${nowPeru}
@@ -42,7 +41,6 @@ export async function POST(request: Request) {
                <p>Te has iniciado sesión en SGPU desde una nueva ubicación.</p>
                <p><strong>Detalles de la sesión:</strong></p>
                <ul style="list-style-type: none; padding-left: 0;">
-                 <li><strong>IP:</strong> ${clientIp}</li>
                  <li><strong>Hora UTC:</strong> ${nowUTC}</li>
                  <li><strong>Hora Perú:</strong> ${nowPeru}</li>
                  <li><strong>Navegador:</strong> ${browserName}</li>

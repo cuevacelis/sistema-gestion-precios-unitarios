@@ -285,7 +285,7 @@ export async function sendEmail({
 
     const result = await transport.sendMail({
       from: '"SGPU" <no-reply@mail.calculopreciosunitarios.com>',
-      to: "cuevacelis@hotmail.com" || to,
+      to: to,
       subject: subject,
       text: text,
       html: html,
