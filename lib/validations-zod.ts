@@ -1,8 +1,22 @@
 import { z } from "zod";
 
 export const credentialsSchema = z.object({
-  user: z.string(),
-  password: z.string().min(1),
+  email: z.string().email({ message: "Correo electrónico no válido" }),
+  password: z
+    .string()
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres" })
+    .regex(/[A-Z]/, {
+      message: "La contraseña debe contener al menos una letra mayúscula",
+    })
+    .regex(/[a-z]/, {
+      message: "La contraseña debe contener al menos una letra minúscula",
+    })
+    .regex(/[0-9]/, {
+      message: "La contraseña debe contener al menos un número",
+    })
+    .regex(/[^A-Za-z0-9]/, {
+      message: "La contraseña debe contener al menos un carácter especial",
+    }),
 });
 
 export const creatPresupuestoSchema = z.object({

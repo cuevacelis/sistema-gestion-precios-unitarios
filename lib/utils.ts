@@ -3,6 +3,7 @@ import clsx, { ClassValue } from "clsx";
 import { DateTime } from "luxon";
 import { IResult } from "mssql";
 import { twMerge } from "tailwind-merge";
+import { IBrowserInfo } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -201,4 +202,58 @@ export function formatDateTimeForFilename(
 
   const zonedDate = utcDate.setZone(timeZone);
   return zonedDate.toFormat("yyyyMMddHHmmss");
+}
+
+export function getBrowserInfo(): IBrowserInfo {
+  const userAgent: string = navigator.userAgent;
+  let browserName: string;
+  let fullVersion: string = "Unknown Version";
+  let majorVersion: number = 0;
+  let os: string = "Unknown OS";
+
+  // Detectar el sistema operativo
+  if (navigator.appVersion.indexOf("Win") !== -1) os = "Windows";
+  if (navigator.appVersion.indexOf("Mac") !== -1) os = "MacOS";
+  if (navigator.appVersion.indexOf("X11") !== -1) os = "UNIX";
+  if (navigator.appVersion.indexOf("Linux") !== -1) os = "Linux";
+
+  // Detectar el nombre y la versión del navegador
+  if (/OPR|Opera/.test(userAgent)) {
+    browserName = "Opera";
+    fullVersion = userAgent.split("OPR/")[1] || userAgent.split("Opera/")[1];
+  } else if (/Edg/.test(userAgent)) {
+    browserName = "Microsoft Edge";
+    fullVersion = userAgent.split("Edg/")[1];
+  } else if (/Chrome/.test(userAgent)) {
+    browserName = "Google Chrome";
+    fullVersion = userAgent.split("Chrome/")[1];
+  } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+    browserName = "Safari";
+    fullVersion = userAgent.split("Version/")[1];
+  } else if (/Firefox/.test(userAgent)) {
+    browserName = "Mozilla Firefox";
+    fullVersion = userAgent.split("Firefox/")[1];
+  } else if (
+    userAgent.indexOf("MSIE") !== -1 ||
+    !!(document as any).documentMode
+  ) {
+    // IF IE > 10
+    browserName = "Internet Explorer";
+    fullVersion = userAgent.split("MSIE ")[1] || userAgent.split("rv:")[1];
+  } else {
+    browserName = "Unknown Browser";
+  }
+
+  // Obtener la versión principal
+  if (fullVersion) {
+    majorVersion = parseInt(fullVersion.split(".")[0], 10);
+  }
+
+  return {
+    browserName: browserName,
+    fullVersion: fullVersion,
+    majorVersion: majorVersion,
+    userAgent: userAgent,
+    os: os,
+  };
 }

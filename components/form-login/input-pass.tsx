@@ -3,7 +3,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -15,21 +14,22 @@ export default function InputPassComponent() {
     <div className="grid gap-2">
       <div className="flex items-center">
         <Label htmlFor="password">Contraseña</Label>
-        <Link
+        {/* <Link
           href="/forgot-password"
-          className="sm:hidden ml-auto inline-block text-sm underline"
+          className="ml-auto inline-block text-sm underline"
         >
           ¿Olvidaste tu contraseña?
-        </Link>
+        </Link> */}
       </div>
       <div className="relative">
         <Input
           id="password"
           name="password"
           readOnly={pending}
-          autoComplete="password"
+          autoComplete="current-password"
           type={isVisiblePass ? "text" : "password"}
           className="pr-10"
+          placeholder="Ingresa tu contraseña."
           required
         />
         <button

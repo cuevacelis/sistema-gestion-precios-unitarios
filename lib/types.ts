@@ -6,10 +6,19 @@ export interface ISearchParams {
 
 export type TStatusResponseActions = "idle" | "pending" | "success" | "error";
 
+export interface IBrowserInfo {
+  browserName: string;
+  fullVersion: string;
+  majorVersion: number;
+  userAgent: string;
+  os: string;
+}
+
 // #region LOGIN
 export interface IBodyLogin {
   username: string;
   password: string;
+  userAgent: string;
 }
 
 export interface IDataDBLogin {

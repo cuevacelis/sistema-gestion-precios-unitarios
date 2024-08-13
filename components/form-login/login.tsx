@@ -9,7 +9,13 @@ import InputUserComponent from "./input-user";
 
 export default function LoginComponent() {
   const [stateForm, formActionSignInCredentials] = useFormState(
-    actionsSignInCredentials,
+    async (state: any, formData: FormData) => {
+      return await actionsSignInCredentials(
+        state,
+        formData,
+        navigator.userAgent
+      );
+    },
     { isError: false, message: "" }
   );
 
@@ -19,7 +25,7 @@ export default function LoginComponent() {
       <InputPassComponent />
       <SubmitButtonComponent />
       <div
-        className="flex h-8 items-end space-x-1"
+        className="flex min-h-10 items-end space-x-1 overflow-auto"
         aria-live="polite"
         aria-atomic="true"
       >

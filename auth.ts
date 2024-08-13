@@ -5,6 +5,9 @@ import { CredentialsError } from "./lib/custom-error/auth-error";
 import { FetchError } from "./lib/custom-error/fetch-error";
 import { fetchLogged } from "./lib/services/fetch-api";
 import { credentialsSchema } from "./lib/validations-zod";
+import { ZodError } from "zod";
+import { getBrowserInfo } from "./lib/utils";
+import { IBrowserInfo } from "./lib/types";
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
   pages: {
@@ -46,16 +49,19 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        user: {},
+        email: {},
         password: {},
+        userAgent: {},
       },
       authorize: async (credentials) => {
         try {
-          const { user, password } =
+          const { email, password } =
             await credentialsSchema.parseAsync(credentials);
+
           const dataLogin = await fetchLogged({
-            username: user,
+            username: email,
             password: password,
+            userAgent: String(credentials.userAgent),
           });
 
           if (!dataLogin?.data) {
@@ -63,13 +69,20 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           }
 
           return {
-            id: String(dataLogin?.data.Usu_Id),
-            name: dataLogin?.data.Usu_NomApellidos,
-            email: dataLogin?.data.Usu_Correo,
+            id: String(dataLogin.data?.usu_id),
+            email: String(dataLogin.data?.usu_correo),
+            name: String(dataLogin.data?.usu_nomapellidos),
           };
         } catch (error) {
           if (error instanceof FetchError) {
-            throw new CredentialsError({ message: "Credenciales inválidas." });
+            throw new CredentialsError({
+              message: "Error al conectar con la base de datos.",
+            });
+          } else if (error instanceof ZodError) {
+            throw new CredentialsError({
+              message:
+                error.issues.map((issue) => issue.message).join(", ") + ".",
+            });
           }
           throw error;
         }

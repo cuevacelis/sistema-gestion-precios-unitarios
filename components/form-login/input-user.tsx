@@ -9,14 +9,14 @@ export default function InputUserComponent() {
 
   return (
     <div className="grid gap-2">
-      <Label htmlFor="user">Usuario</Label>
+      <Label htmlFor="email">Correo electrónico</Label>
       <Input
-        id="user"
-        name="user"
-        type="text"
-        autoComplete="username user"
+        id="email"
+        name="email"
+        type="email"
+        autoComplete="username"
         readOnly={pending}
-        placeholder="Ingresa tu usuario."
+        placeholder="Ingresa tu correo electrónico."
         required
       />
     </div>

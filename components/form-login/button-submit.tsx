@@ -12,7 +12,7 @@ export default function SubmitButtonComponent() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? "Validando..." : "Iniciar sesión"}
+      {pending ? "Validando, por favor espere..." : "Iniciar sesión"}
     </Button>
   );
 }

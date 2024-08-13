@@ -16,17 +16,21 @@ import {
   deletePresupuestoSchema,
   editPresupuestoSchema,
 } from "./validations-zod";
+import { getBrowserInfo } from "./utils";
+import { IBrowserInfo } from "./types";
 
 export async function actionsSignInCredentials(
   _prevState: any,
-  formData: FormData
+  formData: FormData,
+  userAgent: string
 ) {
   try {
     await signIn("credentials", {
       redirect: true,
       redirectTo: "/dashboard",
-      user: formData.get("user"),
+      email: formData.get("email"),
       password: formData.get("password"),
+      userAgent: userAgent,
     });
   } catch (error) {
     if (isRedirectError(error)) {
@@ -250,4 +254,106 @@ export async function actionsAddConfigurationNavbar(
       errors: {},
     };
   }
+}
+
+export async function sendEmail({
+  to,
+  subject,
+  text,
+  html,
+}: {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
+  try {
+    const USER = process.env.USER_SMTP;
+    const PASSWORD = process.env.PASSWORD_SMTP;
+    // Dynamically load fuse.js
+    const nodemailer = await import("nodemailer");
+
+    const transport = nodemailer.createTransport({
+      host: "email-smtp.us-east-1.amazonaws.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: USER,
+        pass: PASSWORD,
+      },
+    });
+
+    transport.verify(async (error, success) => {
+      if (error) {
+        console.log(error);
+      }
+      if (success) {
+        console.log("Connection verified!");
+      } else {
+        console.log("Connection not verified!");
+        console.log(error);
+      }
+    });
+
+    const result = await transport.sendMail({
+      from: '"SGPU" <no-reply@mail.calculopreciosunitarios.com>',
+      to: "cuevacelis@hotmail.com" || to,
+      subject: subject,
+      text: text,
+      html: html,
+    });
+    return { success: true, result };
+  } catch (error) {
+    return { success: false, error };
+  }
+}
+
+export async function getBrowserInfoBackend(
+  userAgent: string
+): Promise<IBrowserInfo> {
+  let browserName = "Unknown Browser";
+  let fullVersion = "Unknown Version";
+  let majorVersion = 0;
+  let os = "Unknown OS";
+
+  // Detectar el sistema operativo
+  if (/Windows/.test(userAgent)) os = "Windows";
+  if (/Mac/.test(userAgent)) os = "MacOS";
+  if (/X11/.test(userAgent)) os = "UNIX";
+  if (/Linux/.test(userAgent)) os = "Linux";
+
+  // Detectar el nombre y la versión del navegador
+  if (/OPR|Opera/.test(userAgent)) {
+    browserName = "Opera";
+    fullVersion = userAgent.split("OPR/")[1] || userAgent.split("Opera/")[1];
+  } else if (/Edg/.test(userAgent)) {
+    browserName = "Microsoft Edge";
+    fullVersion = userAgent.split("Edg/")[1];
+  } else if (/Chrome/.test(userAgent)) {
+    browserName = "Google Chrome";
+    fullVersion = userAgent.split("Chrome/")[1];
+  } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+    browserName = "Safari";
+    fullVersion = userAgent.split("Version/")[1];
+  } else if (/Firefox/.test(userAgent)) {
+    browserName = "Mozilla Firefox";
+    fullVersion = userAgent.split("Firefox/")[1];
+  } else if (/MSIE/.test(userAgent) || /Trident/.test(userAgent)) {
+    // Para versiones antiguas de IE
+    browserName = "Internet Explorer";
+    fullVersion = userAgent.split("MSIE ")[1] || userAgent.split("rv:")[1];
+  }
+
+  // Obtener la versión principal
+  if (fullVersion) {
+    majorVersion = parseInt(fullVersion.split(".")[0], 10);
+  }
+
+  return {
+    browserName,
+    fullVersion,
+    majorVersion,
+    userAgent,
+    os,
+  };
 }

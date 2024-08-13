@@ -11,6 +11,7 @@ export async function fetchLogged(params: IBodyLogin) {
       body: JSON.stringify({
         username: params.username,
         password: params.password,
+        userAgent: params.userAgent,
       }),
       cache: "no-store",
     });

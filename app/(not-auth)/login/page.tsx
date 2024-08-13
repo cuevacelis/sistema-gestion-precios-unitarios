@@ -35,18 +35,15 @@ export default async function LoginPage() {
       <section className="flex items-center justify-center">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-balance text-muted-foreground">
-              Ingrese su usuario a continuación para iniciar sesión en su cuenta
-            </p>
+            <h1 className="text-3xl font-bold">Inicio de sesión</h1>
           </div>
           <LoginComponent />
-          <div className="hidden mt-4 text-center text-sm">
+          {/* <div className="mt-4 text-center text-sm">
             ¿No tienes una cuenta?{" "}
             <Link href="#" className="underline">
               Regístrate
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
     </section>
