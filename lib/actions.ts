@@ -304,6 +304,7 @@ export async function sendEmail({
     });
     return { success: true, result };
   } catch (error) {
+    throw error;
     return { success: false, error };
   }
 }

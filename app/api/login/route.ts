@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     if (res.length === 0) {
       return Response.json({ data: null, status: 400 });
     }
-    sendEmail({
+    await sendEmail({
       to: res[0]?.usu_correo,
       subject: "Iniciaste sesión en SGPU",
       text: `Hola, te has iniciado sesión en SGPU desde una nueva ubicación.
