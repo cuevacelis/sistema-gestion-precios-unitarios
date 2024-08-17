@@ -1,23 +1,15 @@
-import { sql } from "@vercel/postgres";
 import { unstable_noStore } from "next/cache";
 import { sql as sqlKysely } from "kysely";
 import "server-only";
 import cache from "../cache";
 import {
-  IDataDBCliente,
-  IDataDBGrupoDePartidas,
-  IDataDBLogin,
-  IDataDBObtenerClientesPaginados,
-  IDataDBObtenerPresupuestosId,
-  IDataDBObtenerPresupuestosPaginados,
-  IDataDBObtenerUsuariosPaginados,
-  // IDataDBSidebar,
-  IDataDBUbicacion,
   ISpModuloObtenerModulosXPusuario,
+  ISpObtenerClientes,
+  ISpObtenerUbicacion,
+  ISpPresupuestoObtenPaginado,
   ISpUsuarioObtenLoginV2,
 } from "../types";
 import { getDbPostgres } from "@/db/db-postgres";
-import { poolPromise, sql as sqlMssql } from "@/db/db-mssql";
 
 // #region login
 interface UserCredentials {
@@ -102,20 +94,14 @@ export const obtenerPresupuestosPaginados = cache(
     busqueda: string
   ) => {
     try {
-      return [];
-      // const pool = await poolPromise;
-      // return pool
-      //   .request()
-      //   .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
-      //   .input("NumeroPagina", sqlMssql.Int, paginaActual)
-      //   .input("PorNombre", sqlMssql.VarChar, busqueda)
-      //   .output("TotalPagina", sqlMssql.Int)
-      //   .output("TotalRegistro", sqlMssql.Int)
-      //   .output("TienePaginaAnterior", sqlMssql.Bit)
-      //   .output("TienePaginaProximo", sqlMssql.Bit)
-      //   .execute<IDataDBObtenerPresupuestosPaginados>(
-      //     "SP_Presupuesto_Obten_Paginado"
-      //   );
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov2(${elementosPorPagina}, ${paginaActual}, ${busqueda})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
     } catch (error) {
       throw error;
     }
@@ -215,19 +201,6 @@ export const cambioEstadoPresupuesto = async (
   }
 };
 
-export const getLastPresupuesto = async () => {
-  try {
-    unstable_noStore();
-    return [];
-    // const pool = await poolPromise;
-    // return pool
-    //   .request()
-    //   .query("SELECT TOP 1 Pre_Id FROM presupuesto ORDER BY Pre_Id DESC;");
-  } catch (error) {
-    throw error;
-  }
-};
-
 // #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
@@ -258,7 +231,8 @@ export const obtenerGruposDePartidasPaginados = cache(
 export const obtenerClientesPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
-      return sql`SELECT sp_cliente_obten_paginadov2(${elementosPorPagina},${paginaActual},${nombre})`;
+      // return sql`SELECT sp_cliente_obten_paginadov2(${elementosPorPagina},${paginaActual},${nombre})`;
+      return [];
     } catch (error) {
       throw error;
     }
@@ -270,9 +244,12 @@ export const obtenerClientesPaginados = cache(
 export const obtenerClientes = cache(
   async () => {
     try {
-      return [];
-      // const pool = await poolPromise;
-      // return pool.request().execute<IDataDBCliente>("SP_Cliente_Obten_Nombre");
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<ISpObtenerClientes>`sp_cliente_obten_nombre()`.as("result")
+        )
+        .selectAll()
+        .execute();
     } catch (error) {
       throw error;
     }
@@ -284,9 +261,12 @@ export const obtenerClientes = cache(
 export const obtenerUbicacion = cache(
   async () => {
     try {
-      return [];
-      // const pool = await poolPromise;
-      // return pool.request().execute<IDataDBUbicacion>("SP_Ubicacion_Obten");
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<ISpObtenerUbicacion>`sp_ubicacion_obten()`.as("result")
+        )
+        .selectAll()
+        .execute();
     } catch (error) {
       throw error;
     }

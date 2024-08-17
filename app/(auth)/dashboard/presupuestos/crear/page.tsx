@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
-  getLastPresupuesto,
   obtenerClientes,
   obtenerGruposDePartidasPaginados,
   obtenerUbicacion,
@@ -69,14 +68,8 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
 async function GetDataNuevoProyecto() {
   const dataUbicacion = await obtenerUbicacion();
   const dataClientes = await obtenerClientes();
-  const lastPresupuesto = await getLastPresupuesto();
   const session = await auth();
-  // return (
-  //   <NuevoProyecto
-  //     {...{ dataUbicacion, dataClientes, lastPresupuesto, session }}
-  //   />
-  // );
-  return null;
+  return <NuevoProyecto {...{ dataUbicacion, dataClientes, session }} />;
 }
 
 async function GetDataGrupoPartidas(props: {

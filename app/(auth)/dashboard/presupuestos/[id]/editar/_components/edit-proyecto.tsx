@@ -11,9 +11,9 @@ import {
 } from "@/components/ui/select";
 import { actionsEditarPresupuesto } from "@/lib/actions";
 import {
-  IDataDBCliente,
+  // IDataDBCliente,
   IDataDBObtenerPresupuestosId,
-  IDataDBUbicacion,
+  // IDataDBUbicacion,
 } from "@/lib/types";
 import { combineFormDatas } from "@/lib/utils";
 import { IProcedureResult } from "mssql";
@@ -24,8 +24,8 @@ import SubmitButtonComponent from "./button-submit";
 
 interface IEditarProyecto {
   id: string;
-  dataUbicacion: IProcedureResult<IDataDBUbicacion>;
-  dataClientes: IProcedureResult<IDataDBCliente>;
+  dataUbicacion: IProcedureResult<any>;
+  dataClientes: IProcedureResult<any>;
   dataEditPresupuesto: IProcedureResult<IDataDBObtenerPresupuestosId>;
   session: Session | null;
 }

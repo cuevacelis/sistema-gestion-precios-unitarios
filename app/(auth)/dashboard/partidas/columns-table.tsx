@@ -100,13 +100,15 @@ export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.Pre_Codigo)}
+              onClick={() =>
+                navigator.clipboard.writeText(String(payment.pre_codigo))
+              }
             >
               Copiar ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
+              <Link href={"/dashboard/presupuestos/1/editar"}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

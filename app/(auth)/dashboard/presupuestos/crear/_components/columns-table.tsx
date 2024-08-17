@@ -11,12 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { IDataDBGrupoDePartidas } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
+export const columns: ColumnDef<IDataDBGrupoDePartidas>[] = [
   {
     id: "Id",
     accessorKey: "Pre_Id",
@@ -44,51 +44,15 @@ export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
     enableHiding: false,
   },
   {
-    id: "Código",
-    accessorKey: "Pre_Codigo",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-  },
-  {
-    id: "Usuario",
-    accessorKey: "Usu_NomApellidos",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-  },
-  {
-    id: "Nombre",
-    accessorKey: "Pre_Nombre",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-  },
-  {
-    id: "Razón social",
-    accessorKey: "Cli_NomApeRazSocial",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-  },
-  {
-    id: "Jornal",
-    accessorKey: "Pre_Jornal",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title={column.id} />
-    ),
-  },
-  {
-    id: "Fecha",
-    accessorKey: "Pre_FecHorRegistro",
+    id: "NomGruPar_Nombre",
+    accessorKey: "NomGruPar_Nombre",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title={column.id} />
     ),
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const payment = row.original;
+    cell: ({ }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -99,14 +63,9 @@ export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.Pre_Codigo)}
-            >
-              Copiar ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
+              <Link href={"/dashboard/presupuestos/1/editar"}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

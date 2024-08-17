@@ -65,17 +65,41 @@ export interface IDataDBObtenerUsuariosPaginados {
 
 // #region Presupuestos
 export interface IDataDBObtenerPresupuestosPaginados {
-  Pre_Id: number;
-  Pre_Codigo: any;
-  Usu_NomApellidos: string;
-  Pre_Nombre: string;
-  Cli_NomApeRazSocial: string;
-  Ubi_Departamento: string;
-  Ubi_Provincia: string;
-  Ubi_Distrito: string;
-  Pre_Jornal: number;
-  Pre_FecHorRegistro: string;
-  Pre_Estado: number;
+  pre_id: number;
+  pre_codigo?: string;
+  usu_nomapellidos: string;
+  pre_nombre: string;
+  cli_nomaperazsocial: string;
+  ubi_departamento: string;
+  ubi_provincia: string;
+  ubi_distrito: string;
+  pre_jornal: number;
+  pre_fechorregistro: string;
+  pre_estado: number;
+}
+
+export interface ISpPresupuestoObtenPaginado {
+  result: {
+    data: Array<{
+      pre_id: number;
+      pre_codigo?: string;
+      usu_nomapellidos: string;
+      pre_nombre: string;
+      cli_nomaperazsocial: string;
+      ubi_departamento: string;
+      ubi_provincia: string;
+      ubi_distrito: string;
+      pre_jornal: number;
+      pre_fechorregistro: string;
+      pre_estado: number;
+    }>;
+    meta: {
+      total_pagina: number;
+      total_registro: number;
+      tiene_pagina_anterior: boolean;
+      tiene_pagina_proximo: boolean;
+    };
+  };
 }
 
 export interface IDataDBObtenerPresupuestosId {
@@ -105,15 +129,14 @@ export interface IDataDBObtenerClientesPaginados {
   Pre_Estado: number;
 }
 
-export interface IDataDBUbicacion {
-  Ubi_Id: number;
-  Ubi_Departamento: string;
-  Ubi_Provincia: string;
-  Ubi_Distrito: string;
+export interface ISpObtenerClientes {
+  cli_nomaperazsocial: string;
 }
 
-export interface IDataDBCliente {
-  Cli_NomApeRazSocial: string;
+export interface ISpObtenerUbicacion {
+  ubi_departamento: string;
+  ubi_provincia: string;
+  ubi_distrito: string;
 }
 
 // #region GrupoDePartidas

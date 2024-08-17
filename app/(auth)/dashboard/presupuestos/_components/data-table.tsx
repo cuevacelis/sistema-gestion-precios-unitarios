@@ -20,21 +20,21 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { useSetGestionProyectos } from "@/context/context-proyectos";
+import { useSetGestionPresupuestos } from "@/context/context-presupuestos";
 import { actionsDeletePresupuesto } from "@/lib/actions";
 import {
   IDataDBObtenerPresupuestosPaginados,
+  ISpPresupuestoObtenPaginado,
   TStatusResponseActions,
 } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Trash2 } from "lucide-react";
-import { IProcedureResult } from "mssql";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
 interface IProps {
-  dataPresupuestos: IProcedureResult<IDataDBObtenerPresupuestosPaginados>;
+  dataPresupuestos: ISpPresupuestoObtenPaginado[];
 }
 
 export default function TableComponent(props: IProps) {
@@ -47,7 +47,7 @@ export default function TableComponent(props: IProps) {
     () => [
       {
         id: "Id",
-        accessorKey: "Pre_Id",
+        accessorKey: "pre_id",
         header: ({ table }) => (
           <Checkbox
             checked={
@@ -72,42 +72,42 @@ export default function TableComponent(props: IProps) {
       },
       {
         id: "Código",
-        accessorKey: "Pre_Codigo",
+        accessorKey: "pre_codigo",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
       },
       {
         id: "Usuario",
-        accessorKey: "Usu_NomApellidos",
+        accessorKey: "usu_nomapellidos",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
       },
       {
         id: "Nombre",
-        accessorKey: "Pre_Nombre",
+        accessorKey: "pre_nombre",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
       },
       {
         id: "Razón social",
-        accessorKey: "Cli_NomApeRazSocial",
+        accessorKey: "cli_nomaperazsocial",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
       },
       {
         id: "Jornal",
-        accessorKey: "Pre_Jornal",
+        accessorKey: "pre_jornal",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
       },
       {
         id: "Fecha",
-        accessorKey: "Pre_FecHorRegistro",
+        accessorKey: "pre_fechorregistro",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title={column.id} />
         ),
@@ -117,11 +117,11 @@ export default function TableComponent(props: IProps) {
   );
   const {
     dataTable: { table, rowSelection, setRowSelection },
-  } = useSetGestionProyectos({
+  } = useSetGestionPresupuestos({
     identifierField: "Pre_Id",
-    data: props.dataPresupuestos.recordset,
+    data: props.dataPresupuestos[0].result.data,
     columns,
-    rowCount: props.dataPresupuestos.output.TotalRegistro,
+    rowCount: props.dataPresupuestos[0].result.meta.total_registro,
   });
 
   return (
@@ -185,18 +185,18 @@ export default function TableComponent(props: IProps) {
                             className="cursor-pointer"
                             onClick={() =>
                               navigator.clipboard.writeText(
-                                row.original.Pre_Codigo
+                                String(row.original.pre_codigo)
                               )
                             }
                           >
-                            Copiar: {row.original.Pre_Codigo}
+                            Copiar: {row.original.pre_codigo}
                           </ContextMenuItem>
                           <ContextMenuItem className="cursor-pointer">
                             Duplicar
                           </ContextMenuItem>
                           <ContextMenuItem asChild className="cursor-pointer">
                             <Link
-                              href={`proyectos/${row.original.Pre_Id}/editar`}
+                              href={`presupuestos/${row.original.pre_id}/editar`}
                             >
                               Editar
                             </Link>
@@ -237,7 +237,7 @@ export default function TableComponent(props: IProps) {
             }
             setStatusRespDeletePresupuesto("pending");
             const actionsDeletePresupuestoWithId =
-              actionsDeletePresupuesto.bind(null, rowSelected.Pre_Id);
+              actionsDeletePresupuesto.bind(null, rowSelected.pre_id);
             await actionsDeletePresupuestoWithId();
             setStatusRespDeletePresupuesto("success");
             setIsShowDeleteModal(false);

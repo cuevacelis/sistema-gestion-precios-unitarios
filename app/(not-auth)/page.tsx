@@ -27,9 +27,9 @@ export default async function HomePage() {
             de tipo venta, meta y línea Base.
           </p>
           <p className="text-foreground/80 dark:text-foreground/60 text-lg mt-5">
-            Los cuales son asignados a proyectos que serán realizados para la
+            Los cuales son asignados a presupuestos que serán realizados para la
             planificación y control de labores que se realizan en el modulo de
-            gerencia de proyectos
+            gerencia de presupuestos
           </p>
           <Link
             href="/login"
@@ -60,7 +60,7 @@ export default async function HomePage() {
         />
         <div className="flex flex-row text-center items-center justify-around h-full flex-wrap">
           <p className="text-2xl text-white">
-            Gestiona tus proyectos de construcción de manera efectiva y
+            Gestiona tus presupuestos de construcción de manera efectiva y
             eficiente
           </p>
           <Link

@@ -11,18 +11,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { actionsCrearPresupuesto } from "@/lib/actions";
-import { IDataDBCliente, IDataDBUbicacion } from "@/lib/types";
+import { ISpObtenerClientes, ISpObtenerUbicacion } from "@/lib/types";
 import { combineFormDatas } from "@/lib/utils";
-import { IProcedureResult, IResult } from "mssql";
 import { Session } from "next-auth";
 import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
 
 interface INuevoProyecto {
-  dataUbicacion: IProcedureResult<IDataDBUbicacion>;
-  dataClientes: IProcedureResult<IDataDBCliente>;
-  lastPresupuesto: IResult<any>;
+  dataUbicacion: ISpObtenerUbicacion[];
+  dataClientes: ISpObtenerClientes[];
   session: Session | null;
 }
 
@@ -42,37 +40,35 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
 
   const uniqueDepartamentos = useMemo(() => {
     return [
-      ...new Set(
-        props.dataUbicacion.recordset.map((item) => item.Ubi_Departamento)
-      ),
+      ...new Set(props.dataUbicacion.map((item) => item.ubi_departamento)),
     ];
-  }, [props.dataUbicacion.recordset]);
+  }, [props.dataUbicacion]);
 
   useEffect(() => {
     if (formDataController.departamento) {
-      const filteredProvincias = props.dataUbicacion.recordset
+      const filteredProvincias = props.dataUbicacion
         .filter(
-          (item) => item.Ubi_Departamento === formDataController.departamento
+          (item) => item.ubi_departamento === formDataController.departamento
         )
-        .map((item) => item.Ubi_Provincia);
+        .map((item) => item.ubi_provincia);
       setProvincias([...new Set(filteredProvincias)]);
       setDistritos([]);
     } else {
       setProvincias([]);
       setDistritos([]);
     }
-  }, [formDataController.departamento, props.dataUbicacion.recordset]);
+  }, [formDataController.departamento, props.dataUbicacion]);
 
   useEffect(() => {
     if (formDataController.provincia) {
-      const filteredDistritos = props.dataUbicacion.recordset
-        .filter((item) => item.Ubi_Provincia === formDataController.provincia)
-        .map((item) => item.Ubi_Distrito);
+      const filteredDistritos = props.dataUbicacion
+        .filter((item) => item.ubi_provincia === formDataController.provincia)
+        .map((item) => item.ubi_distrito);
       setDistritos([...new Set(filteredDistritos)]);
     } else {
       setDistritos([]);
     }
-  }, [formDataController.provincia, props.dataUbicacion.recordset]);
+  }, [formDataController.provincia, props.dataUbicacion]);
 
   const handleSelectChange = (name: string, value: string) => {
     setFormDataController((prev) => ({ ...prev, [name]: value }));
@@ -91,10 +87,10 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-full">
-        <Label htmlFor="code">Código</Label>
+        {/* <Label htmlFor="code">Código</Label>
         <Badge variant={"secondary"}>
-          {Number(props.lastPresupuesto?.recordset[0].Pre_Id) + 1}
-        </Badge>
+          {Number(props.lastPresupuesto?[0].Pre_Id) + 1}
+        </Badge> */}
         <SubmitButtonComponent />
       </div>
       <div className="sm:col-span-3">
@@ -175,12 +171,12 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {props.dataClientes.recordset.map((item) => (
+              {props.dataClientes.map((item) => (
                 <SelectItem
-                  key={item.Cli_NomApeRazSocial}
-                  value={item.Cli_NomApeRazSocial}
+                  key={item.cli_nomaperazsocial}
+                  value={item.cli_nomaperazsocial}
                 >
-                  {item.Cli_NomApeRazSocial}
+                  {item.cli_nomaperazsocial}
                 </SelectItem>
               ))}
             </SelectGroup>

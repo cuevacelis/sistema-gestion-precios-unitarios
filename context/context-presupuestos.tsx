@@ -1,45 +1,76 @@
 "use client";
 
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-import { Table } from "@tanstack/react-table";
-import { createContext, useContext } from "react";
+import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { ColumnDef, Table } from "@tanstack/react-table";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface IPropsProvider {
   children: React.ReactNode;
 }
 
 interface IContextProps {
-  table: Table<never>;
-  rowSelection: {};
-  setRowSelection: React.Dispatch<React.SetStateAction<{}>>;
+  dataTable: {
+    table: Table<IDataDBObtenerPresupuestosPaginados>;
+    rowSelection: {};
+    setRowSelection: React.Dispatch<
+      React.SetStateAction<{
+        [key: string]: any;
+      }>
+    >;
+    seIDataDBObtenerPresupuestosPaginados: React.Dispatch<
+      React.SetStateAction<IDataDBObtenerPresupuestosPaginados[]>
+    >;
+    setColumns: React.Dispatch<
+      React.SetStateAction<ColumnDef<IDataDBObtenerPresupuestosPaginados>[]>
+    >;
+    setRowCount: React.Dispatch<React.SetStateAction<number>>;
+    setIdentifierField: React.Dispatch<
+      React.SetStateAction<string | undefined>
+    >;
+  };
 }
 
 interface IPropsGetHook {}
 
 interface IPropsSetHook {
-  data: any;
-  columns: any;
+  data: IDataDBObtenerPresupuestosPaginados[];
+  columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[];
   rowCount: number;
-  identifierField: string;
+  identifierField?: string;
 }
 
-export const PresupuestosContext = createContext<IContextProps | undefined>(
-  undefined
-);
+const PresupuestosContext = createContext<IContextProps | undefined>(undefined);
 
 export default function PresupuestosProvider({ children }: IPropsProvider) {
+  const [data, seIDataDBObtenerPresupuestosPaginados] = useState<
+    IDataDBObtenerPresupuestosPaginados[]
+  >([]);
+  const [columns, setColumns] = useState<
+    ColumnDef<IDataDBObtenerPresupuestosPaginados>[]
+  >([]);
+  const [rowCount, setRowCount] = useState<number>(0);
+  const [identifierField, setIdentifierField] = useState<string>();
+
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: [],
-    columns: [],
-    rowCount: 0,
+    data,
+    columns,
+    rowCount: rowCount,
+    identifierField,
   });
 
   return (
     <PresupuestosContext.Provider
       value={{
-        table,
-        rowSelection,
-        setRowSelection,
+        dataTable: {
+          table,
+          rowSelection,
+          setRowSelection,
+          seIDataDBObtenerPresupuestosPaginados,
+          setColumns,
+          setRowCount,
+          setIdentifierField,
+        },
       }}
     >
       {children}
@@ -47,29 +78,30 @@ export default function PresupuestosProvider({ children }: IPropsProvider) {
   );
 }
 
-export const useGetGestionPresupuestos = ({}: IPropsGetHook) => {
+export function useGetGestionPresupuestos({}: IPropsGetHook) {
   const context = useContext(PresupuestosContext);
   if (context === undefined) {
-    throw new Error("Error context Presupuestos");
+    throw new Error("Error loading context");
   }
   return context;
-};
+}
 
-export const useSetGestionPresupuestos = ({
+export function useSetGestionPresupuestos({
   data,
   columns,
   rowCount,
   identifierField,
-}: IPropsSetHook) => {
+}: IPropsSetHook) {
   const context = useContext(PresupuestosContext);
-  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data,
-    columns,
-    rowCount,
-    identifierField,
-  });
   if (context === undefined) {
-    throw new Error("Error context Presupuestos");
+    throw new Error("Error loading context");
   }
-  return { context, table, rowSelection, setRowSelection };
-};
+  useEffect(() => {
+    context.dataTable.seIDataDBObtenerPresupuestosPaginados(data);
+    context.dataTable.setColumns(columns);
+    context.dataTable.setRowCount(rowCount);
+    context.dataTable.setIdentifierField(identifierField);
+  }, [data, columns, rowCount, identifierField]);
+
+  return context;
+}

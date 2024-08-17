@@ -102,8 +102,8 @@ export async function actionsCrearPresupuesto(
       Number(jornal)
     );
 
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
+    revalidatePath("/dashboard/presupuestos");
+    redirect("/dashboard/presupuestos");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -163,8 +163,8 @@ export async function actionsEditarPresupuesto(
       Number(jornal)
     );
     revalidateTag("presupuestosPaginados");
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
+    revalidatePath("/dashboard/presupuestos");
+    redirect("/dashboard/presupuestos");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -196,8 +196,8 @@ export async function actionsDeletePresupuesto(Pre_Id: number) {
       id: Pre_Id,
     });
     await cambioEstadoPresupuesto(id, 0);
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
+    revalidatePath("/dashboard/presupuestos");
+    redirect("/dashboard/presupuestos");
     // revalidateTag("presupuestosPaginados");
   } catch (error) {
     if (isRedirectError(error)) {

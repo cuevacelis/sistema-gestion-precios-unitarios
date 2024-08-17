@@ -2,7 +2,7 @@
 import ModalConfirmacionComponent from "@/components/modals/modalConfirmacion/modalConfirmacion";
 import { Button } from "@/components/ui/button";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { useGetGestionProyectos } from "@/context/context-proyectos";
+import { useGetGestionPresupuestos } from "@/context/context-presupuestos";
 import { actionsDeletePresupuesto } from "@/lib/actions";
 import { TStatusResponseActions } from "@/lib/types";
 import { Copy, Download, Edit, PlusCircle, Trash2 } from "lucide-react";
@@ -16,7 +16,7 @@ export default function OptionsTable() {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState<boolean>(false);
   const {
     dataTable: { table },
-  } = useGetGestionProyectos({});
+  } = useGetGestionPresupuestos({});
 
   return (
     <ValidateMutation statusMutation={[statusRespDeletePresupuesto]}>
@@ -24,7 +24,7 @@ export default function OptionsTable() {
         size="default"
         variant="default"
         className="h-9 gap-1"
-        onClick={() => router.push("/dashboard/proyectos/crear")}
+        onClick={() => router.push("/dashboard/presupuestos/crear")}
       >
         <PlusCircle className="w-4" />
         <span>Nuevo</span>
@@ -37,7 +37,7 @@ export default function OptionsTable() {
         tooltip="Para continuar, por favor seleccione una fila de la tabla."
         onClick={() =>
           router.push(
-            `proyectos/${table.getSelectedRowModel().rows[0].original.Pre_Id}/editar`
+            `presupuestos/${table.getSelectedRowModel().rows[0].original.pre_id}/editar`
           )
         }
       >
@@ -71,7 +71,7 @@ export default function OptionsTable() {
         size="default"
         variant="secondary"
         className="h-9 gap-1"
-        onClick={() => router.push("/dashboard/proyectos/exportar")}
+        onClick={() => router.push("/dashboard/Presupuestos/exportar")}
       >
         <Download className="w-4" />
         <span>Exportar</span>
@@ -88,7 +88,7 @@ export default function OptionsTable() {
             const actionsDeletePresupuestoWithId =
               actionsDeletePresupuesto.bind(
                 null,
-                table.getSelectedRowModel().rows[0].original.Pre_Id
+                table.getSelectedRowModel().rows[0].original.pre_id
               );
             await actionsDeletePresupuestoWithId();
             setStatusRespDeletePresupuesto("success");

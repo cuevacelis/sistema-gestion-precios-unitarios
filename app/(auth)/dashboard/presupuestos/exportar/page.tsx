@@ -50,12 +50,12 @@ async function GetDataExportar() {
   ) => {
     const formatted = data.map((object) => {
       return {
-        Código: object.Pre_Codigo,
-        Usuario: object.Usu_NomApellidos,
-        Nombre: object.Pre_Nombre,
-        "Razón social": object.Cli_NomApeRazSocial,
-        Jornal: object.Pre_Jornal,
-        Fecha: object.Pre_FecHorRegistro,
+        Código: object.pre_codigo,
+        Usuario: object.usu_nomapellidos,
+        Nombre: object.pre_nombre,
+        "Razón social": object.cli_nomaperazsocial,
+        Jornal: object.pre_jornal,
+        Fecha: object.pre_fechorregistro,
       };
     });
     return formatted;
