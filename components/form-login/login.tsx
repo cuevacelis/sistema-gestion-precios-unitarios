@@ -8,14 +8,13 @@ import InputPassComponent from "./input-pass";
 import InputUserComponent from "./input-user";
 
 export default function LoginComponent() {
+  const actionsSignInCredentialsWithUserAgent = actionsSignInCredentials.bind(
+    null,
+    navigator.userAgent
+  );
+
   const [stateForm, formActionSignInCredentials] = useFormState(
-    async (state: any, formData: FormData) => {
-      return await actionsSignInCredentials(
-        state,
-        formData,
-        navigator.userAgent
-      );
-    },
+    actionsSignInCredentialsWithUserAgent,
     { isError: false, message: "" }
   );
 

@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   obtenerClientes,
   obtenerPresupuestosId,
-  obtenerUbicacion,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";

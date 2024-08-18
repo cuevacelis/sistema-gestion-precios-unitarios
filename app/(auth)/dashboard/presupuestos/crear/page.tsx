@@ -3,8 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   obtenerClientes,
+  obtenerCountries,
+  obtenerDepartments,
+  obtenerDistricts,
   obtenerGruposDePartidasPaginados,
-  obtenerUbicacion,
+  obtenerProvinces,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -66,10 +69,16 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
 }
 
 async function GetDataNuevoProyecto() {
-  const dataUbicacion = await obtenerUbicacion();
   const dataClientes = await obtenerClientes();
   const session = await auth();
-  return <NuevoProyecto {...{ dataUbicacion, dataClientes, session }} />;
+  return (
+    <NuevoProyecto
+      {...{
+        dataClientes,
+        session,
+      }}
+    />
+  );
 }
 
 async function GetDataGrupoPartidas(props: {

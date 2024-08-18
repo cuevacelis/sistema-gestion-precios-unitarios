@@ -10,19 +10,22 @@ import {
   cambioEstadoPresupuesto,
   crearPresupuesto,
   editarPresupuesto,
+  obtenerCountries,
+  obtenerDepartments,
+  obtenerDistricts,
+  obtenerProvinces,
 } from "./services/sql-queries";
 import {
   creatPresupuestoSchema,
   deletePresupuestoSchema,
   editPresupuestoSchema,
 } from "./validations-zod";
-import { getBrowserInfo } from "./utils";
 import { IBrowserInfo } from "./types";
 
 export async function actionsSignInCredentials(
+  userAgent: string,
   _prevState: any,
-  formData: FormData,
-  userAgent: string
+  formData: FormData
 ) {
   try {
     await signIn("credentials", {
@@ -112,18 +115,18 @@ export async function actionsCrearPresupuesto(
       const errorMessages = error.errors.map((err) => err.message).join(", ");
       return {
         message: `Error de validación: ${errorMessages}`,
-        errors: error.errors,
+        isError: true,
       };
     }
     if (error instanceof Error) {
       return {
         message: error?.message,
-        errors: {},
+        isError: true,
       };
     }
     return {
       message: "Algo salió mal.",
-      errors: {},
+      isError: true,
     };
   }
 }
@@ -345,4 +348,129 @@ export async function getBrowserInfoBackend(
     userAgent,
     os,
   };
+}
+
+export async function actionsObtenerCountries() {
+  try {
+    const dataCountries = await obtenerCountries();
+    return {
+      dataCountries,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+// Acción para obtener los departamentos según el país seleccionado
+export async function actionsObtenerDepartments(idCountry: number) {
+  try {
+    const dataDepartments = await obtenerDepartments(idCountry);
+    revalidateTag("departments");
+    return {
+      dataDepartments,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+// Acción para obtener las provincias según el país y departamento seleccionados
+export async function actionsObtenerProvinces(
+  idCountry: number,
+  idDepartment: number
+) {
+  try {
+    const dataProvinces = await obtenerProvinces(idCountry, idDepartment);
+    revalidateTag("provinces");
+    return {
+      dataProvinces,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+// Acción para obtener los distritos según el país, departamento y provincia seleccionados
+export async function actionsObtenerDistricts(
+  idCountry: number,
+  idDepartment: number,
+  idProvince: number
+) {
+  try {
+    const dataDistricts = await obtenerDistricts(
+      idCountry,
+      idDepartment,
+      idProvince
+    );
+    revalidateTag("districts");
+    return {
+      dataDistricts,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const errorMessages = error.errors.map((err) => err.message).join(", ");
+      return {
+        message: `Error de validación: ${errorMessages}`,
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
 }

@@ -118,7 +118,7 @@ export default function TableComponent(props: IProps) {
   const {
     dataTable: { table, rowSelection, setRowSelection },
   } = useSetGestionPresupuestos({
-    identifierField: "Pre_Id",
+    identifierField: "pre_Id",
     data: props.dataPresupuestos[0].result.data,
     columns,
     rowCount: props.dataPresupuestos[0].result.meta.total_registro,

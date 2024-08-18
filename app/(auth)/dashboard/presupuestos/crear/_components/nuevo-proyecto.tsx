@@ -1,5 +1,4 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,80 +9,106 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { actionsCrearPresupuesto } from "@/lib/actions";
-import { ISpObtenerClientes, ISpObtenerUbicacion } from "@/lib/types";
-import { combineFormDatas } from "@/lib/utils";
+import {
+  actionsCrearPresupuesto,
+  actionsObtenerCountries,
+  actionsObtenerDepartments,
+  actionsObtenerDistricts,
+  actionsObtenerProvinces,
+} from "@/lib/actions";
+import {
+  ISpDepartamentoObten,
+  ISpDistritoObten,
+  ISpObtenerClientes,
+  ISpPaisObten,
+  ISpProvinciaObten,
+} from "@/lib/types";
 import { Session } from "next-auth";
-import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
+import { useEffect, useState, useTransition } from "react";
 
 interface INuevoProyecto {
-  dataUbicacion: ISpObtenerUbicacion[];
   dataClientes: ISpObtenerClientes[];
   session: Session | null;
 }
 
 export default function NuevoProyectoPage(props: INuevoProyecto) {
-  const [formDataController, setFormDataController] = useState({
-    departamento: "",
-    provincia: "",
-    distrito: "",
-    client: "",
-  });
+  const [stateForm, formActionNewPresupuesto] = useFormState(
+    actionsCrearPresupuesto,
+    { isError: false, message: "" }
+  );
 
-  const [provincias, setProvincias] = useState<string[]>([]);
-  const [distritos, setDistritos] = useState<string[]>([]);
-
-  const initialState = { message: "", errors: {} };
-  const [state, dispatch] = useFormState(actionsCrearPresupuesto, initialState);
-
-  const uniqueDepartamentos = useMemo(() => {
-    return [
-      ...new Set(props.dataUbicacion.map((item) => item.ubi_departamento)),
-    ];
-  }, [props.dataUbicacion]);
-
-  useEffect(() => {
-    if (formDataController.departamento) {
-      const filteredProvincias = props.dataUbicacion
-        .filter(
-          (item) => item.ubi_departamento === formDataController.departamento
-        )
-        .map((item) => item.ubi_provincia);
-      setProvincias([...new Set(filteredProvincias)]);
-      setDistritos([]);
-    } else {
-      setProvincias([]);
-      setDistritos([]);
-    }
-  }, [formDataController.departamento, props.dataUbicacion]);
+  const [countries, setCountries] = useState<ISpPaisObten[]>([]);
+  const [departments, setDepartments] = useState<ISpDepartamentoObten[]>([]);
+  const [provinces, setProvinces] = useState<ISpProvinciaObten[]>([]);
+  const [districts, setDistricts] = useState<ISpDistritoObten[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null
+  );
+  const [_selectedProvince, setSelectedProvince] = useState<string | null>(
+    null
+  );
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    if (formDataController.provincia) {
-      const filteredDistritos = props.dataUbicacion
-        .filter((item) => item.ubi_provincia === formDataController.provincia)
-        .map((item) => item.ubi_distrito);
-      setDistritos([...new Set(filteredDistritos)]);
-    } else {
-      setDistritos([]);
-    }
-  }, [formDataController.provincia, props.dataUbicacion]);
+    const fetchCountries = async () => {
+      const { dataCountries } = await actionsObtenerCountries();
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormDataController((prev) => ({ ...prev, [name]: value }));
+      // Verifica si dataCountries no es undefined antes de asignarlo al estado
+      if (dataCountries) {
+        setCountries(dataCountries);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+  const handleSelectChange = async (type: string, value: string) => {
+    startTransition(async () => {
+      if (type === "country") {
+        setSelectedCountry(value);
+        setDepartments([]);
+        setProvinces([]);
+        setDistricts([]);
+
+        const { dataDepartments } = await actionsObtenerDepartments(
+          Number(value)
+        );
+        if (dataDepartments) {
+          setDepartments(dataDepartments);
+        }
+      } else if (type === "department") {
+        setSelectedDepartment(value);
+        setProvinces([]);
+        setDistricts([]);
+
+        const { dataProvinces } = await actionsObtenerProvinces(
+          Number(selectedCountry),
+          Number(value)
+        );
+        if (dataProvinces) {
+          setProvinces(dataProvinces);
+        }
+      } else if (type === "province") {
+        setSelectedProvince(value);
+        setDistricts([]);
+
+        const { dataDistricts } = await actionsObtenerDistricts(
+          Number(selectedCountry),
+          Number(selectedDepartment),
+          Number(value)
+        );
+        if (dataDistricts) {
+          setDistricts(dataDistricts);
+        }
+      }
+    });
   };
 
   return (
     <form
-      action={async (formData: FormData) => {
-        const formData2 = new FormData();
-        for (const [key, value] of Object.entries(formDataController)) {
-          formData2.append(key, String(value));
-        }
-        const combinedData = combineFormDatas(formData, formData2);
-        dispatch(combinedData);
-      }}
+      action={formActionNewPresupuesto}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-full">
@@ -107,18 +132,39 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         <Input type="text" name="name" />
       </div>
       <div className="sm:col-span-3">
-        <label className="text-sm w-20 truncate">Departamento</label>
-        <Select
-          onValueChange={(value) => handleSelectChange("departamento", value)}
-        >
+        <label className="text-sm w-20 truncate">País</label>
+        <Select onValueChange={(value) => handleSelectChange("country", value)}>
           <SelectTrigger>
-            <SelectValue placeholder="Seleccione departamento" />
+            <SelectValue placeholder="Seleccione un país" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {uniqueDepartamentos.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
+              {countries.map((country) => (
+                <SelectItem key={country.pai_id} value={String(country.pai_id)}>
+                  {country.pai_nombre}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="sm:col-span-3">
+        <label className="text-sm w-20 truncate">Departamento</label>
+        <Select
+          onValueChange={(value) => handleSelectChange("department", value)}
+          disabled={!departments.length || isPending}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Seleccione un departamento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {departments.map((department) => (
+                <SelectItem
+                  key={department.dep_id}
+                  value={String(department.dep_id)}
+                >
+                  {department.dep_nombre}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -128,16 +174,20 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Provincia</label>
         <Select
-          onValueChange={(value) => handleSelectChange("provincia", value)}
+          onValueChange={(value) => handleSelectChange("province", value)}
+          disabled={!provinces.length || isPending}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Seleccione provincia" />
+            <SelectValue placeholder="Seleccione una provincia" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {provincias.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
+              {provinces.map((province) => (
+                <SelectItem
+                  key={province.prov_id}
+                  value={String(province.prov_id)}
+                >
+                  {province.prov_nombre}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -147,16 +197,20 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Distrito</label>
         <Select
-          onValueChange={(value) => handleSelectChange("distrito", value)}
+          onValueChange={(value) => handleSelectChange("district", value)}
+          disabled={!districts.length || isPending}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Seleccione distrito" />
+            <SelectValue placeholder="Seleccione un distrito" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {distritos.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
+              {districts.map((district) => (
+                <SelectItem
+                  key={district.dist_id}
+                  value={String(district.dist_id)}
+                >
+                  {district.dist_nombre}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -188,8 +242,8 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         <Input type="number" name="jornal" />
       </div>
       <div aria-live="polite" aria-atomic="true">
-        {state.message ? (
-          <p className="mt-2 text-sm text-destructive">{state.message}</p>
+        {stateForm.message ? (
+          <p className="mt-2 text-sm text-destructive">{stateForm.message}</p>
         ) : null}
       </div>
     </form>

@@ -70,9 +70,10 @@ export interface IDataDBObtenerPresupuestosPaginados {
   usu_nomapellidos: string;
   pre_nombre: string;
   cli_nomaperazsocial: string;
-  ubi_departamento: string;
-  ubi_provincia: string;
-  ubi_distrito: string;
+  pai_nombre: string;
+  dep_nombre: string;
+  prov_nombre: string;
+  dist_nombre: string;
   pre_jornal: number;
   pre_fechorregistro: string;
   pre_estado: number;
@@ -86,9 +87,10 @@ export interface ISpPresupuestoObtenPaginado {
       usu_nomapellidos: string;
       pre_nombre: string;
       cli_nomaperazsocial: string;
-      ubi_departamento: string;
-      ubi_provincia: string;
-      ubi_distrito: string;
+      pai_nombre: string;
+      dep_nombre: string;
+      prov_nombre: string;
+      dist_nombre: string;
       pre_jornal: number;
       pre_fechorregistro: string;
       pre_estado: number;
@@ -133,13 +135,28 @@ export interface ISpObtenerClientes {
   cli_nomaperazsocial: string;
 }
 
-export interface ISpObtenerUbicacion {
-  ubi_departamento: string;
-  ubi_provincia: string;
-  ubi_distrito: string;
-}
-
 // #region GrupoDePartidas
 export interface IDataDBGrupoDePartidas {
   NomGruPar_Nombre: string;
+}
+
+// #region Ubicacion
+export interface ISpPaisObten {
+  pai_id: number;
+  pai_nombre: string;
+}
+
+export interface ISpDepartamentoObten {
+  dep_id: number;
+  dep_nombre: string;
+}
+
+export interface ISpProvinciaObten {
+  prov_id: number;
+  prov_nombre: string;
+}
+
+export interface ISpDistritoObten {
+  dist_id: number;
+  dist_nombre: string;
 }

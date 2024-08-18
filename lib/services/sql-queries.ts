@@ -3,10 +3,13 @@ import { sql as sqlKysely } from "kysely";
 import "server-only";
 import cache from "../cache";
 import {
+  ISpDepartamentoObten,
+  ISpDistritoObten,
   ISpModuloObtenerModulosXPusuario,
   ISpObtenerClientes,
-  ISpObtenerUbicacion,
+  ISpPaisObten,
   ISpPresupuestoObtenPaginado,
+  ISpProvinciaObten,
   ISpUsuarioObtenLoginV2,
 } from "../types";
 import { getDbPostgres } from "@/db/db-postgres";
@@ -96,7 +99,7 @@ export const obtenerPresupuestosPaginados = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov2(${elementosPorPagina}, ${paginaActual}, ${busqueda})`.as(
+          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3(${elementosPorPagina}, ${paginaActual}, ${busqueda})`.as(
             "result"
           )
         )
@@ -258,12 +261,29 @@ export const obtenerClientes = cache(
   { tags: ["clientes"] }
 );
 
-export const obtenerUbicacion = cache(
+export const obtenerCountries = cache(
   async () => {
     try {
       return getDbPostgres()
+        .selectFrom(sqlKysely<ISpPaisObten>`sp_pais_obten()`.as("result"))
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["countries"],
+  { tags: ["countries"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerDepartments = cache(
+  async (idCountry: number) => {
+    try {
+      return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpObtenerUbicacion>`sp_ubicacion_obten()`.as("result")
+          sqlKysely<ISpDepartamentoObten>`sp_departamento_obten_x_pais(${idCountry})`.as(
+            "result"
+          )
         )
         .selectAll()
         .execute();
@@ -271,6 +291,44 @@ export const obtenerUbicacion = cache(
       throw error;
     }
   },
-  ["ubicacion"],
-  { tags: ["ubicacion"], revalidate: 60 * 60 * 24 * 30 }
+  ["departments"],
+  { tags: ["departments"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerProvinces = cache(
+  async (idCountry: number, idDepartment: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<ISpProvinciaObten>`sp_provincia_obten_x_pais_x_departamento(${idCountry}, ${idDepartment})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["provinces"],
+  { tags: ["provinces"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerDistricts = cache(
+  async (idCountry: number, idDepartment: number, idProvince: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<ISpDistritoObten>`sp_distrito_obten_x_pais_x_departamento_x_provincia(${idCountry}, ${idDepartment}, ${idProvince})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["districts"],
+  { tags: ["districts"], revalidate: 60 * 60 * 24 * 30 }
 );

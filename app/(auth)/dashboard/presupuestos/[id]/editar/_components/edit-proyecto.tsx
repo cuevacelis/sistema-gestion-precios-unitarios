@@ -24,7 +24,7 @@ import SubmitButtonComponent from "./button-submit";
 
 interface IEditarProyecto {
   id: string;
-  dataUbicacion: IProcedureResult<any>;
+  // dataUbicacion: IProcedureResult<any>;
   dataClientes: IProcedureResult<any>;
   dataEditPresupuesto: IProcedureResult<IDataDBObtenerPresupuestosId>;
   session: Session | null;
@@ -51,39 +51,39 @@ export default function EditarProyectoPage(props: IEditarProyecto) {
     initialState
   );
 
-  const uniqueDepartamentos = useMemo(() => {
-    return [
-      ...new Set(
-        props.dataUbicacion.recordset.map((item) => item.Ubi_Departamento)
-      ),
-    ];
-  }, [props.dataUbicacion.recordset]);
+  // const uniqueDepartamentos = useMemo(() => {
+  //   return [
+  //     ...new Set(
+  //       props.dataUbicacion.recordset.map((item) => item.Ubi_Departamento)
+  //     ),
+  //   ];
+  // }, [props.dataUbicacion.recordset]);
 
-  useEffect(() => {
-    if (formDataController.departamento) {
-      const filteredProvincias = props.dataUbicacion.recordset
-        .filter(
-          (item) => item.Ubi_Departamento === formDataController.departamento
-        )
-        .map((item) => item.Ubi_Provincia);
-      setProvincias([...new Set(filteredProvincias)]);
-      setDistritos([]);
-    } else {
-      setProvincias([]);
-      setDistritos([]);
-    }
-  }, [formDataController.departamento, props.dataUbicacion.recordset]);
+  // useEffect(() => {
+  //   if (formDataController.departamento) {
+  //     const filteredProvincias = props.dataUbicacion.recordset
+  //       .filter(
+  //         (item) => item.Ubi_Departamento === formDataController.departamento
+  //       )
+  //       .map((item) => item.Ubi_Provincia);
+  //     setProvincias([...new Set(filteredProvincias)]);
+  //     setDistritos([]);
+  //   } else {
+  //     setProvincias([]);
+  //     setDistritos([]);
+  //   }
+  // }, [formDataController.departamento, props.dataUbicacion.recordset]);
 
-  useEffect(() => {
-    if (formDataController.provincia) {
-      const filteredDistritos = props.dataUbicacion.recordset
-        .filter((item) => item.Ubi_Provincia === formDataController.provincia)
-        .map((item) => item.Ubi_Distrito);
-      setDistritos([...new Set(filteredDistritos)]);
-    } else {
-      setDistritos([]);
-    }
-  }, [formDataController.provincia, props.dataUbicacion.recordset]);
+  // useEffect(() => {
+  //   if (formDataController.provincia) {
+  //     const filteredDistritos = props.dataUbicacion.recordset
+  //       .filter((item) => item.Ubi_Provincia === formDataController.provincia)
+  //       .map((item) => item.Ubi_Distrito);
+  //     setDistritos([...new Set(filteredDistritos)]);
+  //   } else {
+  //     setDistritos([]);
+  //   }
+  // }, [formDataController.provincia, props.dataUbicacion.recordset]);
 
   const handleSelectChange = (name: string, value: string) => {
     setFormDataController((prev) => ({ ...prev, [name]: value }));
@@ -138,11 +138,11 @@ export default function EditarProyectoPage(props: IEditarProyecto) {
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {uniqueDepartamentos.map((item) => (
+              {/* {uniqueDepartamentos.map((item) => (
                 <SelectItem key={item} value={item}>
                   {item}
                 </SelectItem>
-              ))}
+              ))} */}
             </SelectGroup>
           </SelectContent>
         </Select>
