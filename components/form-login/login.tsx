@@ -6,11 +6,14 @@ import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
 import InputPassComponent from "./input-pass";
 import InputUserComponent from "./input-user";
+import { useUserAgent } from "@/hooks/useUserAgent";
 
 export default function LoginComponent() {
+  const userAgent = useUserAgent();
+
   const actionsSignInCredentialsWithUserAgent = actionsSignInCredentials.bind(
     null,
-    navigator.userAgent
+    String(userAgent)
   );
 
   const [stateForm, formActionSignInCredentials] = useFormState(
