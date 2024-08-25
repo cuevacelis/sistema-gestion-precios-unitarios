@@ -79,7 +79,7 @@ export async function actionsCrearPresupuesto(
   try {
     const {
       nameUser,
-      name,
+      namePresupuesto,
       pais,
       departamento,
       provincia,
@@ -88,7 +88,7 @@ export async function actionsCrearPresupuesto(
       jornal,
     } = await creatPresupuestoSchema.parseAsync({
       nameUser: formData.get("name-user"),
-      name: formData.get("name-presupuesto"),
+      namePresupuesto: formData.get("name-presupuesto"),
       pais: Number(formData.get("country")),
       departamento: Number(formData.get("department")),
       provincia: Number(formData.get("province")),
@@ -99,7 +99,7 @@ export async function actionsCrearPresupuesto(
 
     await crearPresupuesto(
       nameUser,
-      name,
+      namePresupuesto,
       client,
       pais,
       departamento,
@@ -141,32 +141,37 @@ export async function actionsEditarPresupuesto(
 ) {
   try {
     const {
+      idPrespuesto,
       nameUser,
-      name,
+      namePresupuesto,
+      pais,
       departamento,
       provincia,
       distrito,
       client,
       jornal,
     } = await editPresupuestoSchema.parseAsync({
+      idPrespuesto: Number(id),
       nameUser: formData.get("name-user"),
-      name: formData.get("name"),
-      departamento: formData.get("departamento"),
-      provincia: formData.get("provincia"),
-      distrito: formData.get("distrito"),
+      namePresupuesto: formData.get("name-presupuesto"),
+      pais: Number(formData.get("country")),
+      departamento: Number(formData.get("department")),
+      provincia: Number(formData.get("province")),
+      distrito: Number(formData.get("district")),
       client: formData.get("client"),
-      jornal: formData.get("jornal"),
+      jornal: Number(formData.get("jornal")),
     });
 
     await editarPresupuesto(
-      Number(id),
+      idPrespuesto,
       nameUser,
-      name,
+      namePresupuesto,
       client,
+      pais,
       departamento,
       provincia,
       distrito,
-      Number(jornal)
+      jornal
     );
     revalidateTag("presupuestosPaginados");
     revalidatePath("/dashboard/presupuestos");
@@ -179,18 +184,18 @@ export async function actionsEditarPresupuesto(
       const errorMessages = error.errors.map((err) => err.message).join(", ");
       return {
         message: `Error de validación: ${errorMessages}`,
-        errors: error.errors,
+        isError: true,
       };
     }
     if (error instanceof Error) {
       return {
         message: error?.message,
-        errors: {},
+        isError: true,
       };
     }
     return {
       message: "Algo salió mal.",
-      errors: {},
+      isError: true,
     };
   }
 }

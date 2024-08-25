@@ -1,6 +1,7 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
+
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -9,221 +10,330 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { actionsEditarPresupuesto } from "@/lib/actions";
 import {
-  // IDataDBCliente,
-  IDataDBObtenerPresupuestosId,
-  // IDataDBUbicacion,
+  actionsEditarPresupuesto,
+  actionsObtenerCountries,
+  actionsObtenerDepartments,
+  actionsObtenerDistricts,
+  actionsObtenerProvinces,
+} from "@/lib/actions";
+import {
+  ISpDepartamentoObten,
+  ISpDistritoObten,
+  ISpObtenerClientes,
+  ISpPaisObten,
+  ISpProvinciaObten,
 } from "@/lib/types";
-import { combineFormDatas } from "@/lib/utils";
-import { IProcedureResult } from "mssql";
 import { Session } from "next-auth";
-import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
+import { useEffect, useState, useTransition } from "react";
 
-interface IEditarProyecto {
-  id: string;
-  // dataUbicacion: IProcedureResult<any>;
-  dataClientes: IProcedureResult<any>;
-  dataEditPresupuesto: IProcedureResult<IDataDBObtenerPresupuestosId>;
+interface IEditarPresupuesto {
+  dataClientes: ISpObtenerClientes[];
   session: Session | null;
+  presupuestoId: string;
+  initialData: {
+    nameUser: string;
+    namePresupuesto: string;
+    country: string;
+    department: string;
+    province: string;
+    district: string;
+    client: string;
+    jornal: string;
+  };
 }
 
-export default function EditarProyectoPage(props: IEditarProyecto) {
-  const [formDataController, setFormDataController] = useState({
-    departamento: props.dataEditPresupuesto.recordset[0].Ubi_Departamento,
-    provincia: props.dataEditPresupuesto.recordset[0].Ubi_Provincia,
-    distrito: props.dataEditPresupuesto.recordset[0].Ubi_Distrito,
-    client: props.dataEditPresupuesto.recordset[0].Cli_NomApeRazSocial,
+export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
+  const [stateForm, formActionEditPresupuesto] = useFormState(
+    (prevState: any, formData: FormData) =>
+      actionsEditarPresupuesto(props.presupuestoId, prevState, formData),
+    { isError: false, message: "" }
+  );
+
+  const [formData, setFormData] = useState({
+    country: props.initialData.country,
+    department: props.initialData.department,
+    province: props.initialData.province,
+    district: props.initialData.district,
+    client: props.initialData.client,
+    "name-user": props.initialData.nameUser,
+    "name-presupuesto": props.initialData.namePresupuesto,
+    jornal: props.initialData.jornal,
   });
 
-  const [provincias, setProvincias] = useState<string[]>([]);
-  const [distritos, setDistritos] = useState<string[]>([]);
+  const [countries, setCountries] = useState<ISpPaisObten[]>([]);
+  const [departments, setDepartments] = useState<ISpDepartamentoObten[]>([]);
+  const [provinces, setProvinces] = useState<ISpProvinciaObten[]>([]);
+  const [districts, setDistricts] = useState<ISpDistritoObten[]>([]);
+  const [isPending, startTransition] = useTransition();
 
-  const initialState = { message: "", errors: {} };
-  const actionsEditarPresupuestoWithId = actionsEditarPresupuesto.bind(
-    null,
-    props.id
-  );
-  const [state, dispatch] = useFormState(
-    actionsEditarPresupuestoWithId,
-    initialState
-  );
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      const { dataCountries } = await actionsObtenerCountries();
+      if (dataCountries) {
+        setCountries(dataCountries);
+      }
 
-  // const uniqueDepartamentos = useMemo(() => {
-  //   return [
-  //     ...new Set(
-  //       props.dataUbicacion.recordset.map((item) => item.Ubi_Departamento)
-  //     ),
-  //   ];
-  // }, [props.dataUbicacion.recordset]);
+      if (formData.country) {
+        const { dataDepartments } = await actionsObtenerDepartments(
+          Number(formData.country)
+        );
+        if (dataDepartments) {
+          setDepartments(dataDepartments);
+        }
+      }
 
-  // useEffect(() => {
-  //   if (formDataController.departamento) {
-  //     const filteredProvincias = props.dataUbicacion.recordset
-  //       .filter(
-  //         (item) => item.Ubi_Departamento === formDataController.departamento
-  //       )
-  //       .map((item) => item.Ubi_Provincia);
-  //     setProvincias([...new Set(filteredProvincias)]);
-  //     setDistritos([]);
-  //   } else {
-  //     setProvincias([]);
-  //     setDistritos([]);
-  //   }
-  // }, [formDataController.departamento, props.dataUbicacion.recordset]);
+      if (formData.country && formData.department) {
+        const { dataProvinces } = await actionsObtenerProvinces(
+          Number(formData.country),
+          Number(formData.department)
+        );
+        if (dataProvinces) {
+          setProvinces(dataProvinces);
+        }
+      }
 
-  // useEffect(() => {
-  //   if (formDataController.provincia) {
-  //     const filteredDistritos = props.dataUbicacion.recordset
-  //       .filter((item) => item.Ubi_Provincia === formDataController.provincia)
-  //       .map((item) => item.Ubi_Distrito);
-  //     setDistritos([...new Set(filteredDistritos)]);
-  //   } else {
-  //     setDistritos([]);
-  //   }
-  // }, [formDataController.provincia, props.dataUbicacion.recordset]);
+      if (formData.country && formData.department && formData.province) {
+        const { dataDistricts } = await actionsObtenerDistricts(
+          Number(formData.country),
+          Number(formData.department),
+          Number(formData.province)
+        );
+        if (dataDistricts) {
+          setDistricts(dataDistricts);
+        }
+      }
+    };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormDataController((prev) => ({ ...prev, [name]: value }));
+    fetchInitialData();
+  }, [formData.country, formData.department, formData.province]);
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = async (type: string, value: string) => {
+    startTransition(async () => {
+      setFormData((prev) => ({ ...prev, [type]: value }));
+
+      if (type === "country") {
+        setDepartments([]);
+        setProvinces([]);
+        setDistricts([]);
+        const { dataDepartments } = await actionsObtenerDepartments(
+          Number(value)
+        );
+        if (dataDepartments) {
+          setDepartments(dataDepartments);
+        }
+      } else if (type === "department") {
+        setProvinces([]);
+        setDistricts([]);
+        const { dataProvinces } = await actionsObtenerProvinces(
+          Number(formData.country),
+          Number(value)
+        );
+        if (dataProvinces) {
+          setProvinces(dataProvinces);
+        }
+      } else if (type === "province") {
+        setDistricts([]);
+        const { dataDistricts } = await actionsObtenerDistricts(
+          Number(formData.country),
+          Number(formData.department),
+          Number(value)
+        );
+        if (dataDistricts) {
+          setDistricts(dataDistricts);
+        }
+      }
+    });
   };
 
   return (
     <form
-      action={async (formData: FormData) => {
-        const formData2 = new FormData();
-        for (const [key, value] of Object.entries(formDataController)) {
-          formData2.append(key, String(value));
-        }
-        const combinedData = combineFormDatas(formData, formData2);
-        dispatch(combinedData);
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formDataToSubmit = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+          formDataToSubmit.append(key, String(value));
+        });
+        formActionEditPresupuesto(formDataToSubmit);
       }}
-      className="grid grid-cols-1 mt-4 gap-y-6 gap-x-6"
+      className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="flex flex-row gap-4 items-center justify-between">
-        <div className="flex items-center gap-4">
-          <label className="text-sm w-20 truncate">Código</label>
-          <Badge variant="outline">
-            {props.dataEditPresupuesto.recordset[0].Pre_Id}
-          </Badge>
-        </div>
+      <div className="col-span-full">
         <SubmitButtonComponent />
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Nombre usuario</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="name-user" className="text-sm w-20 truncate">
+          Nombre usuario
+        </Label>
         <Input
+          id="name-user"
           type="text"
           name="name-user"
           readOnly
-          value={String(props.session?.user?.name)}
+          value={formData["name-user"]}
         />
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Nombre</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="name-presupuesto" className="text-sm w-20 truncate">
+          Nombre del presupuesto
+        </Label>
         <Input
+          id="name-presupuesto"
           type="text"
-          name="name"
-          defaultValue={props.dataEditPresupuesto.recordset[0].Pre_Nombre}
+          name="name-presupuesto"
+          value={formData["name-presupuesto"]}
+          onChange={(e) =>
+            handleInputChange("name-presupuesto", e.target.value)
+          }
         />
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Departamento</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="country" className="text-sm w-20 truncate">
+          País
+        </Label>
         <Select
-          defaultValue={props.dataEditPresupuesto.recordset[0].Ubi_Departamento}
-          onValueChange={(value) => handleSelectChange("departamento", value)}
+          onValueChange={(value) => handleSelectChange("country", value)}
+          value={formData.country}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Seleccione departamento" />
+          <SelectTrigger id="country">
+            <SelectValue placeholder="Seleccione un país" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {/* {uniqueDepartamentos.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
-                </SelectItem>
-              ))} */}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Provincia</label>
-        <Select
-          defaultValue={props.dataEditPresupuesto.recordset[0].Ubi_Provincia}
-          onValueChange={(value) => handleSelectChange("provincia", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Seleccione provincia" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {provincias.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
+              {countries.map((country) => (
+                <SelectItem key={country.pai_id} value={String(country.pai_id)}>
+                  {country.pai_nombre}
                 </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Distrito</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="department" className="text-sm w-20 truncate">
+          Departamento
+        </Label>
         <Select
-          defaultValue={props.dataEditPresupuesto.recordset[0].Ubi_Distrito}
-          onValueChange={(value) => handleSelectChange("distrito", value)}
+          onValueChange={(value) => handleSelectChange("department", value)}
+          disabled={!departments.length || isPending}
+          value={formData.department}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Seleccione distrito" />
+          <SelectTrigger id="department">
+            <SelectValue placeholder="Seleccione un departamento" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {distritos.map((item) => (
-                <SelectItem key={item} value={item}>
-                  {item}
+              {departments.map((department) => (
+                <SelectItem
+                  key={department.dep_id}
+                  value={String(department.dep_id)}
+                >
+                  {department.dep_nombre}
                 </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Cliente</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="province" className="text-sm w-20 truncate">
+          Provincia
+        </Label>
         <Select
-          defaultValue={
-            props.dataEditPresupuesto.recordset[0].Cli_NomApeRazSocial
-          }
+          onValueChange={(value) => handleSelectChange("province", value)}
+          disabled={!provinces.length || isPending}
+          value={formData.province}
+        >
+          <SelectTrigger id="province">
+            <SelectValue placeholder="Seleccione una provincia" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {provinces.map((province) => (
+                <SelectItem
+                  key={province.prov_id}
+                  value={String(province.prov_id)}
+                >
+                  {province.prov_nombre}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="sm:col-span-3">
+        <Label htmlFor="district" className="text-sm w-20 truncate">
+          Distrito
+        </Label>
+        <Select
+          onValueChange={(value) => handleSelectChange("district", value)}
+          disabled={!districts.length || isPending}
+          value={formData.district}
+        >
+          <SelectTrigger id="district">
+            <SelectValue placeholder="Seleccione un distrito" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {districts.map((district) => (
+                <SelectItem
+                  key={district.dist_id}
+                  value={String(district.dist_id)}
+                >
+                  {district.dist_nombre}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="sm:col-span-3">
+        <Label htmlFor="client" className="text-sm w-20 truncate">
+          Cliente
+        </Label>
+        <Select
           onValueChange={(value) => handleSelectChange("client", value)}
+          value={formData.client}
         >
-          <SelectTrigger>
+          <SelectTrigger id="client">
             <SelectValue placeholder="Seleccione un cliente" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {props.dataClientes.recordset.map((item) => (
+              {props.dataClientes.map((item) => (
                 <SelectItem
-                  key={item.Cli_NomApeRazSocial}
-                  value={item.Cli_NomApeRazSocial}
+                  key={item.cli_nomaperazsocial}
+                  value={item.cli_nomaperazsocial}
                 >
-                  {item.Cli_NomApeRazSocial}
+                  {item.cli_nomaperazsocial}
                 </SelectItem>
               ))}
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-row gap-4 items-center">
-        <label className="text-sm w-20 truncate">Jornal</label>
+      <div className="sm:col-span-3">
+        <Label htmlFor="jornal" className="text-sm w-20 truncate">
+          Jornal
+        </Label>
         <Input
+          id="jornal"
           type="number"
           name="jornal"
-          defaultValue={props.dataEditPresupuesto.recordset[0].Pre_Jornal}
+          value={formData.jornal}
+          onChange={(e) => handleInputChange("jornal", e.target.value)}
         />
       </div>
-      <div aria-live="polite" aria-atomic="true">
-        {state.message ? (
-          <p className="mt-2 text-sm text-red-500">{state.message}</p>
-        ) : null}
+      <div aria-live="polite" aria-atomic="true" className="col-span-full">
+        {stateForm.message && (
+          <p className="mt-2 text-sm text-destructive">{stateForm.message}</p>
+        )}
       </div>
     </form>
   );

@@ -20,7 +20,9 @@ export const credentialsSchema = z.object({
 });
 
 export const creatPresupuestoSchema = z.object({
-  name: z.string().min(1, "El campo 'Nombre' es requerido"),
+  namePresupuesto: z
+    .string()
+    .min(1, "El campo 'Nombre de presupuesto' es requerido"),
   nameUser: z.string().min(1, "El campo 'Nombre de usuario' es requerido"),
   pais: z.number().min(1, "El campo 'Pais' es requerido"),
   departamento: z.number().min(1, "El campo 'Departamento' es requerido"),
@@ -31,13 +33,17 @@ export const creatPresupuestoSchema = z.object({
 });
 
 export const editPresupuestoSchema = z.object({
-  name: z.string().min(1, "El campo 'Nombre' es requerido"),
+  idPrespuesto: z.number().min(1, "El campo 'idPrespuesto' es requerido"),
+  namePresupuesto: z
+    .string()
+    .min(1, "El campo 'Nombre de presupuesto' es requerido"),
   nameUser: z.string().min(1, "El campo 'Nombre de usuario' es requerido"),
-  departamento: z.string().min(1, "El campo 'Departamento' es requerido"),
-  provincia: z.string().min(1, "El campo 'Provincia' es requerido"),
-  distrito: z.string().min(1, "El campo 'Distrito' es requerido"),
+  pais: z.number().min(1, "El campo 'Pais' es requerido"),
+  departamento: z.number().min(1, "El campo 'Departamento' es requerido"),
+  provincia: z.number().min(1, "El campo 'Provincia' es requerido"),
+  distrito: z.number().min(1, "El campo 'Distrito' es requerido"),
   client: z.string().min(1, "El campo 'Cliente' es requerido"),
-  jornal: z.string().min(1, "El campo 'Jornal' es requerido"),
+  jornal: z.number().min(1, "El campo 'Jornal' es requerido"),
 });
 
 export const deletePresupuestoSchema = z.object({

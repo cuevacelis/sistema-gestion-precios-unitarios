@@ -3,6 +3,7 @@ import { sql as sqlKysely } from "kysely";
 import "server-only";
 import cache from "../cache";
 import {
+  IDataDBObtenerPresupuestosId,
   ISpDepartamentoObten,
   ISpDistritoObten,
   ISpModuloObtenerModulosXPusuario,
@@ -115,13 +116,14 @@ export const obtenerPresupuestosPaginados = cache(
 
 export const obtenerPresupuestosId = async (Pre_Id: number) => {
   try {
-    unstable_noStore();
-    return [];
-    // const pool = await poolPromise;
-    // return pool
-    //   .request()
-    //   .input("Pre_Id", sqlMssql.Int, Pre_Id)
-    //   .execute<IDataDBObtenerPresupuestosId>("SP_Presupuesto_Obten_x_Id");
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<IDataDBObtenerPresupuestosId>`sp_presupuesto_obten_x_id(${Pre_Id})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
   } catch (error) {
     throw error;
   }
@@ -152,30 +154,26 @@ export const crearPresupuesto = async (
 };
 
 export const editarPresupuesto = async (
-  Pre_Id: number,
-  usuNomApellidos: string,
-  preNombre: string,
+  p_pre_id: number,
+  usuNomApellidosUsuario: string,
+  nombrePresupuesto: string,
   cliNomApeRazSocial: string,
-  ubiDepartamento: string,
-  ubiProvincia: string,
-  ubiDistrito: string,
-  preJornal: number
+  idCountry: number,
+  idDepartment: number,
+  idProvince: number,
+  idDistrict: number,
+  idJournal: number
 ) => {
   try {
     unstable_noStore();
-    return [];
-    // const pool = await poolPromise;
-    // return pool
-    //   .request()
-    //   .input("Pre_Id", sqlMssql.Int, Pre_Id)
-    //   .input("Usu_NomApellidos", sqlMssql.VarChar, usuNomApellidos)
-    //   .input("Pre_Nombre", sqlMssql.VarChar, preNombre)
-    //   .input("Cli_NomApeRazSocial", sqlMssql.VarChar, cliNomApeRazSocial)
-    //   .input("Ubi_Departamento", sqlMssql.VarChar, ubiDepartamento)
-    //   .input("Ubi_Provincia", sqlMssql.VarChar, ubiProvincia)
-    //   .input("Ubi_Distrito", sqlMssql.VarChar, ubiDistrito)
-    //   .input("Pre_Jornal", sqlMssql.Decimal(18, 2), preJornal)
-    //   .execute("SP_Presupuesto_Actualiza");
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<any>`sp_presupuesto_actualiza_v2(${p_pre_id}, ${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
   } catch (error) {
     throw error;
   }

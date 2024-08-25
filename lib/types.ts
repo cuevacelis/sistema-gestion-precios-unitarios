@@ -109,17 +109,18 @@ export interface ISpPresupuestoCrea {
 }
 
 export interface IDataDBObtenerPresupuestosId {
-  Pre_Id: number;
-  Pre_Codigo: any;
-  Usu_NomApellidos: string;
-  Pre_Nombre: string;
-  Cli_NomApeRazSocial: string;
-  Ubi_Departamento: string;
-  Ubi_Provincia: string;
-  Ubi_Distrito: string;
-  Pre_Jornal: number;
-  Pre_FecHorRegistro: string;
-  Pre_Estado: number;
+  pre_id: number;
+  pre_codigo: any;
+  usu_nomapellidos: string;
+  pre_nombre: string;
+  cli_nomaperazsocial: string;
+  pai_id: number;
+  dep_id: number;
+  prov_id: number;
+  dist_id: number;
+  pre_jornal: string;
+  pre_fechorregistro: string;
+  pre_estado: number;
 }
 
 // #region Partidas

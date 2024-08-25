@@ -9,9 +9,12 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-const EditarProyecto = dynamic(() => import("./_components/edit-proyecto"), {
-  ssr: false,
-});
+const EditarPresupuestoPage = dynamic(
+  () => import("./_components/edit-proyecto"),
+  {
+    ssr: false,
+  }
+);
 
 interface IPropsEditProyecto {
   params: {
@@ -38,23 +41,29 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
 }
 
 async function GetDataEditarProyecto(props: { id: string }) {
-  // const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
-  // if (dataEditPresupuesto.recordset.length === 0) {
-  //   return notFound();
-  // }
-  // const dataUbicacion = await obtenerUbicacion();
-  // const dataClientes = await obtenerClientes();
-  // const session = await auth();
-  // return (
-  //   <EditarProyecto
-  //     {...{
-  //       id: props.id,
-  //       dataUbicacion,
-  //       dataClientes,
-  //       dataEditPresupuesto,
-  //       session,
-  //     }}
-  //   />
-  // );
-  return null;
+  const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
+  if (dataEditPresupuesto.length === 0) {
+    return notFound();
+  }
+  const dataClientes = await obtenerClientes();
+  const session = await auth();
+  return (
+    <EditarPresupuestoPage
+      {...{
+        dataClientes,
+        session,
+        presupuestoId: props.id,
+        initialData: {
+          nameUser: dataEditPresupuesto[0].usu_nomapellidos,
+          namePresupuesto: dataEditPresupuesto[0].pre_nombre,
+          country: String(dataEditPresupuesto[0].pai_id),
+          department: String(dataEditPresupuesto[0].dep_id),
+          province: String(dataEditPresupuesto[0].prov_id),
+          district: String(dataEditPresupuesto[0].dist_id),
+          client: dataEditPresupuesto[0].cli_nomaperazsocial,
+          jornal: dataEditPresupuesto[0].pre_jornal,
+        },
+      }}
+    />
+  );
 }

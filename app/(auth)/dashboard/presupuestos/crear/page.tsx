@@ -1,14 +1,7 @@
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  obtenerClientes,
-  obtenerCountries,
-  obtenerDepartments,
-  obtenerDistricts,
-  obtenerGruposDePartidasPaginados,
-  obtenerProvinces,
-} from "@/lib/services/sql-queries";
+import { obtenerClientes } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -50,13 +43,6 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
           </CardContent>
         </Card>
 
-        <Suspense
-          key={query + currentPage + rowsPerPage}
-          fallback={<p>cargando...</p>}
-        >
-          <GetDataGrupoPartidas {...{ query, currentPage, rowsPerPage }} />
-        </Suspense>
-
         <div className="mt-6 flex justify-end">
           <div className="flex flex-row gap-2 items-center">
             <label>Presupuesto</label>
@@ -79,18 +65,4 @@ async function GetDataNuevoProyecto() {
       }}
     />
   );
-}
-
-async function GetDataGrupoPartidas(props: {
-  query: string;
-  currentPage: number;
-  rowsPerPage: number;
-}) {
-  const dataGrupoDePartidas = await obtenerGruposDePartidasPaginados(
-    props.rowsPerPage,
-    props.currentPage,
-    props.query
-  );
-  // return <GrupoPartidas {...{ dataGrupoDePartidas }} />;
-  return null;
 }
