@@ -128,29 +128,24 @@ export const obtenerPresupuestosId = async (Pre_Id: number) => {
 };
 
 export const crearPresupuesto = async (
-  usuNomApellidos: string,
-  preNombre: string,
+  usuNomApellidosUsuario: string,
+  nombrePresupuesto: string,
   cliNomApeRazSocial: string,
-  ubiDepartamento: string,
-  ubiProvincia: string,
-  ubiDistrito: string,
-  preJornal: number
+  idCountry: number,
+  idDepartment: number,
+  idProvince: number,
+  idDistrict: number,
+  idJournal: number
 ) => {
   try {
-    unstable_noStore();
-    return [];
-    // const pool = await poolPromise;
-    // return pool
-    //   .request()
-    //   .input("Usu_NomApellidos", sqlMssql.VarChar, usuNomApellidos)
-    //   .input("Pre_Nombre", sqlMssql.VarChar, preNombre)
-    //   .input("Cli_NomApeRazSocial", sqlMssql.VarChar, cliNomApeRazSocial)
-    //   .input("Ubi_Departamento", sqlMssql.VarChar, ubiDepartamento)
-    //   .input("Ubi_Provincia", sqlMssql.VarChar, ubiProvincia)
-    //   .input("Ubi_Distrito", sqlMssql.VarChar, ubiDistrito)
-    //   .input("Pre_Jornal", sqlMssql.Decimal(18, 2), preJornal)
-    //   .output("Pre_Id", sqlMssql.Int)
-    //   .execute("SP_Presupuesto_Crea");
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<any>`sp_presupuesto_crea_v2(${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
   } catch (error) {
     throw error;
   }

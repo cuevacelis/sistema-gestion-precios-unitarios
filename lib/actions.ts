@@ -80,6 +80,7 @@ export async function actionsCrearPresupuesto(
     const {
       nameUser,
       name,
+      pais,
       departamento,
       provincia,
       distrito,
@@ -87,22 +88,24 @@ export async function actionsCrearPresupuesto(
       jornal,
     } = await creatPresupuestoSchema.parseAsync({
       nameUser: formData.get("name-user"),
-      name: formData.get("name"),
-      departamento: formData.get("departamento"),
-      provincia: formData.get("provincia"),
-      distrito: formData.get("distrito"),
+      name: formData.get("name-presupuesto"),
+      pais: Number(formData.get("country")),
+      departamento: Number(formData.get("department")),
+      provincia: Number(formData.get("province")),
+      distrito: Number(formData.get("district")),
       client: formData.get("client"),
-      jornal: formData.get("jornal"),
+      jornal: Number(formData.get("jornal")),
     });
 
     await crearPresupuesto(
       nameUser,
       name,
       client,
+      pais,
       departamento,
       provincia,
       distrito,
-      Number(jornal)
+      jornal
     );
 
     revalidatePath("/dashboard/presupuestos");

@@ -104,6 +104,10 @@ export interface ISpPresupuestoObtenPaginado {
   };
 }
 
+export interface ISpPresupuestoCrea {
+  pg_catalog: number;
+}
+
 export interface IDataDBObtenerPresupuestosId {
   Pre_Id: number;
   Pre_Codigo: any;

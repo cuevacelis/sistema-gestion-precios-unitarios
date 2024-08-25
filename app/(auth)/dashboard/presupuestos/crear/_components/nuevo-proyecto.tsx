@@ -1,4 +1,5 @@
 "use client";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -39,24 +40,26 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
     { isError: false, message: "" }
   );
 
+  const [formData, setFormData] = useState({
+    country: "",
+    department: "",
+    province: "",
+    district: "",
+    client: "",
+    "name-user": props.session?.user?.name || "",
+    "name-presupuesto": "",
+    jornal: "",
+  });
+
   const [countries, setCountries] = useState<ISpPaisObten[]>([]);
   const [departments, setDepartments] = useState<ISpDepartamentoObten[]>([]);
   const [provinces, setProvinces] = useState<ISpProvinciaObten[]>([]);
   const [districts, setDistricts] = useState<ISpDistritoObten[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
-    null
-  );
-  const [_selectedProvince, setSelectedProvince] = useState<string | null>(
-    null
-  );
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     const fetchCountries = async () => {
       const { dataCountries } = await actionsObtenerCountries();
-
-      // Verifica si dataCountries no es undefined antes de asignarlo al estado
       if (dataCountries) {
         setCountries(dataCountries);
       }
@@ -64,39 +67,38 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
 
     fetchCountries();
   }, []);
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSelectChange = async (type: string, value: string) => {
     startTransition(async () => {
+      setFormData(prev => ({ ...prev, [type]: value }));
+
       if (type === "country") {
-        setSelectedCountry(value);
         setDepartments([]);
         setProvinces([]);
         setDistricts([]);
-
-        const { dataDepartments } = await actionsObtenerDepartments(
-          Number(value)
-        );
+        const { dataDepartments } = await actionsObtenerDepartments(Number(value));
         if (dataDepartments) {
           setDepartments(dataDepartments);
         }
       } else if (type === "department") {
-        setSelectedDepartment(value);
         setProvinces([]);
         setDistricts([]);
-
         const { dataProvinces } = await actionsObtenerProvinces(
-          Number(selectedCountry),
+          Number(formData.country),
           Number(value)
         );
         if (dataProvinces) {
           setProvinces(dataProvinces);
         }
       } else if (type === "province") {
-        setSelectedProvince(value);
         setDistricts([]);
-
         const { dataDistricts } = await actionsObtenerDistricts(
-          Number(selectedCountry),
-          Number(selectedDepartment),
+          Number(formData.country),
+          Number(formData.department),
           Number(value)
         );
         if (dataDistricts) {
@@ -108,14 +110,17 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
 
   return (
     <form
-      action={formActionNewPresupuesto}
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formDataToSubmit = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+          formDataToSubmit.append(key, String(value));
+        });
+        formActionNewPresupuesto(formDataToSubmit);
+      }}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-full">
-        {/* <Label htmlFor="code">Código</Label>
-        <Badge variant={"secondary"}>
-          {Number(props.lastPresupuesto?[0].Pre_Id) + 1}
-        </Badge> */}
         <SubmitButtonComponent />
       </div>
       <div className="sm:col-span-3">
@@ -124,12 +129,17 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
           type="text"
           name="name-user"
           readOnly
-          value={String(props.session?.user?.name)}
+          value={formData["name-user"]}
         />
       </div>
       <div className="sm:col-span-3">
-        <label className="text-sm w-20 truncate">Nombre</label>
-        <Input type="text" name="name" />
+        <label className="text-sm w-20 truncate">Nombre del presupuesto</label>
+        <Input 
+          type="text" 
+          name="name-presupuesto" 
+          value={formData["name-presupuesto"]}
+          onChange={(e) => handleInputChange("name-presupuesto", e.target.value)}
+        />
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">País</label>
@@ -239,12 +249,17 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Jornal</label>
-        <Input type="number" name="jornal" />
+        <Input 
+          type="number" 
+          name="jornal" 
+          value={formData.jornal}
+          onChange={(e) => handleInputChange("jornal", e.target.value)}
+        />
       </div>
       <div aria-live="polite" aria-atomic="true">
-        {stateForm.message ? (
+        {stateForm.message && (
           <p className="mt-2 text-sm text-destructive">{stateForm.message}</p>
-        ) : null}
+        )}
       </div>
     </form>
   );

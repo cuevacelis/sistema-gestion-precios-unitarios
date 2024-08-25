@@ -71,7 +71,7 @@ export default function OptionsTable() {
         size="default"
         variant="secondary"
         className="h-9 gap-1"
-        onClick={() => router.push("/dashboard/Presupuestos/exportar")}
+        onClick={() => router.push("/dashboard/presupuestos/exportar")}
       >
         <Download className="w-4" />
         <span>Exportar</span>
