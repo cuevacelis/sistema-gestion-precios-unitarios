@@ -229,6 +229,7 @@ export default function TableComponent(props: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
+          title="¿Está seguro de eliminar el presupuesto?"
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={async () => {

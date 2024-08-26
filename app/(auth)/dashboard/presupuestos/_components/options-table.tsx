@@ -78,6 +78,7 @@ export default function OptionsTable() {
       </Button>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
+          title="¿Está seguro de eliminar el presupuesto?"
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={async () => {

@@ -180,18 +180,19 @@ export const editarPresupuesto = async (
 };
 
 export const cambioEstadoPresupuesto = async (
-  Pre_Id: number,
-  Pre_Estado: number
+  pre_Id: number,
+  pre_Estado: number
 ) => {
   try {
     unstable_noStore();
-    return [];
-    // const pool = await poolPromise;
-    // return pool
-    //   .request()
-    //   .input("Pre_Id", sqlMssql.Int, Pre_Id)
-    //   .input("Pre_Estado", sqlMssql.Int, Pre_Estado)
-    //   .execute("SP_Presupuesto_Actualiza_Estado");
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<any>`sp_presupuesto_actualiza_estado(${pre_Id}, ${pre_Estado})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
   } catch (error) {
     throw error;
   }
