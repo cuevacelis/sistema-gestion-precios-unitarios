@@ -1,5 +1,6 @@
 import { unstable_noStore } from "next/cache";
 import { sql as sqlKysely } from "kysely";
+import { createKysely } from "@vercel/postgres-kysely";
 import "server-only";
 import cache from "../cache";
 import {
@@ -100,7 +101,7 @@ export const obtenerPresupuestosPaginados = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3(${elementosPorPagina}, ${paginaActual}, ${busqueda})`.as(
+          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3(${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
             "result"
           )
         )

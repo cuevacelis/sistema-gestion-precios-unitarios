@@ -202,7 +202,7 @@ export async function actionsEditarPresupuesto(
 
 export async function actionsDeletePresupuesto(Pre_Id: number) {
   try {
-    revalidateTag("presupuestosPaginados");
+    // revalidateTag("presupuestosPaginados");
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
     });
