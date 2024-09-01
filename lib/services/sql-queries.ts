@@ -91,7 +91,7 @@ export const obtenerUsuariosPaginados = cache(
   { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Presupuestos
+// #region PRESUPUESTOS
 export const obtenerPresupuestosPaginados = cache(
   async (
     elementosPorPagina: number,
@@ -255,6 +255,8 @@ export const obtenerClientes = cache(
   ["clientes"],
   { tags: ["clientes"] }
 );
+
+// #region UBICACION
 
 export const obtenerCountries = cache(
   async () => {

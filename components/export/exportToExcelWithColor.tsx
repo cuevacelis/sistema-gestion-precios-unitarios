@@ -1,9 +1,8 @@
+"use client";
+
+import { DynamicObject } from "@/lib/types";
 import { formatDateTimeForFilename } from "@/lib/utils";
 import { utils, writeFile } from "xlsx-js-style";
-
-interface DynamicObject {
-  [key: string]: string | number;
-}
 
 const exportToExcelWithColor = (
   data: DynamicObject[],

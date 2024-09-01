@@ -80,8 +80,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
             });
           } else if (error instanceof ZodError) {
             throw new CredentialsError({
-              message:
-                error.issues.map((issue) => issue.message).join(", ") + ".",
+              message: error.issues.map((issue) => issue.message),
             });
           }
           throw error;

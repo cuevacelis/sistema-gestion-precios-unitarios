@@ -8,9 +8,6 @@ import { Suspense } from "react";
 const NuevoProyecto = dynamic(() => import("./_components/nuevo-proyecto"), {
   ssr: false,
 });
-const GrupoPartidas = dynamic(() => import("./_components/grupo-partidas"), {
-  ssr: false,
-});
 
 interface IPropsNuevoProyecto {
   searchParams?: {
@@ -21,10 +18,6 @@ interface IPropsNuevoProyecto {
 }
 
 export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
-  const query = props.searchParams?.query || "";
-  const currentPage = Number(props.searchParams?.page) || 1;
-  const rowsPerPage = Number(props.searchParams?.rowsPerPage) || 10;
-
   return (
     <>
       <div className="block p-4 lg:p-6">
@@ -42,13 +35,6 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
             </Suspense>
           </CardContent>
         </Card>
-
-        <div className="mt-6 flex justify-end">
-          <div className="flex flex-row gap-2 items-center">
-            <label>Presupuesto</label>
-            <Input type="text" readOnly value="Calcular desde partidas..." />
-          </div>
-        </div>
       </div>
     </>
   );

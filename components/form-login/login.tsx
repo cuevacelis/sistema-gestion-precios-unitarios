@@ -7,6 +7,7 @@ import SubmitButtonComponent from "./button-submit";
 import InputPassComponent from "./input-pass";
 import InputUserComponent from "./input-user";
 import { useUserAgent } from "@/hooks/useUserAgent";
+import ErrorMessage from "../validation/message/error-message";
 
 export default function LoginComponent() {
   const userAgent = useUserAgent();
@@ -27,16 +28,11 @@ export default function LoginComponent() {
       <InputPassComponent />
       <SubmitButtonComponent />
       <div
-        className="flex min-h-10 items-end space-x-1 overflow-auto"
+        className="flex gap-2 items-start overflow-auto"
         aria-live="polite"
         aria-atomic="true"
       >
-        {stateForm?.isError && (
-          <>
-            <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-            <p className="text-sm text-red-500">{stateForm.message}</p>
-          </>
-        )}
+        {stateForm?.isError && <ErrorMessage message={stateForm.message} />}
       </div>
     </form>
   );

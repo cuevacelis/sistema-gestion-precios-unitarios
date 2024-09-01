@@ -27,7 +27,9 @@ import {
 import { Session } from "next-auth";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
+import ErrorMessage from "@/components/validation/message/error-message";
+import { Loader2 } from "lucide-react";
 
 interface IEditarPresupuesto {
   dataClientes: ISpObtenerClientes[];
@@ -67,7 +69,10 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
   const [departments, setDepartments] = useState<ISpDepartamentoObten[]>([]);
   const [provinces, setProvinces] = useState<ISpProvinciaObten[]>([]);
   const [districts, setDistricts] = useState<ISpDistritoObten[]>([]);
-  const [isPending, startTransition] = useTransition();
+
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(false);
+  const [isLoadingProvinces, setIsLoadingProvinces] = useState(false);
+  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -77,32 +82,47 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
       }
 
       if (formData.country) {
-        const { dataDepartments } = await actionsObtenerDepartments(
-          Number(formData.country)
-        );
-        if (dataDepartments) {
-          setDepartments(dataDepartments);
+        setIsLoadingDepartments(true);
+        try {
+          const { dataDepartments } = await actionsObtenerDepartments(
+            Number(formData.country)
+          );
+          if (dataDepartments) {
+            setDepartments(dataDepartments);
+          }
+        } finally {
+          setIsLoadingDepartments(false);
         }
       }
 
       if (formData.country && formData.department) {
-        const { dataProvinces } = await actionsObtenerProvinces(
-          Number(formData.country),
-          Number(formData.department)
-        );
-        if (dataProvinces) {
-          setProvinces(dataProvinces);
+        setIsLoadingProvinces(true);
+        try {
+          const { dataProvinces } = await actionsObtenerProvinces(
+            Number(formData.country),
+            Number(formData.department)
+          );
+          if (dataProvinces) {
+            setProvinces(dataProvinces);
+          }
+        } finally {
+          setIsLoadingProvinces(false);
         }
       }
 
       if (formData.country && formData.department && formData.province) {
-        const { dataDistricts } = await actionsObtenerDistricts(
-          Number(formData.country),
-          Number(formData.department),
-          Number(formData.province)
-        );
-        if (dataDistricts) {
-          setDistricts(dataDistricts);
+        setIsLoadingDistricts(true);
+        try {
+          const { dataDistricts } = await actionsObtenerDistricts(
+            Number(formData.country),
+            Number(formData.department),
+            Number(formData.province)
+          );
+          if (dataDistricts) {
+            setDistricts(dataDistricts);
+          }
+        } finally {
+          setIsLoadingDistricts(false);
         }
       }
     };
@@ -115,22 +135,28 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
   };
 
   const handleSelectChange = async (type: string, value: string) => {
-    startTransition(async () => {
-      setFormData((prev) => ({ ...prev, [type]: value }));
+    setFormData((prev) => ({ ...prev, [type]: value }));
 
-      if (type === "country") {
-        setDepartments([]);
-        setProvinces([]);
-        setDistricts([]);
+    if (type === "country") {
+      setDepartments([]);
+      setProvinces([]);
+      setDistricts([]);
+      setIsLoadingDepartments(true);
+      try {
         const { dataDepartments } = await actionsObtenerDepartments(
           Number(value)
         );
         if (dataDepartments) {
           setDepartments(dataDepartments);
         }
-      } else if (type === "department") {
-        setProvinces([]);
-        setDistricts([]);
+      } finally {
+        setIsLoadingDepartments(false);
+      }
+    } else if (type === "department") {
+      setProvinces([]);
+      setDistricts([]);
+      setIsLoadingProvinces(true);
+      try {
         const { dataProvinces } = await actionsObtenerProvinces(
           Number(formData.country),
           Number(value)
@@ -138,8 +164,13 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
         if (dataProvinces) {
           setProvinces(dataProvinces);
         }
-      } else if (type === "province") {
-        setDistricts([]);
+      } finally {
+        setIsLoadingProvinces(false);
+      }
+    } else if (type === "province") {
+      setDistricts([]);
+      setIsLoadingDistricts(true);
+      try {
         const { dataDistricts } = await actionsObtenerDistricts(
           Number(formData.country),
           Number(formData.department),
@@ -148,8 +179,10 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
         if (dataDistricts) {
           setDistricts(dataDistricts);
         }
+      } finally {
+        setIsLoadingDistricts(false);
       }
-    });
+    }
   };
 
   return (
@@ -221,7 +254,7 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
         </Label>
         <Select
           onValueChange={(value) => handleSelectChange("department", value)}
-          disabled={!departments.length || isPending}
+          disabled={!departments.length || isLoadingDepartments}
           value={formData.department}
         >
           <SelectTrigger id="department">
@@ -240,6 +273,12 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingDepartments && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando departamentos...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <Label htmlFor="province" className="text-sm w-20 truncate">
@@ -247,7 +286,7 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
         </Label>
         <Select
           onValueChange={(value) => handleSelectChange("province", value)}
-          disabled={!provinces.length || isPending}
+          disabled={!provinces.length || isLoadingProvinces}
           value={formData.province}
         >
           <SelectTrigger id="province">
@@ -266,6 +305,12 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingProvinces && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando provincias...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <Label htmlFor="district" className="text-sm w-20 truncate">
@@ -273,7 +318,7 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
         </Label>
         <Select
           onValueChange={(value) => handleSelectChange("district", value)}
-          disabled={!districts.length || isPending}
+          disabled={!districts.length || isLoadingDistricts}
           value={formData.district}
         >
           <SelectTrigger id="district">
@@ -292,6 +337,12 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingDistricts && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando distritos...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <Label htmlFor="client" className="text-sm w-20 truncate">
@@ -330,10 +381,8 @@ export default function EditarPresupuestoPage(props: IEditarPresupuesto) {
           onChange={(e) => handleInputChange("jornal", e.target.value)}
         />
       </div>
-      <div aria-live="polite" aria-atomic="true" className="col-span-full">
-        {stateForm.message && (
-          <p className="mt-2 text-sm text-destructive">{stateForm.message}</p>
-        )}
+      <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
+        {stateForm.message && <ErrorMessage message={stateForm.message} />}
       </div>
     </form>
   );

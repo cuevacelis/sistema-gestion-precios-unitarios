@@ -14,6 +14,10 @@ export interface IBrowserInfo {
   os: string;
 }
 
+export interface DynamicObject {
+  [key: string]: string | number | undefined;
+}
+
 // #region LOGIN
 export interface IBodyLogin {
   username: string;

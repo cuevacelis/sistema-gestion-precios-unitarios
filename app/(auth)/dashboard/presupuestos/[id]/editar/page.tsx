@@ -26,13 +26,12 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
   return (
     <>
       <div className="block p-4 lg:p-6">
-        <h1 className="text-lg font-semibold mb-6">Editar Proyecto</h1>
+        <h1 className="text-lg font-semibold mb-6">Editar</h1>
         <Card x-chunk="overflow-auto" className="mb-6">
           <CardContent>
             <Suspense key={props.params?.id} fallback={<p>cargando...</p>}>
               <GetDataEditarProyecto id={props.params.id} />
             </Suspense>
-            <Separator className="my-10" />
           </CardContent>
         </Card>
       </div>

@@ -28,6 +28,8 @@ import { Session } from "next-auth";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
 import { useEffect, useState, useTransition } from "react";
+import ErrorMessage from "@/components/validation/message/error-message";
+import { Loader2 } from "lucide-react";
 
 interface INuevoProyecto {
   dataClientes: ISpObtenerClientes[];
@@ -55,7 +57,10 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
   const [departments, setDepartments] = useState<ISpDepartamentoObten[]>([]);
   const [provinces, setProvinces] = useState<ISpProvinciaObten[]>([]);
   const [districts, setDistricts] = useState<ISpDistritoObten[]>([]);
-  const [isPending, startTransition] = useTransition();
+
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(false);
+  const [isLoadingProvinces, setIsLoadingProvinces] = useState(false);
+  const [isLoadingDistricts, setIsLoadingDistricts] = useState(false);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -69,24 +74,32 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
   }, []);
 
   const handleInputChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = async (type: string, value: string) => {
-    startTransition(async () => {
-      setFormData(prev => ({ ...prev, [type]: value }));
+    setFormData((prev) => ({ ...prev, [type]: value }));
 
-      if (type === "country") {
-        setDepartments([]);
-        setProvinces([]);
-        setDistricts([]);
-        const { dataDepartments } = await actionsObtenerDepartments(Number(value));
+    if (type === "country") {
+      setDepartments([]);
+      setProvinces([]);
+      setDistricts([]);
+      setIsLoadingDepartments(true);
+      try {
+        const { dataDepartments } = await actionsObtenerDepartments(
+          Number(value)
+        );
         if (dataDepartments) {
           setDepartments(dataDepartments);
         }
-      } else if (type === "department") {
-        setProvinces([]);
-        setDistricts([]);
+      } finally {
+        setIsLoadingDepartments(false);
+      }
+    } else if (type === "department") {
+      setProvinces([]);
+      setDistricts([]);
+      setIsLoadingProvinces(true);
+      try {
         const { dataProvinces } = await actionsObtenerProvinces(
           Number(formData.country),
           Number(value)
@@ -94,8 +107,13 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         if (dataProvinces) {
           setProvinces(dataProvinces);
         }
-      } else if (type === "province") {
-        setDistricts([]);
+      } finally {
+        setIsLoadingProvinces(false);
+      }
+    } else if (type === "province") {
+      setDistricts([]);
+      setIsLoadingDistricts(true);
+      try {
         const { dataDistricts } = await actionsObtenerDistricts(
           Number(formData.country),
           Number(formData.department),
@@ -104,8 +122,10 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         if (dataDistricts) {
           setDistricts(dataDistricts);
         }
+      } finally {
+        setIsLoadingDistricts(false);
       }
-    });
+    }
   };
 
   return (
@@ -134,11 +154,13 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Nombre del presupuesto</label>
-        <Input 
-          type="text" 
-          name="name-presupuesto" 
+        <Input
+          type="text"
+          name="name-presupuesto"
           value={formData["name-presupuesto"]}
-          onChange={(e) => handleInputChange("name-presupuesto", e.target.value)}
+          onChange={(e) =>
+            handleInputChange("name-presupuesto", e.target.value)
+          }
         />
       </div>
       <div className="sm:col-span-3">
@@ -162,7 +184,7 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
         <label className="text-sm w-20 truncate">Departamento</label>
         <Select
           onValueChange={(value) => handleSelectChange("department", value)}
-          disabled={!departments.length || isPending}
+          disabled={!departments.length || isLoadingDepartments}
         >
           <SelectTrigger>
             <SelectValue placeholder="Seleccione un departamento" />
@@ -180,12 +202,18 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingDepartments && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando departamentos...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Provincia</label>
         <Select
           onValueChange={(value) => handleSelectChange("province", value)}
-          disabled={!provinces.length || isPending}
+          disabled={!provinces.length || isLoadingProvinces}
         >
           <SelectTrigger>
             <SelectValue placeholder="Seleccione una provincia" />
@@ -203,12 +231,18 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingProvinces && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando provincias...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Distrito</label>
         <Select
           onValueChange={(value) => handleSelectChange("district", value)}
-          disabled={!districts.length || isPending}
+          disabled={!districts.length || isLoadingDistricts}
         >
           <SelectTrigger>
             <SelectValue placeholder="Seleccione un distrito" />
@@ -226,6 +260,12 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
             </SelectGroup>
           </SelectContent>
         </Select>
+        {isLoadingDistricts && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Cargando distritos...
+          </div>
+        )}
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Cliente</label>
@@ -249,17 +289,15 @@ export default function NuevoProyectoPage(props: INuevoProyecto) {
       </div>
       <div className="sm:col-span-3">
         <label className="text-sm w-20 truncate">Jornal</label>
-        <Input 
-          type="number" 
-          name="jornal" 
+        <Input
+          type="number"
+          name="jornal"
           value={formData.jornal}
           onChange={(e) => handleInputChange("jornal", e.target.value)}
         />
       </div>
-      <div aria-live="polite" aria-atomic="true">
-        {stateForm.message && (
-          <p className="mt-2 text-sm text-destructive">{stateForm.message}</p>
-        )}
+      <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
+        {stateForm.message && <ErrorMessage message={stateForm?.message} />}
       </div>
     </form>
   );

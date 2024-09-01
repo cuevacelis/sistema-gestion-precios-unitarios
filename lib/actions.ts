@@ -42,7 +42,7 @@ export async function actionsSignInCredentials(
       const errors = error as any;
       return {
         isError: true,
-        message: errors?.message || "Algo salió mal.",
+        message: errors?.messages || "Algo salió mal.",
       };
     }
   }
@@ -115,9 +115,8 @@ export async function actionsCrearPresupuesto(
       throw error;
     }
     if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
       return {
-        message: `Error de validación: ${errorMessages}`,
+        message: error.errors.map((err) => err.message),
         isError: true,
       };
     }
