@@ -1,11 +1,11 @@
-import { getBrowserInfoBackend, sendEmail } from "@/lib/actions";
+import { getBrowserInfoBackend } from "@/lib/actions";
 import { findUserByUsernameAndPassword } from "@/lib/services/sql-queries";
 import { IBodyLogin } from "@/lib/types";
 import { DateTime } from "luxon";
+import { queueEmail } from "@/lib/queue/emailQueue";
 
 export async function POST(request: Request) {
   const { username, password, userAgent }: IBodyLogin = await request.json();
-  // const clientIp = request.headers.get("x-forwarded-for");
   const browserInfo = await getBrowserInfoBackend(userAgent);
   const browserName = browserInfo.browserName;
   const fullVersion = browserInfo.fullVersion;
@@ -24,7 +24,8 @@ export async function POST(request: Request) {
     if (res.length === 0) {
       return Response.json({ data: null, status: 400 });
     }
-    await sendEmail({
+
+    await queueEmail({
       to: res[0]?.usu_correo,
       subject: "Iniciaste sesión en SGPU",
       text: `Hola, te has iniciado sesión en SGPU desde una nueva ubicación.
@@ -55,6 +56,7 @@ export async function POST(request: Request) {
              </div>
            `,
     });
+
     return Response.json({
       data: {
         usu_id: res[0]?.usu_id,
@@ -64,6 +66,11 @@ export async function POST(request: Request) {
       status: 200,
     });
   } catch (error) {
-    throw error;
+    console.error("Error en el proceso de inicio de sesión:", error);
+    return Response.json({
+      data: null,
+      status: 500,
+      error: "Error interno del servidor",
+    });
   }
 }

@@ -10,6 +10,7 @@
 		"generate": "npx kysely-codegen --url='env(POSTGRES_URL)'"
 	},
 	"dependencies": {
+		"@aws-sdk/client-sqs": "^3.637.0",
 		"@heroicons/react": "^2.1.5",
 		"@hookform/resolvers": "^3.9.0",
 		"@next/bundle-analyzer": "^14.2.7",
