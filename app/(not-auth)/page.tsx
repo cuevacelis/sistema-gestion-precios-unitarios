@@ -18,18 +18,18 @@ export default async function HomePage() {
       <section className="flex flex-col gap-4 items-center mx-10 mt-10 mb-20 object-center lg:flex-row md:gap-40">
         <div className="flex flex-col">
           <h1 className="text-foreground text-4xl lg:text-5xl text-center sm:text-left">
-            La Plataforma Colaborativa para Presupuestos de Obra y Precios
+            La Plataforma Colaborativa para Proyectos de Obra y Precios
             Unitarios
             <br />
           </h1>
           <p className="text-foreground/80 dark:text-foreground/60 text-lg mt-5">
-            Software que permite elaborar presupuestos por obra, y considera los
+            Software que permite elaborar proyectos por obra, y considera los
             de tipo venta, meta y línea Base.
           </p>
           <p className="text-foreground/80 dark:text-foreground/60 text-lg mt-5">
-            Los cuales son asignados a presupuestos que serán realizados para la
+            Los cuales son asignados a proyectos que serán realizados para la
             planificación y control de labores que se realizan en el modulo de
-            gerencia de presupuestos
+            gerencia de proyectos
           </p>
           <Link
             href="/login"
@@ -60,7 +60,7 @@ export default async function HomePage() {
         />
         <div className="flex flex-row text-center items-center justify-around h-full flex-wrap">
           <p className="text-2xl text-white">
-            Gestiona tus presupuestos de construcción de manera efectiva y
+            Gestiona tus proyectos de construcción de manera efectiva y
             eficiente
           </p>
           <Link
@@ -74,10 +74,10 @@ export default async function HomePage() {
 
       <section className="flex items-center flex-wrap flex-col mb-20 mx-4 md:mx-10 lg:mx-20">
         <p className="text-lg text-orange-300 mb-5">BENEFICIOS</p>
-        <p className="text-4xl mb-5">Sácale más provecho a Presupuestos</p>
+        <p className="text-4xl mb-5">Sácale más provecho a Proyectos</p>
         <p className="text-black dark:text-[#EDEDED] text-lg opacity-50 mb-8 text-center">
           Este módulo cuenta con una variedad de funciones que te permitirán
-          hacer más que sólo presupuestos
+          hacer más que sólo proyectos
         </p>
         <div className="flex flex-col lg:flex-row gap-3 mb-16">
           <Image
@@ -90,7 +90,7 @@ export default async function HomePage() {
             <li>
               Definición de títulos, partidas y recursos por tipo y familia
             </li>
-            <li>Creación de presupuestos y sub-presupuestos venta y meta</li>
+            <li>Creación de proyectos y sub-proyectos venta y meta</li>
             <li>Análisis de precios unitarios</li>
             <li>Análisis de subpartidas</li>
             <li>Formulación de conceptos de pie de presupuesto</li>
@@ -100,7 +100,7 @@ export default async function HomePage() {
 
         <div className="flex flex-col lg:flex-row gap-3 mb-10">
           <ul className="list-disc list-inside text-black dark:text-[#EDEDED] text-lg opacity-70 p-4 lg:w-1/2">
-            <li>Registro de proyecto y asignación presupuestos a planificar</li>
+            <li>Registro de proyecto y asignación proyectos a planificar</li>
             <li>Definición de calendario</li>
             <li>Registro de wbs y asignación de partidas</li>
             <li>Administración de los periodos</li>

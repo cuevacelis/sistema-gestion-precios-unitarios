@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
+import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISpPresupuestoObtenPaginado } from "@/lib/types";
 import { ExportButton } from "./_components/export-button";
 
@@ -31,7 +31,7 @@ export default function ExportarPage(props: IPropsNuevoProyecto) {
 }
 
 async function GetDataExportar() {
-  const dataPresupuestos = await obtenerPresupuestosPaginados(100, 1, "");
+  const dataProyectos = await obtenerProyectosPaginados(100, 1, "");
 
   const formatHeadersExcel = (data: ISpPresupuestoObtenPaginado[]) => {
     return data[0].result.data.map((object) => ({
@@ -44,7 +44,7 @@ async function GetDataExportar() {
     }));
   };
 
-  const formattedData = formatHeadersExcel(dataPresupuestos);
+  const formattedData = formatHeadersExcel(dataProyectos);
 
   return <ExportButton data={formattedData} />;
 }

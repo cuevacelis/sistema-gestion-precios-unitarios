@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
   obtenerClientes,
-  obtenerPresupuestosId,
+  obtenerProyectosId,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
@@ -40,7 +40,7 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
 }
 
 async function GetDataEditarProyecto(props: { id: string }) {
-  const dataEditPresupuesto = await obtenerPresupuestosId(Number(props.id));
+  const dataEditPresupuesto = await obtenerProyectosId(Number(props.id));
   if (dataEditPresupuesto.length === 0) {
     return notFound();
   }

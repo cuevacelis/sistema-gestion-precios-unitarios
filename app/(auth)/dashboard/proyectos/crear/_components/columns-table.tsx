@@ -65,7 +65,7 @@ export const columns: ColumnDef<IDataDBGrupoDePartidas>[] = [
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/presupuestos/1/editar"}>Editar</Link>
+              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

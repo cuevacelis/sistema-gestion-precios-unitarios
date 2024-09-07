@@ -1,4 +1,4 @@
-import ProyectosProvider from "@/context/context-presupuestos";
+import ProyectosProvider from "@/context/context-proyectos";
 import React from "react";
 
 interface IPropsLayout {

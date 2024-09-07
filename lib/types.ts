@@ -67,8 +67,8 @@ export interface IDataDBObtenerUsuariosPaginados {
   Pre_Estado: number;
 }
 
-// #region Presupuestos
-export interface IDataDBObtenerPresupuestosPaginados {
+// #region Proyectos
+export interface IDataDBObtenerProyectosPaginados {
   pre_id: number;
   pre_codigo?: string;
   usu_nomapellidos: string;
@@ -112,7 +112,7 @@ export interface ISpPresupuestoCrea {
   pg_catalog: number;
 }
 
-export interface IDataDBObtenerPresupuestosId {
+export interface IDataDBObtenerProyectosId {
   pre_id: number;
   pre_codigo: any;
   usu_nomapellidos: string;

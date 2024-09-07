@@ -17,21 +17,21 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { IDataDBObtenerProyectosPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
 import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
 
 interface IProps {
-  dataPresupuestos: IProcedureResult<IDataDBObtenerPresupuestosPaginados>;
+  dataProyectos: IProcedureResult<IDataDBObtenerProyectosPaginados>;
 }
 
 export default function TableComponent(props: IProps) {
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: props.dataPresupuestos.recordset,
+    data: props.dataProyectos.recordset,
     columns: columns,
-    rowCount: props.dataPresupuestos.output.TotalRegistro,
+    rowCount: props.dataProyectos.output.TotalRegistro,
     identifierField: "Pre_Id",
   });
 

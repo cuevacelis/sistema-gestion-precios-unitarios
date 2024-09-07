@@ -4,7 +4,7 @@ import { createKysely } from "@vercel/postgres-kysely";
 import "server-only";
 import cache from "../cache";
 import {
-  IDataDBObtenerPresupuestosId,
+  IDataDBObtenerProyectosId,
   ISpDepartamentoObten,
   ISpDistritoObten,
   ISpModuloObtenerModulosXPusuario,
@@ -92,7 +92,7 @@ export const obtenerUsuariosPaginados = cache(
 );
 
 // #region PRESUPUESTOS
-export const obtenerPresupuestosPaginados = cache(
+export const obtenerProyectosPaginados = cache(
   async (
     elementosPorPagina: number,
     paginaActual: number,
@@ -111,15 +111,15 @@ export const obtenerPresupuestosPaginados = cache(
       throw error;
     }
   },
-  ["presupuestosPaginados"],
-  { tags: ["presupuestosPaginados"] }
+  ["proyectosPaginados"],
+  { tags: ["proyectosPaginados"] }
 );
 
-export const obtenerPresupuestosId = async (Pre_Id: number) => {
+export const obtenerProyectosId = async (Pre_Id: number) => {
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<IDataDBObtenerPresupuestosId>`sp_presupuesto_obten_x_id(${Pre_Id})`.as(
+        sqlKysely<IDataDBObtenerProyectosId>`sp_presupuesto_obten_x_id(${Pre_Id})`.as(
           "result"
         )
       )

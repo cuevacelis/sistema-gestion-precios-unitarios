@@ -1,12 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { IDataDBObtenerProyectosPaginados } from "@/lib/types";
 import { File, PlusCircle } from "lucide-react";
 import { IProcedureResult } from "mssql";
 import Link from "next/link";
 
 interface IProps {
-  dataPresupuestos: IProcedureResult<IDataDBObtenerPresupuestosPaginados>;
+  dataProyectos: IProcedureResult<IDataDBObtenerProyectosPaginados>;
 }
 
 export default function OptionsTable() {
@@ -19,7 +19,7 @@ export default function OptionsTable() {
         </span>
       </Button>
       <Button asChild size="sm" className="h-8 gap-1">
-        <Link href={"/dashboard/presupuestos/crear"}>
+        <Link href={"/dashboard/proyectos/crear"}>
           <PlusCircle className="h-3.5 w-3.5" />
           <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
             Añadir

@@ -11,12 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IDataDBObtenerPresupuestosPaginados } from "@/lib/types";
+import { IDataDBObtenerProyectosPaginados } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
+export const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = [
   {
     id: "Id",
     accessorKey: "Pre_Id",
@@ -108,7 +108,7 @@ export const columns: ColumnDef<IDataDBObtenerPresupuestosPaginados>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/presupuestos/1/editar"}>Editar</Link>
+              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

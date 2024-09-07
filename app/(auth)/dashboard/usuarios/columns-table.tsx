@@ -107,7 +107,7 @@ export const columns: ColumnDef<IDataDBObtenerUsuariosPaginados>[] = [
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={"/dashboard/presupuestos/1/editar"}>Editar</Link>
+              <Link href={"/dashboard/proyectos/1/editar"}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>Eliminar</DropdownMenuItem>
           </DropdownMenuContent>

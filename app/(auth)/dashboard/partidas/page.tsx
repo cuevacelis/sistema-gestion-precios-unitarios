@@ -1,5 +1,5 @@
 import Search from "@/components/search/search";
-import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
+import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -48,12 +48,12 @@ async function GetDataTable(props: {
   currentPage: number;
   rowsPerPage: number;
 }) {
-  const dataPresupuestos = await obtenerPresupuestosPaginados(
+  const dataProyectos = await obtenerProyectosPaginados(
     props.rowsPerPage,
     props.currentPage,
     props.query
   );
-  // return <TableComponent {...{ dataPresupuestos }} />;
+  // return <TableComponent {...{ dataProyectos }} />;
   return null;
 }
 

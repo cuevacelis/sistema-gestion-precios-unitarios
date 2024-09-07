@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { obtenerPresupuestosPaginados } from "@/lib/services/sql-queries";
+import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
@@ -34,7 +34,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
     <>
       <section className="flex items-center mb-6">
         <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
-          Presupuestos
+          Proyectos
         </h1>
       </section>
       <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow">
@@ -67,10 +67,10 @@ async function GetDataTable(props: {
   currentPage: number;
   rowsPerPage: number;
 }) {
-  const dataPresupuestos = await obtenerPresupuestosPaginados(
+  const dataProyectos = await obtenerProyectosPaginados(
     props.rowsPerPage,
     props.currentPage,
     props.query
   );
-  return <TableComponent {...{ dataPresupuestos }} />;
+  return <TableComponent {...{ dataProyectos }} />;
 }

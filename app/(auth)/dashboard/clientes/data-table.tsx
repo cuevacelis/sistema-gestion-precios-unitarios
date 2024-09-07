@@ -24,14 +24,14 @@ import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
 
 interface IProps {
-  dataPresupuestos: IProcedureResult<IDataDBObtenerClientesPaginados>;
+  dataProyectos: IProcedureResult<IDataDBObtenerClientesPaginados>;
 }
 
 export default function TableComponent(props: IProps) {
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: props.dataPresupuestos.recordset,
+    data: props.dataProyectos.recordset,
     columns: columns,
-    rowCount: props.dataPresupuestos.output.TotalRegistro,
+    rowCount: props.dataProyectos.output.TotalRegistro,
     identifierField: "Pre_Id",
   });
 

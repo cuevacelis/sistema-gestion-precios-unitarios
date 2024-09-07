@@ -48,12 +48,12 @@ async function GetDataTable(props: {
   currentPage: number;
   rowsPerPage: number;
 }) {
-  const dataPresupuestos = await obtenerClientesPaginados(
+  const dataProyectos = await obtenerClientesPaginados(
     props.rowsPerPage,
     props.currentPage,
     props.query
   );
-  // return <TableComponent {...{ dataPresupuestos }} />;
+  // return <TableComponent {...{ dataProyectos }} />;
   return null;
 }
 

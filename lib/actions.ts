@@ -108,8 +108,8 @@ export async function actionsCrearPresupuesto(
       jornal
     );
 
-    revalidatePath("/dashboard/presupuestos");
-    redirect("/dashboard/presupuestos");
+    revalidatePath("/dashboard/proyectos");
+    redirect("/dashboard/proyectos");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -172,9 +172,9 @@ export async function actionsEditarPresupuesto(
       distrito,
       jornal
     );
-    revalidateTag("presupuestosPaginados");
-    revalidatePath("/dashboard/presupuestos");
-    redirect("/dashboard/presupuestos");
+    revalidateTag("proyectosPaginados");
+    revalidatePath("/dashboard/proyectos");
+    redirect("/dashboard/proyectos");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -201,14 +201,14 @@ export async function actionsEditarPresupuesto(
 
 export async function actionsDeletePresupuesto(Pre_Id: number) {
   try {
-    // revalidateTag("presupuestosPaginados");
+    // revalidateTag("proyectosPaginados");
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
     });
     await cambioEstadoPresupuesto(id, 0);
-    revalidatePath("/dashboard/presupuestos");
-    redirect("/dashboard/presupuestos");
-    // revalidateTag("presupuestosPaginados");
+    revalidatePath("/dashboard/proyectos");
+    redirect("/dashboard/proyectos");
+    // revalidateTag("proyectosPaginados");
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
