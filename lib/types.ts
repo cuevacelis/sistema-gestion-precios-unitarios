@@ -127,6 +127,12 @@ export interface IDataDBObtenerProyectosId {
   pre_estado: number;
 }
 
+// #region Grupos de Partidas
+export interface IDataDBObtenerGruposDePartidasId {
+  grupar_nombre: string;
+  grupar_id: number;
+}
+
 // #region Partidas
 export interface IDataDBObtenerPartidasPaginados {}
 

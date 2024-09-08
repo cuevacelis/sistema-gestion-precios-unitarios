@@ -1,6 +1,8 @@
+// app/dashboard/proyectos/[idProyecto]/grupos-de-partida/_components/data-table.tsx
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
@@ -23,30 +25,38 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { useSetGestionProyectos } from "@/context/context-proyectos";
-import { actionsDeletePresupuesto } from "@/lib/actions";
+// import { actionsDeleteGrupoPartida } from "@/lib/actions";
 import {
-  IDataDBObtenerProyectosPaginados,
-  ISpPresupuestoObtenPaginado,
+  IDataDBObtenerGruposDePartidasId,
   TStatusResponseActions,
 } from "@/lib/types";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Trash2, Copy, FileEdit, PlusCircle } from "lucide-react";
+import { Trash2, Copy, FileEdit, FolderOpen } from "lucide-react";
 import Link from "next/link";
-import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import useUpdateTableComplete from "@/hooks/useTableComplete";
+// import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface IProps {
-  dataProyectos: ISpPresupuestoObtenPaginado[];
+  dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
+  idProyecto: string;
+  currentPath: string[];
+  breadcrumbItems: { name: string; href: string }[];
 }
 
-export default function TableComponent({ dataProyectos }: IProps) {
+export default function TableComponent({
+  dataGruposDePartidas,
+  idProyecto,
+  currentPath,
+  breadcrumbItems,
+}: IProps) {
+  const router = useRouter();
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
-    useState<IDataDBObtenerProyectosPaginados | null>(null);
-  const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
+    useState<IDataDBObtenerGruposDePartidasId | null>(null);
+  const [statusRespDeleteGrupoPartida, setStatusRespDeleteGrupoPartida] =
     useState<TStatusResponseActions>("idle");
 
-  const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
+  const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
     () => [
       {
         id: "select",
@@ -73,52 +83,28 @@ export default function TableComponent({ dataProyectos }: IProps) {
         enableHiding: false,
       },
       {
-        accessorKey: "pre_codigo",
+        id: "grupar_id",
+        accessorKey: "grupar_id",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Código" />
+          <DataTableColumnHeader column={column} title="Id" />
         ),
       },
       {
-        accessorKey: "usu_nomapellidos",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Usuario" />
-        ),
-      },
-      {
-        accessorKey: "pre_nombre",
+        accessorKey: "grupar_nombre",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
       },
-      {
-        accessorKey: "cli_nomaperazsocial",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Razón social" />
-        ),
-      },
-      {
-        accessorKey: "pre_jornal",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Jornal" />
-        ),
-      },
-      {
-        accessorKey: "pre_fechorregistro",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Fecha" />
-        ),
-      },
+      // Añade más columnas según sea necesario
     ],
     []
   );
 
-  const {
-    dataTable: { table, rowSelection, setRowSelection },
-  } = useSetGestionProyectos({
-    identifierField: "pre_id",
-    data: dataProyectos[0].result.data,
+  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
+    data: dataGruposDePartidas,
     columns,
-    rowCount: dataProyectos[0].result.meta.total_registro,
+    rowCount: dataGruposDePartidas.length,
+    identifierField: "grupar_id",
   });
 
   const handleDeselectAll = () => {
@@ -127,9 +113,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
 
   const handleDeleteConfirm = async () => {
     if (!rowSelected) return;
-    setStatusRespDeletePresupuesto("pending");
-    await actionsDeletePresupuesto(rowSelected.pre_id);
-    setStatusRespDeletePresupuesto("success");
+    setStatusRespDeleteGrupoPartida("pending");
+    // await actionsDeleteGrupoPartida(rowSelected.grupar_id);
+    setStatusRespDeleteGrupoPartida("success");
     setIsShowDeleteModal(false);
   };
 
@@ -137,8 +123,19 @@ export default function TableComponent({ dataProyectos }: IProps) {
     navigator.clipboard.writeText(code);
   };
 
+  const handleNavigateToSubgroup = (grupoPartidaId: number) => {
+    const newPath =
+      currentPath.length > 1
+        ? [...currentPath.slice(1), grupoPartidaId]
+        : [grupoPartidaId];
+    router.push(
+      `/dashboard/proyectos/${idProyecto}/grupos-de-partida/${newPath.join("/")}`
+    );
+  };
+
   return (
-    <ValidateMutation statusMutation={[statusRespDeletePresupuesto]}>
+    <ValidateMutation statusMutation={[statusRespDeleteGrupoPartida]}>
+      {/* <Breadcrumb items={breadcrumbItems} /> */}
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <Button
           onClick={handleDeselectAll}
@@ -187,28 +184,23 @@ export default function TableComponent({ dataProyectos }: IProps) {
                   <ContextMenuContent className="w-64">
                     <ContextMenuItem
                       onClick={() =>
-                        handleCopyCode(String(row.original.pre_codigo))
+                        handleCopyCode(String(row.original.grupar_nombre))
                       }
                     >
                       <Copy className="mr-2 h-4 w-4" />
-                      <span>Copiar: {row.original.pre_codigo}</span>
+                      <span>Copiar: {row.original.grupar_nombre}</span>
                     </ContextMenuItem>
-                    <ContextMenuItem>
-                      <Copy className="mr-2 h-4 w-4" />
-                      <span>Duplicar</span>
-                    </ContextMenuItem>
-                    <ContextMenuItem asChild>
-                      <Link
-                        href={`proyectos/${row.original.pre_id}/grupos-de-partida`}
-                        className="flex items-center"
-                      >
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        <span>Grupos de Partida</span>
-                      </Link>
+                    <ContextMenuItem
+                      onClick={() =>
+                        handleNavigateToSubgroup(row.original.grupar_id)
+                      }
+                    >
+                      <FolderOpen className="mr-2 h-4 w-4" />
+                      <span>Ver Subgrupos</span>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`proyectos/${row.original.pre_id}/editar`}
+                        href={`/dashboard/proyectos/${idProyecto}/grupos-de-partida/${[...currentPath.slice(1), row.original.grupar_id].join("/")}/editar`}
                         className="flex items-center"
                       >
                         <FileEdit className="mr-2 h-4 w-4" />
@@ -236,7 +228,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el presupuesto?"
+          title="¿Está seguro de eliminar el grupo de partida?"
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}

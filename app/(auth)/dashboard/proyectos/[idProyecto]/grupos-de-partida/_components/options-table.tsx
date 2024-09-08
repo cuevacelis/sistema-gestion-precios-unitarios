@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Download, PlusCircle } from "lucide-react";
+import {  Download, Edit, PlusCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function OptionsTable() {

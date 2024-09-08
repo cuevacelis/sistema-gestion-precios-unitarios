@@ -1,9 +1,8 @@
 "use client";
 
+import React from "react";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Settings2 } from "lucide-react";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -20,19 +20,33 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const [open, setOpen] = React.useState(false);
+
+  const getColumnTitle = React.useCallback((column: any) => {
+    // Si el encabezado es una función (probablemente DataTableColumnHeader),
+    // intentamos obtener el título de las props
+    if (typeof column.columnDef.header === "function") {
+      // Asumimos que el título se pasa como prop al DataTableColumnHeader
+      return column.columnDef.header({ column }).props.title;
+    }
+    // Si no es una función, usamos el encabezado directamente o el ID de la columna
+    return column.columnDef.header || column.id;
+  }, []);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          className="hidden h-8 lg:flex"
+          className="h-8"
+          aria-label="Ver opciones de columna"
         >
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
+          <Settings2 className="mr-2 h-4 w-4" />
           Columnas visibles
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[150px]">
+      <DropdownMenuContent align="end" className="w-[200px]">
         <DropdownMenuLabel>Columnas visibles</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
@@ -49,7 +63,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {getColumnTitle(column)}
               </DropdownMenuCheckboxItem>
             );
           })}

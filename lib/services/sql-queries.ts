@@ -4,6 +4,7 @@ import { createKysely } from "@vercel/postgres-kysely";
 import "server-only";
 import cache from "../cache";
 import {
+  IDataDBObtenerGruposDePartidasId,
   IDataDBObtenerProyectosId,
   ISpDepartamentoObten,
   ISpDistritoObten,
@@ -72,17 +73,6 @@ export const obtenerUsuariosPaginados = cache(
   ) => {
     try {
       return [];
-      // const pool = await poolPromise;
-      // return pool
-      //   .request()
-      //   .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
-      //   .input("NumeroPagina", sqlMssql.Int, paginaActual)
-      //   .input("PorNombre", sqlMssql.VarChar, busqueda)
-      //   .output("TotalPagina", sqlMssql.Int)
-      //   .output("TotalRegistro", sqlMssql.Int)
-      //   .output("TienePaginaAnterior", sqlMssql.Bit)
-      //   .output("TienePaginaProximo", sqlMssql.Bit)
-      //   .execute<IDataDBObtenerUsuariosPaginados>("SP_Usuario_Obten_Paginado");
     } catch (error) {
       throw error;
     }
@@ -91,7 +81,7 @@ export const obtenerUsuariosPaginados = cache(
   { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
-// #region PRESUPUESTOS
+// #region PROYECTOS
 export const obtenerProyectosPaginados = cache(
   async (
     elementosPorPagina: number,
@@ -189,6 +179,42 @@ export const cambioEstadoPresupuesto = async (
     return getDbPostgres()
       .selectFrom(
         sqlKysely<any>`sp_presupuesto_actualiza_estado(${pre_Id}, ${pre_Estado})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
+// #region Grupos de Partidas
+export const obtenerGruposDePartidasIdProyecto = async (
+  Proyecto_Id: number
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto(${Proyecto_Id})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const obtenerGruposDePartidasIdRecursive = async (
+  Proyecto_Id: number,
+  Grupo_Partida_Id: number
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v2(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
           "result"
         )
       )
