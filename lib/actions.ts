@@ -359,10 +359,8 @@ export async function getBrowserInfoBackend(
 
 export async function actionsObtenerCountries() {
   try {
-    const dataCountries = await obtenerCountries();
-    return {
-      dataCountries,
-    };
+    revalidateTag("countries");
+    return obtenerCountries();
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = error.errors.map((err) => err.message).join(", ");
@@ -387,11 +385,8 @@ export async function actionsObtenerCountries() {
 // Acción para obtener los departamentos según el país seleccionado
 export async function actionsObtenerDepartments(idCountry: number) {
   try {
-    const dataDepartments = await obtenerDepartments(idCountry);
     revalidateTag("departments");
-    return {
-      dataDepartments,
-    };
+    return obtenerDepartments(idCountry);
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = error.errors.map((err) => err.message).join(", ");
@@ -419,11 +414,8 @@ export async function actionsObtenerProvinces(
   idDepartment: number
 ) {
   try {
-    const dataProvinces = await obtenerProvinces(idCountry, idDepartment);
     revalidateTag("provinces");
-    return {
-      dataProvinces,
-    };
+    return obtenerProvinces(idCountry, idDepartment);
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = error.errors.map((err) => err.message).join(", ");
@@ -452,15 +444,8 @@ export async function actionsObtenerDistricts(
   idProvince: number
 ) {
   try {
-    const dataDistricts = await obtenerDistricts(
-      idCountry,
-      idDepartment,
-      idProvince
-    );
     revalidateTag("districts");
-    return {
-      dataDistricts,
-    };
+    return obtenerDistricts(idCountry, idDepartment, idProvince);
   } catch (error) {
     if (error instanceof ZodError) {
       const errorMessages = error.errors.map((err) => err.message).join(", ");

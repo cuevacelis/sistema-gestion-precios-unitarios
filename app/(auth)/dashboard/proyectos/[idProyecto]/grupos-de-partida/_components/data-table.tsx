@@ -137,14 +137,14 @@ export default function TableComponent({
     <ValidateMutation statusMutation={[statusRespDeleteGrupoPartida]}>
       {/* <Breadcrumb items={breadcrumbItems} /> */}
       <div className="relative mb-6 flex flex-row gap-2 items-center">
-        <Button
+        {/* <Button
           onClick={handleDeselectAll}
           variant="outline"
           className="btn btn-secondary"
           size="sm"
         >
           Deseleccionar Todo
-        </Button>
+        </Button> */}
         <DataTableViewOptions table={table} />
       </div>
       <Card className="border-none shadow-none">

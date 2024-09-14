@@ -34,6 +34,7 @@ import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Trash2, Copy, FileEdit, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import useUpdateTableComplete from "@/hooks/useTableComplete";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -48,30 +49,30 @@ export default function TableComponent({ dataProyectos }: IProps) {
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [
-      {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Seleccionar todos"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label={`Seleccionar fila ${row.index + 1}`}
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
+      // {
+      //   id: "select",
+      //   header: ({ table }) => (
+      //     <Checkbox
+      //       checked={
+      //         table.getIsAllPageRowsSelected() ||
+      //         (table.getIsSomePageRowsSelected() && "indeterminate")
+      //       }
+      //       onCheckedChange={(value) =>
+      //         table.toggleAllPageRowsSelected(!!value)
+      //       }
+      //       aria-label="Seleccionar todos"
+      //     />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <Checkbox
+      //       checked={row.getIsSelected()}
+      //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+      //       aria-label={`Seleccionar fila ${row.index + 1}`}
+      //     />
+      //   ),
+      //   enableSorting: false,
+      //   enableHiding: false,
+      // },
       {
         accessorKey: "pre_codigo",
         header: ({ column }) => (
@@ -112,13 +113,20 @@ export default function TableComponent({ dataProyectos }: IProps) {
     []
   );
 
-  const {
-    dataTable: { table, rowSelection, setRowSelection },
-  } = useSetGestionProyectos({
-    identifierField: "pre_id",
+  // const {
+  //   dataTable: { table, rowSelection, setRowSelection },
+  // } = useSetGestionProyectos({
+  //   identifierField: "pre_id",
+  //   data: dataProyectos[0].result.data,
+  //   columns,
+  //   rowCount: dataProyectos[0].result.meta.total_registro,
+  // });
+
+  const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
     data: dataProyectos[0].result.data,
     columns,
     rowCount: dataProyectos[0].result.meta.total_registro,
+    identifierField: "pre_id",
   });
 
   const handleDeselectAll = () => {
@@ -140,14 +148,14 @@ export default function TableComponent({ dataProyectos }: IProps) {
   return (
     <ValidateMutation statusMutation={[statusRespDeletePresupuesto]}>
       <div className="relative mb-6 flex flex-row gap-2 items-center">
-        <Button
+        {/* <Button
           onClick={handleDeselectAll}
           variant="outline"
           className="btn btn-secondary"
           size="sm"
         >
           Deseleccionar Todo
-        </Button>
+        </Button> */}
         <DataTableViewOptions table={table} />
       </div>
       <Card className="border-none shadow-none">

@@ -1,4 +1,4 @@
-import ProyectosProvider from "@/context/context-proyectos";
+// import ProyectosProvider from "@/context/context-proyectos";
 import React from "react";
 
 interface IPropsLayout {
@@ -6,5 +6,5 @@ interface IPropsLayout {
 }
 
 export default async function Layout(props: IPropsLayout) {
-  return <ProyectosProvider>{props.children}</ProyectosProvider>;
+  return <>{props.children}</>;
 }

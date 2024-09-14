@@ -38,7 +38,7 @@ export default function TableComponent(props: IProps) {
   return (
     <>
       <div className="mb-6 flex flex-row gap-2 items-center">
-        <Button
+        {/* <Button
           onClick={() => {
             setRowSelection({});
           }}
@@ -47,7 +47,7 @@ export default function TableComponent(props: IProps) {
           size="sm"
         >
           Deseleccionar Todo
-        </Button>
+        </Button> */}
         <DataTableViewOptions table={table} />
       </div>
       <Card x-chunk="overflow-auto">

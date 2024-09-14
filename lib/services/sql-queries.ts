@@ -1,6 +1,5 @@
 import { unstable_noStore } from "next/cache";
 import { sql as sqlKysely } from "kysely";
-import { createKysely } from "@vercel/postgres-kysely";
 import "server-only";
 import cache from "../cache";
 import {
