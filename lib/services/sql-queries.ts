@@ -224,6 +224,25 @@ export const obtenerGruposDePartidasIdRecursive = async (
   }
 };
 
+export const crearGrupoPartida = async (
+  nombreGrupoPartida: string,
+  idProyecto: string,
+  idLastGroupPartida: string
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida},${nombreGrupoPartida})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
 // #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {

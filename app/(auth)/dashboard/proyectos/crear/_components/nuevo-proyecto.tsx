@@ -38,7 +38,7 @@ type LoadingKeys =
   | "district"
   | "client";
 
-export default function NuevoProyectoPage({
+export default function NuevoProyecto({
   dataClientes,
   session,
 }: INuevoProyecto) {

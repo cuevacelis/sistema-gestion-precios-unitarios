@@ -31,13 +31,11 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   const rowsPerPage = Number(searchParams.rowsPerPage) || 10;
 
   return (
-    <>
-      <section className="flex items-center mb-6">
-        <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
-          Proyectos
-        </h1>
-      </section>
-      <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow">
+    <section className="flex flex-col items-start justify-start gap-6">
+      <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
+        Proyectos
+      </h1>
+      <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow w-full">
         <Suspense
           key={query + currentPage + rowsPerPage}
           fallback={<Skeleton className="h-4 min-w-20" />}
@@ -45,8 +43,8 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
           <OptionsTable />
         </Suspense>
       </section>
-      <Search className="my-6" />
-      <section className="bg-card p-4 rounded-sm border shadow">
+      <Search className="w-full" />
+      <section className="bg-card p-4 rounded-sm border shadow w-full">
         <Suspense
           key={query + currentPage + rowsPerPage}
           fallback={
@@ -58,7 +56,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
           <GetDataTable {...{ query, currentPage, rowsPerPage }} />
         </Suspense>
       </section>
-    </>
+    </section>
   );
 }
 

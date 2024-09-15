@@ -49,3 +49,9 @@ export const editPresupuestoSchema = z.object({
 export const deletePresupuestoSchema = z.object({
   id: z.number().min(1, "El campo 'Pre_Id' es requerido"),
 });
+
+export const crearGrupoPartidaSchema = z.object({
+  nombreGrupoPartida: z.string().min(1, "El campo 'Nombre del grupo de partida' es requerido"),
+  idProyecto: z.string().min(1, "El campo 'Id de proyecto' es requerido"),
+  idLastGroupPartida: z.string(),
+});

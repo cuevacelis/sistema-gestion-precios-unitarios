@@ -4,11 +4,14 @@ import { obtenerClientes } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
-const NuevoProyecto = dynamic(() => import("./_components/nuevo-proyecto"), {
-  ssr: false,
-});
+const NuevoGrupoPartida = dynamic(
+  () => import("./_components/nuevo-grupo-partida"),
+  {
+    ssr: false,
+  }
+);
 
-interface IPropsNuevoProyecto {
+interface IPropsNuevoGrupoPartida {
   searchParams?: {
     query?: string;
     page?: string;
@@ -16,14 +19,14 @@ interface IPropsNuevoProyecto {
   };
 }
 
-export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
+export default function NuevoGrupoPartidaPage(props: IPropsNuevoGrupoPartida) {
   return (
     <div className="p-4 lg:p-6">
-      <h1 className="text-2xl font-semibold mb-4">Crear Nuevo Proyecto</h1>
+      <h1 className="text-2xl font-semibold mb-4">Crear Nuevo Grupo de Partida</h1>
       <Card className="overflow-auto mb-6">
         <CardContent>
           <Suspense fallback={<p>Cargando...</p>}>
-            <GetDataNuevoProyecto />
+            <GetDataNuevoGrupoPartida />
           </Suspense>
         </CardContent>
       </Card>
@@ -31,11 +34,11 @@ export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
   );
 }
 
-async function GetDataNuevoProyecto() {
+async function GetDataNuevoGrupoPartida() {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (
-    <NuevoProyecto
+    <NuevoGrupoPartida
       {...{
         dataClientes,
         session,

@@ -1,7 +1,10 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import { obtenerGruposDePartidasIdProyecto, obtenerGruposDePartidasIdRecursive } from "@/lib/services/sql-queries";
+import {
+  obtenerGruposDePartidasIdProyecto,
+  obtenerGruposDePartidasIdRecursive,
+} from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 
 const TableComponent = dynamic(() => import("../_components/data-table"), {
@@ -25,30 +28,27 @@ interface IGruposDePartidaPage {
   };
 }
 
-export default async function GruposDePartidaPage({ params }: IGruposDePartidaPage) {
+export default async function GruposDePartidaPage({
+  params,
+}: IGruposDePartidaPage) {
   const { idProyecto, slug = [] } = params;
 
   let gruposDePartidas;
   if (slug.length === 0) {
-    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(Number(idProyecto));
+    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
+      Number(idProyecto)
+    );
   } else {
     const lastGrupoPartidaId = Number(slug[slug.length - 1]);
-    gruposDePartidas = await obtenerGruposDePartidasIdRecursive(Number(idProyecto), lastGrupoPartidaId);
+    gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
+      Number(idProyecto),
+      lastGrupoPartidaId
+    );
   }
 
   if (gruposDePartidas.length === 0) {
     return notFound();
   }
-
-  const breadcrumbItems = [
-    { name: "Proyectos", href: "/dashboard/proyectos" },
-    { name: `Proyecto ${idProyecto}`, href: `/dashboard/proyectos/${idProyecto}` },
-    { name: "Grupos de Partida", href: `/dashboard/proyectos/${idProyecto}/grupos-de-partida` },
-    ...slug.map((id, index) => ({
-      name: `Grupo ${id}`,
-      href: `/dashboard/proyectos/${idProyecto}/grupos-de-partida/${slug.slice(0, index + 1).join('/')}`,
-    })),
-  ];
 
   return (
     <>
@@ -63,11 +63,10 @@ export default async function GruposDePartidaPage({ params }: IGruposDePartidaPa
         </Suspense>
       </section>
       <section className="bg-card p-4 rounded-sm border shadow">
-        <TableComponent 
-          dataGruposDePartidas={gruposDePartidas} 
-          idProyecto={idProyecto} 
+        <TableComponent
+          dataGruposDePartidas={gruposDePartidas}
+          idProyecto={idProyecto}
           currentPath={[idProyecto, ...slug]}
-          breadcrumbItems={breadcrumbItems}
         />
       </section>
     </>

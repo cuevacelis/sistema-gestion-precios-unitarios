@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import { changeSidebarState } from "./services/kv";
 import {
   cambioEstadoPresupuesto,
+  crearGrupoPartida,
   crearPresupuesto,
   editarPresupuesto,
   obtenerCountries,
@@ -16,11 +17,13 @@ import {
   obtenerProvinces,
 } from "./services/sql-queries";
 import {
+  crearGrupoPartidaSchema,
   creatPresupuestoSchema,
   deletePresupuestoSchema,
   editPresupuestoSchema,
 } from "./validations-zod";
 import { IBrowserInfo } from "./types";
+import { headers } from "next/headers";
 
 export async function actionsSignInCredentials(
   userAgent: string,
@@ -451,6 +454,57 @@ export async function actionsObtenerDistricts(
       const errorMessages = error.errors.map((err) => err.message).join(", ");
       return {
         message: `Error de validación: ${errorMessages}`,
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsCrearGrupoPartida(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
+    const { nombreGrupoPartida, idProyecto, idLastGroupPartida } =
+      await crearGrupoPartidaSchema.parseAsync({
+        nombreGrupoPartida: formData.get("nombreGrupoPartida"),
+        idProyecto: formData.get("idProyecto"),
+        idLastGroupPartida: formData.get("idLastGroupPartida"),
+      });
+
+    await crearGrupoPartida(nombreGrupoPartida, idProyecto, idLastGroupPartida);
+
+    // Parsear y modificar la URL del referer
+    const url = new URL(referer);
+    const pathSegments = url.pathname
+      .split("/")
+      .filter((segment) => segment !== "crear");
+    url.pathname = pathSegments.join("/");
+
+    // Usar la nueva URL para revalidación y redirección
+    const newPath = url.pathname;
+    revalidatePath(newPath);
+
+    return redirect(url.toString());
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
         isError: true,
       };
     }
