@@ -26,7 +26,7 @@ export default function NuevoGrupoPartida({
   const [formData, setFormData] = useState({
     nombreGrupoPartida: "",
     idProyecto: idProyecto,
-    idLastGroupPartida: lastSlug,
+    idLastGroupPartida: lastSlug ?? null,
   });
 
   const handleInputChange = (name: string, value: string) => {
@@ -37,7 +37,9 @@ export default function NuevoGrupoPartida({
     const formDataToSubmit = new FormData();
 
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, String(value));
+      if (value !== null && value !== undefined) {
+        formDataToSubmit.append(key, String(value));
+      }
     });
 
     formActionNewPresupuesto(formDataToSubmit);

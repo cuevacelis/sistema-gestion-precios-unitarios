@@ -227,7 +227,7 @@ export const obtenerGruposDePartidasIdRecursive = async (
 export const crearGrupoPartida = async (
   nombreGrupoPartida: string,
   idProyecto: string,
-  idLastGroupPartida: string
+  idLastGroupPartida: string | null
 ) => {
   try {
     return getDbPostgres()
