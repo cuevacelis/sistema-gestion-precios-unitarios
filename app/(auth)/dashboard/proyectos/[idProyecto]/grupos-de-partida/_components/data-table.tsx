@@ -130,16 +130,17 @@ export default function TableComponent({
       `/dashboard/proyectos/${idProyecto}/grupos-de-partida/${newPath.join("/")}`
     );
   };
+  
 
   if (dataGruposDePartidas.length === 0) {
     return (
       <section className="flex items-center justify-center min-h-[400px] p-6 bg-background border border-border rounded-lg shadow-sm">
         <p className="text-center">No hay grupos de partidas para este proyecto.</p>
-        <Link href="/dashboard/proyectos/crear">
-          <Button variant="outline" size="sm" className="">
+        {/* <Link href="/dashboard/proyectos/crear">
+          <Button variant="outline" size="sm" className="" disabled>
             Crear grupo de partida
           </Button>
-        </Link>
+        </Link> */}
       </section>
     );
   }
