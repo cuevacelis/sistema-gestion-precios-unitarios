@@ -46,9 +46,9 @@ export default async function GruposDePartidaPage({
     );
   }
 
-  if (gruposDePartidas.length === 0) {
-    return notFound();
-  }
+  // if (gruposDePartidas.length === 0) {
+  //   return notFound();
+  // }
 
   return (
     <>
