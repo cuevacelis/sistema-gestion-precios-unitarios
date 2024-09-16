@@ -13,6 +13,7 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
+import { Input } from "@/components/ui/input";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -24,15 +25,20 @@ export function DataTablePagination<TData>({
   rowSelection,
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex flex-wrap items-center justify-between px-2 w-full gap-5">
-      <div className="flex text-sm text-muted-foreground">
-        {Object.keys(rowSelection).length ||
-          table.getFilteredSelectedRowModel().rows.length}{" "}
-        de {table.getRowCount() || table.getPreFilteredRowModel().rows.length}{" "}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 w-full">
+      <div className="text-sm text-muted-foreground">
+        <span className="font-medium text-foreground">
+          {Object.keys(rowSelection).length ||
+            table.getFilteredSelectedRowModel().rows.length}
+        </span>{" "}
+        de{" "}
+        <span className="font-medium text-foreground">
+          {table.getRowCount() || table.getPreFilteredRowModel().rows.length}
+        </span>{" "}
         fila(s) seleccionada(s)
       </div>
-      <div className="flex flex-wrap items-center gap-5">
-        <div className="flex items-center">
+      <div className="flex flex-col sm:flex-row items-center gap-4">
+        <div className="flex items-center gap-2">
           <p className="text-sm font-medium">Filas por página</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
@@ -52,14 +58,11 @@ export function DataTablePagination<TData>({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center justify-center text-sm font-medium">
-          Página {table.getState().pagination.pageIndex + 1}-
-          {table.getPageCount()} de {table.getRowCount()} datos
-        </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
+            size="icon"
+            className="hidden sm:flex"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
@@ -67,15 +70,28 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
             variant="outline"
-            className="h-8 w-8 p-0"
+            size="icon"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
+          <div className="flex items-center gap-1">
+            <Input
+              className="h-8 w-12 text-center"
+              value={table.getState().pagination.pageIndex + 1}
+              onChange={(e) => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0;
+                table.setPageIndex(page);
+              }}
+            />
+            <span className="text-sm text-muted-foreground">
+              de {table.getPageCount()}
+            </span>
+          </div>
           <Button
             variant="outline"
-            className="h-8 w-8 p-0"
+            size="icon"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -83,7 +99,8 @@ export function DataTablePagination<TData>({
           </Button>
           <Button
             variant="outline"
-            className="hidden h-8 w-8 p-0 lg:flex"
+            size="icon"
+            className="hidden sm:flex"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >

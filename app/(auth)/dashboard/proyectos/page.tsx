@@ -1,24 +1,27 @@
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types";
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { Folder } from "lucide-react";
+import Search from "@/components/search/search";
+
+const TableSkeleton = dynamic(
+  () => import("@/components/ui/skeletons/table-skeleton"),
+  {
+    ssr: false,
+  }
+);
+
+const OptionsTable = dynamic(() => import("./_components/options-table"), {
+  ssr: false,
+  loading: () => <Skeleton className="h-10 w-full" />,
+});
 
 const TableComponent = dynamic(() => import("./_components/data-table"), {
   ssr: false,
-  loading: () => (
-    <section className="min-h-[600px] flex justify-center items-center">
-      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8" />
-    </section>
-  ),
-});
-const Search = dynamic(() => import("@/components/search/search"), {
-  ssr: true,
-  loading: () => <p>Loading search...</p>,
-});
-const OptionsTable = dynamic(() => import("./_components/options-table"), {
-  ssr: false,
-  loading: () => <Skeleton className="h-4 min-w-20" />,
+  loading: () => <TableSkeleton />,
 });
 
 interface IProjectPage {
@@ -31,32 +34,48 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   const rowsPerPage = Number(searchParams.rowsPerPage) || 10;
 
   return (
-    <section className="flex flex-col items-start justify-start gap-6">
-      <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
-        Proyectos
-      </h1>
-      <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow w-full">
-        <Suspense
-          key={query + currentPage + rowsPerPage}
-          fallback={<Skeleton className="h-4 min-w-20" />}
-        >
-          <OptionsTable />
-        </Suspense>
-      </section>
-      <Search className="w-full" />
-      <section className="bg-card p-4 rounded-sm border shadow w-full">
-        <Suspense
-          key={query + currentPage + rowsPerPage}
-          fallback={
-            <section className="min-h-[600px] flex justify-center items-center">
-              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8" />
-            </section>
-          }
-        >
-          <GetDataTable {...{ query, currentPage, rowsPerPage }} />
-        </Suspense>
-      </section>
-    </section>
+    <div className="space-y-6">
+      <Card className="p-6">
+        <CardHeader className="px-0 pt-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <CardTitle className="text-2xl font-bold flex items-center">
+              <Folder className="mr-2 h-8 w-8" />
+              Proyectos
+            </CardTitle>
+            <Search
+              placeholder="Buscar proyectos..."
+              className="w-full sm:w-64 lg:w-96"
+            />
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Card className="p-6">
+        <CardContent className="px-0 py-0">
+          <Suspense
+            key={`options-${query}-${currentPage}-${rowsPerPage}`}
+            fallback={<Skeleton className="h-10 w-full" />}
+          >
+            <OptionsTable />
+          </Suspense>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="p-6">
+          <Suspense
+            key={`table-${query}-${currentPage}-${rowsPerPage}`}
+            fallback={<TableSkeleton />}
+          >
+            <GetDataTable
+              query={query}
+              currentPage={currentPage}
+              rowsPerPage={rowsPerPage}
+            />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
@@ -70,5 +89,5 @@ async function GetDataTable(props: {
     props.currentPage,
     props.query
   );
-  return <TableComponent {...{ dataProyectos }} />;
+  return <TableComponent dataProyectos={dataProyectos} />;
 }

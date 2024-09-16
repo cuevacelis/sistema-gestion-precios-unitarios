@@ -1,13 +1,11 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
 import ModalConfirmacionComponent from "@/components/modals/modalConfirmacion/modalConfirmacion";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -23,7 +21,6 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { useSetGestionProyectos } from "@/context/context-proyectos";
 import { actionsDeletePresupuesto } from "@/lib/actions";
 import {
   IDataDBObtenerProyectosPaginados,
@@ -33,8 +30,9 @@ import {
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Trash2, Copy, FileEdit, PlusCircle } from "lucide-react";
 import Link from "next/link";
-import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
+import { useRouter, useSearchParams } from "next/navigation";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
+import { useToast } from "@/components/ui/use-toast";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -46,33 +44,24 @@ export default function TableComponent({ dataProyectos }: IProps) {
     useState<IDataDBObtenerProyectosPaginados | null>(null);
   const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { toast } = useToast();
+  const query = searchParams.get("query") || "";
+
+  useEffect(() => {
+    if (query) {
+      toast({
+        title: "Resultados de búsqueda",
+        description: `Se encontraron ${dataProyectos[0]?.result?.meta?.total_registro} resultado(s) para "${query}"`,
+        duration: 5000,
+      });
+    }
+  }, [dataProyectos, query, toast]);
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [
-      // {
-      //   id: "select",
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       checked={
-      //         table.getIsAllPageRowsSelected() ||
-      //         (table.getIsSomePageRowsSelected() && "indeterminate")
-      //       }
-      //       onCheckedChange={(value) =>
-      //         table.toggleAllPageRowsSelected(!!value)
-      //       }
-      //       aria-label="Seleccionar todos"
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       checked={row.getIsSelected()}
-      //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-      //       aria-label={`Seleccionar fila ${row.index + 1}`}
-      //     />
-      //   ),
-      //   enableSorting: false,
-      //   enableHiding: false,
-      // },
       {
         accessorKey: "pre_codigo",
         header: ({ column }) => (
@@ -109,29 +98,48 @@ export default function TableComponent({ dataProyectos }: IProps) {
           <DataTableColumnHeader column={column} title="Fecha" />
         ),
       },
+      {
+        accessorKey: "pai_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Pais" />
+        ),
+      },
+      {
+        accessorKey: "dep_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Departamento" />
+        ),
+      },
+      {
+        accessorKey: "prov_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Provincia" />
+        ),
+      },
+      {
+        accessorKey: "dist_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Distrito" />
+        ),
+      },
     ],
     []
   );
 
-  // const {
-  //   dataTable: { table, rowSelection, setRowSelection },
-  // } = useSetGestionProyectos({
-  //   identifierField: "pre_id",
-  //   data: dataProyectos[0].result.data,
-  //   columns,
-  //   rowCount: dataProyectos[0].result.meta.total_registro,
-  // });
-
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: dataProyectos[0].result.data,
+    data: dataProyectos[0]?.result?.data ?? [],
     columns,
-    rowCount: dataProyectos[0].result.meta.total_registro,
+    rowCount: dataProyectos[0]?.result?.meta?.total_registro ?? 0,
     identifierField: "pre_id",
+    initialState: {
+      columnVisibility: {
+        pre_fechorregistro: false,
+        pai_nombre: false,
+        prov_nombre: false,
+        dist_nombre: false,
+      },
+    },
   });
-
-  const handleDeselectAll = () => {
-    setRowSelection({});
-  };
 
   const handleDeleteConfirm = async () => {
     if (!rowSelected) return;
@@ -145,17 +153,24 @@ export default function TableComponent({ dataProyectos }: IProps) {
     navigator.clipboard.writeText(code);
   };
 
+  const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
+    setRowSelection((prev) => ({
+      ...prev,
+      [row.pre_id.toString()]: !prev[row.pre_id.toString()],
+    }));
+  };
+
+  const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
+    router.push(`/dashboard/proyectos/${row.pre_id}/grupos-de-partida`);
+  };
+
+  if (!table || !table.getRowModel().rows.length) {
+    return <div>No hay datos disponibles.</div>;
+  }
+
   return (
     <ValidateMutation statusMutation={[statusRespDeletePresupuesto]}>
       <div className="relative mb-6 flex flex-row gap-2 items-center">
-        {/* <Button
-          onClick={handleDeselectAll}
-          variant="outline"
-          className="btn btn-secondary"
-          size="sm"
-        >
-          Deseleccionar Todo
-        </Button> */}
         <DataTableViewOptions table={table} />
       </div>
       <Card className="border-none shadow-none">
@@ -181,7 +196,12 @@ export default function TableComponent({ dataProyectos }: IProps) {
               {table.getRowModel().rows.map((row) => (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>
-                    <TableRow data-state={row.getIsSelected() && "selected"}>
+                    <TableRow
+                      data-state={row.getIsSelected() && "selected"}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleRowClick(row.original)}
+                      onDoubleClick={() => handleRowDoubleClick(row.original)}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           {flexRender(

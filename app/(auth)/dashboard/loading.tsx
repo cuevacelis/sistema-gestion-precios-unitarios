@@ -2,7 +2,7 @@ import { ShieldCheck } from "lucide-react";
 
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div className="flex items-center justify-center h-home bg-background">
       <div className="text-center">
         <div className="relative inline-block">
           <div className="h-16 w-16 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>

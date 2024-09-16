@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 import { AblyPimary } from "@/context/ably";
 import { AblySuscriptionProvider } from "@/context/context-ably-suscription";
 import { GestionEstudiantesProvider } from "@/context/context-gestion-estudiantes";
@@ -34,6 +35,7 @@ export default async function RootLayout({
             <AblySuscriptionProvider>
               <GestionEstudiantesProvider>
                 {children}
+                <Toaster />
               </GestionEstudiantesProvider>
             </AblySuscriptionProvider>
           </AblyPimary>

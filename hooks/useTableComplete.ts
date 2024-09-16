@@ -7,6 +7,7 @@ import {
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
+  TableState,
 } from "@tanstack/react-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -20,6 +21,7 @@ interface UseUpdateTableProps<TData extends RowData> {
   columns: ColumnDef<TData>[];
   rowCount: number;
   identifierField?: string;
+  initialState?: Partial<TableState>;
 }
 
 function useUpdateTableComplete<TData extends RowData>({
@@ -27,18 +29,25 @@ function useUpdateTableComplete<TData extends RowData>({
   columns,
   rowCount,
   identifierField,
+  initialState,
 }: UseUpdateTableProps<TData>): {
   table: Table<TData>;
-  rowSelection: {};
-  setRowSelection: React.Dispatch<React.SetStateAction<{}>>;
+  rowSelection: Record<string, boolean>;
+  setRowSelection: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 } {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const rowsPerPage = Number(searchParams.get("rowsPerPage")) || 10;
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [rowSelection, setRowSelection] = useState({});
+  const [sorting, setSorting] = useState<SortingState>(
+    initialState?.sorting || []
+  );
+  const [rowSelection, setRowSelection] = useState<Record<string, boolean>>(
+    initialState?.rowSelection || {}
+  );
 
   const handlePaginationChange = (
     paginationUpdate: Updater<PaginationState>
@@ -63,6 +72,14 @@ function useUpdateTableComplete<TData extends RowData>({
     onSortingChange: setSorting,
     onRowSelectionChange: setRowSelection,
     onPaginationChange: handlePaginationChange,
+    initialState: {
+      ...initialState,
+      // pagination: {
+      //   pageIndex: currentPage - 1,
+      //   pageSize: rowsPerPage,
+      //   ...initialState?.pagination,
+      // },
+    },
     getRowId: (row, index) =>
       row[identifierField || ""]?.toString() || index.toString(),
     state: {

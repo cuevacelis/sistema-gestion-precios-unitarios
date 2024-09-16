@@ -12,7 +12,7 @@ export default function OptionsTable() {
   const exportPath = `${pathname}/exportar`;
 
   return (
-    <>
+    <section className="flex flex-wrap items-center gap-4">
       <Link href={createPath}>
         <Button size="default" variant="default" className="h-9 gap-1">
           <PlusCircle className="w-4" />
@@ -25,6 +25,6 @@ export default function OptionsTable() {
           <span>Exportar</span>
         </Button>
       </Link>
-    </>
+    </section>
   );
 }

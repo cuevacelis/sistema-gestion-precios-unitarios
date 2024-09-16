@@ -1,6 +1,3 @@
-// "use client";
-// import ProyectosProvider from "@/context/context-proyectos";
-import { headers } from "next/headers";
 import React from "react";
 
 interface IPropsLayout {
@@ -20,13 +17,10 @@ interface IPropsLayout {
 // }
 
 export default async function Layout({ children, modal }: IPropsLayout) {
-  // const pathname = usePathname();
   return (
     <>
       {children}
       {modal}
-      {/* {pathname === "/dashboard/proyectos/crear" && modal} */}
-      {/* <div id="modal-root" /> */}
     </>
   );
 }
