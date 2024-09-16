@@ -6,13 +6,16 @@ import { useFormStatus } from "react-dom";
 export default function SubmitButtonComponent() {
   const { pending } = useFormStatus();
   return (
-    <Button
-      type="submit"
-      className="btn btn-primary"
-      aria-disabled={pending}
-      disabled={pending}
-    >
-      {pending ? "Cargando..." : "Guardar"}
-    </Button>
+    <>
+      {/* {pending && <ModalLoading />} */}
+      <Button
+        type="submit"
+        className="btn btn-primary"
+        aria-disabled={pending}
+        disabled={pending}
+      >
+        {pending ? "Guardando, por favor espere..." : "Guardar"}
+      </Button>
+    </>
   );
 }

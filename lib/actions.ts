@@ -53,7 +53,7 @@ export async function actionsSignInCredentials(
 
 export async function actionsSignOut() {
   try {
-    await signOut({ redirect: true });
+    await signOut({ redirectTo: "/" });
   } catch (error) {
     throw error;
   }
@@ -79,6 +79,7 @@ export async function actionsCrearPresupuesto(
   _prevState: any,
   formData: FormData
 ) {
+  // redirect("/dashboard/proyectos");
   try {
     const {
       nameUser,

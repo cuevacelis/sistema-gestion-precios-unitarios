@@ -8,19 +8,11 @@ const NuevoProyecto = dynamic(() => import("./_components/nuevo-proyecto"), {
   ssr: false,
 });
 
-interface IPropsNuevoProyecto {
-  searchParams?: {
-    query?: string;
-    page?: string;
-    rowsPerPage?: string;
-  };
-}
-
-export default function NuevoProyectoPage(props: IPropsNuevoProyecto) {
+export default function NuevoProyectoPage() {
   return (
     <div className="p-4 lg:p-6">
       <h1 className="text-2xl font-semibold mb-4">Crear Nuevo Proyecto</h1>
-      <Card className="overflow-auto mb-6">
+      <Card className="overflow-auto mb-6 pt-6">
         <CardContent>
           <Suspense fallback={<p>Cargando...</p>}>
             <GetDataNuevoProyecto />

@@ -180,7 +180,7 @@ export default function NuevoProyecto({
   return (
     <form
       action={handleSubmit}
-      className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
+      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-full">
         <SubmitButtonComponent />
@@ -261,7 +261,7 @@ export default function NuevoProyecto({
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
-        {stateForm.message && <ErrorMessage message={stateForm?.message} />}
+        {stateForm?.message && <ErrorMessage message={stateForm?.message} />}
       </div>
     </form>
   );
