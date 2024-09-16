@@ -4,11 +4,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types";
-import { Folder } from "lucide-react";
+import { Folder, ArrowLeft } from "lucide-react";
 import Search from "@/components/search/search";
+import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 
-const TableSkeleton = dynamic(
-  () => import("@/components/ui/skeletons/table-skeleton"),
+const BackButtonHistory = dynamic(
+  () => import("@/components/back-button/back-button-history"),
   {
     ssr: false,
   }
@@ -38,10 +39,13 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardHeader className="px-0 pt-0">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <CardTitle className="text-2xl font-bold flex items-center">
-              <Folder className="mr-2 h-8 w-8" />
-              Proyectos
-            </CardTitle>
+            <div className="flex items-center gap-4">
+              <BackButtonHistory />
+              <CardTitle className="text-2xl font-bold flex items-center">
+                <Folder className="mr-2 h-8 w-8" />
+                Proyectos
+              </CardTitle>
+            </div>
             <Search
               placeholder="Buscar proyectos..."
               className="w-full sm:w-64 lg:w-96"

@@ -1,4 +1,3 @@
-// app/dashboard/proyectos/[idProyecto]/grupos-de-partida/_components/data-table.tsx
 "use client";
 
 import { useMemo, useState } from "react";
@@ -25,7 +24,6 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-// import { actionsDeleteGrupoPartida } from "@/lib/actions";
 import {
   IDataDBObtenerGruposDePartidasId,
   TStatusResponseActions,
@@ -34,7 +32,6 @@ import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Trash2, Copy, FileEdit, FolderOpen } from "lucide-react";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-// import { Breadcrumb } from "@/components/Breadcrumb";
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
@@ -56,30 +53,30 @@ export default function TableComponent({
 
   const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
     () => [
-      {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Seleccionar todos"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label={`Seleccionar fila ${row.index + 1}`}
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
+      // {
+      //   id: "select",
+      //   header: ({ table }) => (
+      //     <Checkbox
+      //       checked={
+      //         table.getIsAllPageRowsSelected() ||
+      //         (table.getIsSomePageRowsSelected() && "indeterminate")
+      //       }
+      //       onCheckedChange={(value) =>
+      //         table.toggleAllPageRowsSelected(!!value)
+      //       }
+      //       aria-label="Seleccionar todos"
+      //     />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <Checkbox
+      //       checked={row.getIsSelected()}
+      //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+      //       aria-label={`Seleccionar fila ${row.index + 1}`}
+      //     />
+      //   ),
+      //   enableSorting: false,
+      //   enableHiding: false,
+      // },
       {
         id: "grupar_id",
         accessorKey: "grupar_id",
@@ -105,10 +102,6 @@ export default function TableComponent({
     identifierField: "grupar_id",
   });
 
-  const handleDeselectAll = () => {
-    setRowSelection({});
-  };
-
   const handleDeleteConfirm = async () => {
     if (!rowSelected) return;
     setStatusRespDeleteGrupoPartida("pending");
@@ -130,33 +123,31 @@ export default function TableComponent({
       `/dashboard/proyectos/${idProyecto}/grupos-de-partida/${newPath.join("/")}`
     );
   };
-  
+
+  const handleRowClick = (row: IDataDBObtenerGruposDePartidasId) => {
+    setRowSelection((prev) => ({
+      ...prev,
+      [row.grupar_id]: !prev[row.grupar_id],
+    }));
+  };
+
+  const handleRowDoubleClick = (row: IDataDBObtenerGruposDePartidasId) => {
+    handleNavigateToSubgroup(row.grupar_id);
+  };
 
   if (dataGruposDePartidas.length === 0) {
     return (
       <section className="flex items-center justify-center min-h-[400px] p-6 bg-background border border-border rounded-lg shadow-sm">
-        <p className="text-center">No hay grupos de partidas para este proyecto.</p>
-        {/* <Link href="/dashboard/proyectos/crear">
-          <Button variant="outline" size="sm" className="" disabled>
-            Crear grupo de partida
-          </Button>
-        </Link> */}
+        <p className="text-center">
+          No hay grupos de partidas para este proyecto.
+        </p>
       </section>
     );
   }
 
   return (
     <ValidateMutation statusMutation={[statusRespDeleteGrupoPartida]}>
-      {/* <Breadcrumb items={breadcrumbItems} /> */}
       <div className="relative mb-6 flex flex-row gap-2 items-center">
-        {/* <Button
-          onClick={handleDeselectAll}
-          variant="outline"
-          className="btn btn-secondary"
-          size="sm"
-        >
-          Deseleccionar Todo
-        </Button> */}
         <DataTableViewOptions table={table} />
       </div>
       <Card className="border-none shadow-none">
@@ -182,7 +173,12 @@ export default function TableComponent({
               {table.getRowModel().rows.map((row) => (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>
-                    <TableRow data-state={row.getIsSelected() && "selected"}>
+                    <TableRow
+                      data-state={row.getIsSelected() && "selected"}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleRowClick(row.original)}
+                      onDoubleClick={() => handleRowDoubleClick(row.original)}
+                    >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           {flexRender(

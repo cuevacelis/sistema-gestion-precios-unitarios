@@ -33,6 +33,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { useToast } from "@/components/ui/use-toast";
+import { useSearchResultsToast } from "@/hooks/useSearchResultsToast";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -44,21 +45,11 @@ export default function TableComponent({ dataProyectos }: IProps) {
     useState<IDataDBObtenerProyectosPaginados | null>(null);
   const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
-  const searchParams = useSearchParams();
   const router = useRouter();
 
-  const { toast } = useToast();
-  const query = searchParams.get("query") || "";
-
-  useEffect(() => {
-    if (query) {
-      toast({
-        title: "Resultados de búsqueda",
-        description: `Se encontraron ${dataProyectos[0]?.result?.meta?.total_registro} resultado(s) para "${query}"`,
-        duration: 5000,
-      });
-    }
-  }, [dataProyectos, query, toast]);
+  useSearchResultsToast({
+    totalResults: dataProyectos[0]?.result?.meta?.total_registro ?? 0,
+  });
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [

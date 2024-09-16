@@ -1,11 +1,11 @@
 import {
-    BracesIcon,
-    FolderOpenDotIcon,
-    LayoutDashboardIcon,
-    NotebookPenIcon,
-    UserRoundCogIcon,
-    UsersRoundIcon,
-    WalletIcon,
+  BracesIcon,
+  Folder,
+  FolderOpenDotIcon,
+  LayoutDashboardIcon,
+  NotebookPenIcon,
+  UserRoundCogIcon,
+  UsersRoundIcon,
 } from "lucide-react";
 
 interface IProps {
@@ -21,7 +21,7 @@ export default function ModuleIconsComponent({ modNombre }: IProps) {
     case "Partida":
       return <FolderOpenDotIcon className="h-4 w-4" />;
     case "Proyecto":
-      return <WalletIcon className="h-4 w-4" />;
+      return <Folder className="h-4 w-4" />;
     case "Cliente":
       return <UsersRoundIcon className="h-4 w-4" />;
     case "DashBoard":

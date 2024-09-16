@@ -1,24 +1,31 @@
 import { Suspense } from "react";
-import { notFound } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   obtenerGruposDePartidasIdProyecto,
   obtenerGruposDePartidasIdRecursive,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Layers, ChevronRight, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 
-const TableComponent = dynamic(() => import("../_components/data-table"), {
-  ssr: false,
-  loading: () => (
-    <section className="min-h-[600px] flex justify-center items-center">
-      <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-8 w-8" />
-    </section>
-  ),
-});
+const BackButtonHistory = dynamic(
+  () => import("@/components/back-button/back-button-history"),
+  {
+    ssr: false,
+  }
+);
 
 const OptionsTable = dynamic(() => import("../_components/options-table"), {
   ssr: false,
-  loading: () => <Skeleton className="h-4 min-w-20" />,
+  loading: () => <Skeleton className="h-10 w-full" />,
+});
+
+const TableComponent = dynamic(() => import("../_components/data-table"), {
+  ssr: false,
+  loading: () => <TableSkeleton />,
 });
 
 interface IGruposDePartidaPage {
@@ -51,24 +58,40 @@ export default async function GruposDePartidaPage({
   // }
 
   return (
-    <>
-      <section className="flex items-center mb-6">
-        <h1 className="text-lg font-semibold md:text-2xl flex flex-row gap-2 items-center">
-          Grupos de Partidas
-        </h1>
-      </section>
-      <section className="flex items-center flex-wrap gap-3 bg-card p-4 rounded-sm border shadow">
-        <Suspense fallback={<Skeleton className="h-4 min-w-20" />}>
-          <OptionsTable />
-        </Suspense>
-      </section>
-      <section className="bg-card p-4 rounded-sm border shadow">
-        <TableComponent
-          dataGruposDePartidas={gruposDePartidas}
-          idProyecto={idProyecto}
-          currentPath={[idProyecto, ...slug]}
-        />
-      </section>
-    </>
+    <div className="space-y-6">
+      <Card className="p-6">
+        <CardHeader className="px-0 pt-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <BackButtonHistory />
+              <CardTitle className="text-2xl font-bold flex items-center">
+                <Layers className="mr-2 h-8 w-8" />
+                Grupos de Partida
+              </CardTitle>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      <Card className="p-6">
+        <CardContent className="px-0 py-0">
+          <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+            <OptionsTable />
+          </Suspense>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardContent className="p-6">
+          <Suspense fallback={<TableSkeleton />}>
+            <TableComponent
+              dataGruposDePartidas={gruposDePartidas}
+              idProyecto={idProyecto}
+              currentPath={[idProyecto, ...slug]}
+            />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
