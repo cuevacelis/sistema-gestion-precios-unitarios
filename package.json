@@ -52,7 +52,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
-		"date-fns": "^3.6.0",
+		"date-fns": "^4.1.0",
 		"embla-carousel-react": "^8.3.0",
 		"googleapis": "^144.0.0",
 		"input-otp": "^1.2.4",
@@ -102,7 +102,7 @@
 		"dotenv": "^16.4.5",
 		"eslint": "8.57.1",
 		"eslint-config-next": "14.2.12",
-		"kysely-codegen": "^0.16.5",
+		"kysely-codegen": "^0.16.8",
 		"prettier": "^3.3.3"
 	}
 }
