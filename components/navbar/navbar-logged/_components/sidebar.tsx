@@ -4,7 +4,6 @@ import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiant
 import { ISpModuloObtenerModulosXPusuario } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { SidebarClose } from "lucide-react";
-import { IResult } from "mssql";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

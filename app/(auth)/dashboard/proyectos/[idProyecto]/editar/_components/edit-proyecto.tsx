@@ -310,7 +310,7 @@ export default function EditarPresupuestoPage({
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
-        {stateForm.message && <ErrorMessage message={stateForm.message} />}
+        {stateForm?.message && <ErrorMessage message={stateForm?.message} />}
       </div>
     </form>
   );

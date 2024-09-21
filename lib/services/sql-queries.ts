@@ -188,6 +188,22 @@ export const cambioEstadoPresupuesto = async (
   }
 };
 
+export const obtenerNombrePresupuestosById = cache(
+  async (id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("presupuesto")
+        .select("pre_nombre")
+        .where("pre_id", "=", id)
+        .executeTakeFirst();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["presupuestosNombre"],
+  { tags: ["presupuestosNombre"], revalidate: 60 * 60 * 24 }
+);
+
 // #region Grupos de Partidas
 export const obtenerGruposDePartidasIdProyecto = async (
   Proyecto_Id: number
@@ -243,30 +259,51 @@ export const crearGrupoPartida = async (
   }
 };
 
+export const editarGrupoPartida = async (
+  idGrupoPartida: number,
+  nombreGrupoPartida: string
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sqlKysely<any>`sp_grupo_partida_actualiza(${idGrupoPartida},${nombreGrupoPartida})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
 // #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
       return [];
-      // const pool = await poolPromise;
-      // return pool
-      //   .request()
-      //   .input("RegistroPagina", sqlMssql.Int, elementosPorPagina)
-      //   .input("NumeroPagina", sqlMssql.Int, paginaActual)
-      //   .input("PorNombre", sqlMssql.NVarChar, nombre)
-      //   .output("TotalPagina", sqlMssql.Int)
-      //   .output("TotalRegistro", sqlMssql.Int)
-      //   .output("TienePaginaAnterior", sqlMssql.Bit)
-      //   .output("TienePaginaProximo", sqlMssql.Bit)
-      //   .execute<IDataDBGrupoDePartidas>(
-      //     "SP_Grupo_Partida_Obten_Paginado_x_Presupuesto"
-      //   );
     } catch (error) {
       throw error;
     }
   },
   ["gruposDePartidasPaginados"],
   { tags: ["gruposDePartidasPaginados"] }
+);
+
+export const obtenerNombreGruposDePartidasById = cache(
+  async (id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("grupo_partida")
+        .select("grupar_nombre")
+        .where("grupar_id", "=", id)
+        .executeTakeFirst();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["gruposDePartidasNombre"],
+  { tags: ["gruposDePartidasNombre"], revalidate: 60 * 60 * 24 }
 );
 
 // #region Clientes

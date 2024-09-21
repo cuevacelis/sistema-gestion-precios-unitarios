@@ -20,11 +20,10 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBObtenerClientesPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
-import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
 
 interface IProps {
-  dataProyectos: IProcedureResult<IDataDBObtenerClientesPaginados>;
+  dataProyectos: any;
 }
 
 export default function TableComponent(props: IProps) {

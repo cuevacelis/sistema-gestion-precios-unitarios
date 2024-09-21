@@ -57,3 +57,12 @@ export const crearGrupoPartidaSchema = z.object({
   idProyecto: z.string().min(1, "El campo 'Id de proyecto' es requerido"),
   idLastGroupPartida: z.string().nullable(),
 });
+
+export const editarGrupoPartidaSchema = z.object({
+  idGrupoPartida: z
+    .number()
+    .min(1, "El campo 'Id de grupo de partida' es requerido"),
+  nombreGrupoPartida: z
+    .string()
+    .min(1, "El campo 'Nombre del grupo de partida' es requerido"),
+});

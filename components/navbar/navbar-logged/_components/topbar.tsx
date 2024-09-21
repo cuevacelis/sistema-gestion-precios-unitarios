@@ -40,7 +40,6 @@ import {
   SunIcon,
   User,
 } from "lucide-react";
-import { IResult } from "mssql";
 import { Session } from "next-auth";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";

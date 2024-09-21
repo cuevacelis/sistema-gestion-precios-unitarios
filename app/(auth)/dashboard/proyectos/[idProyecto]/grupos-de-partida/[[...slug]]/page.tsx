@@ -3,12 +3,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   obtenerGruposDePartidasIdProyecto,
   obtenerGruposDePartidasIdRecursive,
+  obtenerNombreGruposDePartidasById,
+  obtenerNombrePresupuestosById,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Layers, ChevronRight, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Layers } from "lucide-react";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 
 const BackButtonHistory = dynamic(
@@ -39,23 +39,23 @@ export default async function GruposDePartidaPage({
   params,
 }: IGruposDePartidaPage) {
   const { idProyecto, slug = [] } = params;
+  let isSubGroup = false;
+  let lastGrupoPartidaId = 0;
 
   let gruposDePartidas;
   if (slug.length === 0) {
+    isSubGroup = false;
     gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
       Number(idProyecto)
     );
   } else {
-    const lastGrupoPartidaId = Number(slug[slug.length - 1]);
+    isSubGroup = true;
+    lastGrupoPartidaId = Number(slug[slug.length - 1]);
     gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
       Number(idProyecto),
       lastGrupoPartidaId
     );
   }
-
-  // if (gruposDePartidas.length === 0) {
-  //   return notFound();
-  // }
 
   return (
     <div className="space-y-6">
@@ -66,7 +66,34 @@ export default async function GruposDePartidaPage({
               <BackButtonHistory />
               <CardTitle className="text-2xl font-bold flex items-center">
                 <Layers className="mr-2 h-8 w-8" />
-                Grupos de Partida
+                <span>
+                  Grupos de Partida{" "}
+                  {isSubGroup ? (
+                    <>
+                      del grupo{" "}
+                      <Suspense
+                        key={lastGrupoPartidaId}
+                        fallback={<span>Loading...</span>}
+                      >
+                        <GrupoPartidaNameById
+                          idGrupoPartida={lastGrupoPartidaId}
+                        />
+                      </Suspense>
+                    </>
+                  ) : (
+                    <>
+                      del proyecto{" "}
+                      <Suspense
+                        key={idProyecto}
+                        fallback={<span>Loading...</span>}
+                      >
+                        <PresupuestoNameById
+                          idPresupuesto={Number(idProyecto)}
+                        />
+                      </Suspense>
+                    </>
+                  )}
+                </span>
               </CardTitle>
             </div>
           </div>
@@ -94,4 +121,32 @@ export default async function GruposDePartidaPage({
       </Card>
     </div>
   );
+}
+
+async function GrupoPartidaNameById({
+  idGrupoPartida,
+}: {
+  idGrupoPartida: number;
+}) {
+  const data = await obtenerNombreGruposDePartidasById(idGrupoPartida);
+
+  if (!data) {
+    return null;
+  }
+
+  return <span className="text-muted-foreground">{data.grupar_nombre}</span>;
+}
+
+async function PresupuestoNameById({
+  idPresupuesto,
+}: {
+  idPresupuesto: number;
+}) {
+  const data = await obtenerNombrePresupuestosById(idPresupuesto);
+
+  if (!data) {
+    return null;
+  }
+
+  return <span className="text-muted-foreground">{data.pre_nombre}</span>;
 }

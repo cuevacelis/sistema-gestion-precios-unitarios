@@ -41,12 +41,12 @@ export default function OptionsTable() {
           <span>Nuevo</span>
         </Button>
       </Link>
-      <Link href={exportPath}>
+      {/* <Link href={exportPath}>
         <Button size="default" variant="secondary" className="h-9 gap-1">
           <Download className="w-4" />
           <span>Exportar</span>
         </Button>
-      </Link>
+      </Link> */}
     </section>
   );
 }

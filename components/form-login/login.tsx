@@ -31,7 +31,7 @@ export default function LoginComponent() {
         aria-live="polite"
         aria-atomic="true"
       >
-        {stateForm?.isError && <ErrorMessage message={stateForm.message} />}
+        {stateForm?.isError && <ErrorMessage message={stateForm?.message} />}
       </div>
     </form>
   );

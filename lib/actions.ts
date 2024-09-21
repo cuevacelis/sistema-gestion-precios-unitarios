@@ -5,11 +5,11 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
-import { changeSidebarState } from "./services/kv";
 import {
   cambioEstadoPresupuesto,
   crearGrupoPartida,
   crearPresupuesto,
+  editarGrupoPartida,
   editarPresupuesto,
   obtenerCountries,
   obtenerDepartments,
@@ -20,10 +20,13 @@ import {
   crearGrupoPartidaSchema,
   creatPresupuestoSchema,
   deletePresupuestoSchema,
+  editarGrupoPartidaSchema,
   editPresupuestoSchema,
 } from "./validations-zod";
 import { IBrowserInfo } from "./types";
 import { headers } from "next/headers";
+
+// #region Login
 
 export async function actionsSignInCredentials(
   userAgent: string,
@@ -74,6 +77,8 @@ export async function actionsSignInGoogle() {
     throw error;
   }
 }
+
+// #region Presupuestos
 
 export async function actionsCrearPresupuesto(
   _prevState: any,
@@ -237,79 +242,7 @@ export async function actionsDeletePresupuesto(Pre_Id: number) {
   }
 }
 
-export async function actionsAddConfigurationNavbar(
-  sidebarState: boolean,
-  userId: number
-) {
-  try {
-    await changeSidebarState({
-      sidebarState: sidebarState,
-      userId: userId,
-    });
-  } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
-    if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
-      return {
-        message: `Error de validación: ${errorMessages}`,
-        errors: error.errors,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        message: error?.message,
-        errors: {},
-      };
-    }
-    return {
-      message: "Algo salió mal.",
-      errors: {},
-    };
-  }
-}
-
-export async function sendEmail({
-  to,
-  subject,
-  text,
-  html,
-}: {
-  to: string;
-  subject: string;
-  text: string;
-  html: string;
-}) {
-  try {
-    const USER = process.env.USER_SMTP;
-    const PASSWORD = process.env.PASSWORD_SMTP;
-    // Dynamically load
-    const nodemailer = await import("nodemailer");
-
-    const transport = nodemailer.createTransport({
-      host: "email-smtp.us-east-1.amazonaws.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: USER,
-        pass: PASSWORD,
-      },
-    });
-
-    const result = await transport.sendMail({
-      from: '"SGPU" <no-reply@mail.calculopreciosunitarios.com>',
-      to: to,
-      subject: subject,
-      text: text,
-      html: html,
-    });
-    return { success: true, result };
-  } catch (error) {
-    // throw error;
-    return { success: false, error: error };
-  }
-}
+// #region Ubicacion
 
 export async function getBrowserInfoBackend(
   userAgent: string
@@ -471,6 +404,8 @@ export async function actionsObtenerDistricts(
   }
 }
 
+// #region Grupos de Partidas
+
 export async function actionsCrearGrupoPartida(
   _prevState: any,
   formData: FormData
@@ -492,6 +427,57 @@ export async function actionsCrearGrupoPartida(
     const pathSegments = url.pathname
       .split("/")
       .filter((segment) => segment !== "crear");
+    url.pathname = pathSegments.join("/");
+
+    // Usar la nueva URL para revalidación y redirección
+    const newPath = url.pathname;
+    revalidatePath(newPath);
+
+    return redirect(url.toString());
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsEditarGrupoPartida(
+  idGrupoPartida: number,
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
+    const { nombreGrupoPartida } = await editarGrupoPartidaSchema.parseAsync({
+      idGrupoPartida: idGrupoPartida,
+      nombreGrupoPartida: formData.get("nombreGrupoPartida"),
+    });
+
+    await editarGrupoPartida(idGrupoPartida, nombreGrupoPartida);
+
+    // Parsear y modificar la URL del referer
+    const url = new URL(referer);
+    const pathSegments = url.pathname
+      .split("/")
+      .filter((segment) => segment !== "editar")
+      .slice(0, -1);
     url.pathname = pathSegments.join("/");
 
     // Usar la nueva URL para revalidación y redirección

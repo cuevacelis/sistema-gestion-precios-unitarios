@@ -1,7 +1,6 @@
 "use client";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   ContextMenu,
@@ -20,11 +19,10 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { IDataDBObtenerUsuariosPaginados } from "@/lib/types";
 import * as ContextMenuPrimitive from "@radix-ui/react-context-menu";
 import { flexRender } from "@tanstack/react-table";
-import { IProcedureResult } from "mssql";
 import { columns } from "./columns-table";
 
 interface IProps {
-  dataProyectos: IProcedureResult<IDataDBObtenerUsuariosPaginados>;
+  dataProyectos: any;
 }
 
 export default function TableComponent(props: IProps) {

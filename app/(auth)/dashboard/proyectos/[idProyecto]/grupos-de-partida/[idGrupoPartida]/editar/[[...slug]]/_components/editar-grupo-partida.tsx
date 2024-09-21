@@ -2,31 +2,33 @@
 
 import { useState } from "react";
 import { useFormState } from "react-dom";
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SubmitButtonComponent from "./button-submit";
 import ErrorMessage from "@/components/validation/message/error-message";
 
-import { actionsCrearGrupoPartida } from "@/lib/actions";
+import { actionsEditarGrupoPartida } from "@/lib/actions";
 
-interface INuevoGrupoPartida {
-  idProyecto: string;
-  lastSlug?: string;
+interface IEditarGrupoPartida {
+  idGrupoPartida: string;
+  nombreGrupoPartida?: string;
 }
 
-export default function NuevoGrupoPartida({
-  idProyecto,
-  lastSlug,
-}: INuevoGrupoPartida) {
+export default function EditarGrupoPartida({
+  idGrupoPartida,
+  nombreGrupoPartida,
+}: IEditarGrupoPartida) {
+  const actionsEditarGrupoPartidaWithId = actionsEditarGrupoPartida.bind(
+    null,
+    Number(idGrupoPartida)
+  );
+
   const [stateForm, formActionNewPresupuesto] = useFormState(
-    actionsCrearGrupoPartida,
+    actionsEditarGrupoPartidaWithId,
     { isError: false, message: "" }
   );
   const [formData, setFormData] = useState({
-    nombreGrupoPartida: "",
-    idProyecto: idProyecto,
-    idLastGroupPartida: lastSlug ?? null,
+    nombreGrupoPartida: nombreGrupoPartida,
   });
 
   const handleInputChange = (name: string, value: string) => {
@@ -61,6 +63,7 @@ export default function NuevoGrupoPartida({
           type="text"
           name="nombreGrupoPartida"
           required
+          defaultValue={nombreGrupoPartida}
           onChange={(e) =>
             handleInputChange("nombreGrupoPartida", e.target.value)
           }

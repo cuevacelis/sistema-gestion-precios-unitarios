@@ -2,11 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { IDataDBObtenerProyectosPaginados } from "@/lib/types";
 import { File, PlusCircle } from "lucide-react";
-import { IProcedureResult } from "mssql";
 import Link from "next/link";
 
 interface IProps {
-  dataProyectos: IProcedureResult<IDataDBObtenerProyectosPaginados>;
+  dataProyectos: any;
 }
 
 export default function OptionsTable() {

@@ -1,7 +1,6 @@
 import * as Ably from "ably";
 import clsx, { ClassValue } from "clsx";
 import { DateTime } from "luxon";
-import { IResult } from "mssql";
 import { twMerge } from "tailwind-merge";
 import { IBrowserInfo } from "./types";
 
@@ -76,16 +75,6 @@ export function convertDecimalToNumber(data: any[], objectToConvert: string) {
         Math.pow(10, decimal.e);
     }
   });
-}
-
-export function returnEssencialDataQuery<T>(resultQuery: IResult<T>) {
-  return {
-    data: resultQuery.recordset.map((row: any) => {
-      const { columns, ...rest } = row;
-      return rest;
-    }),
-    moreInfo: resultQuery.output,
-  };
 }
 
 export const combineFormDatas = (
