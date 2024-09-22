@@ -5,7 +5,11 @@ import { Download, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function OptionsTable() {
+interface IProps {
+  isChildrenLastGrupoPartida: boolean;
+}
+
+export default function OptionsTable({ isChildrenLastGrupoPartida }: IProps) {
   const pathname = usePathname();
 
   const insertAfterGruposDePartida = (path: string, insert: string) => {
@@ -38,9 +42,17 @@ export default function OptionsTable() {
       <Link href={createPath}>
         <Button size="default" variant="default" className="h-9 gap-1">
           <PlusCircle className="w-4" />
-          <span>Nuevo</span>
+          <span>Nuevo grupo de partida</span>
         </Button>
       </Link>
+      {isChildrenLastGrupoPartida && (
+        <Link href={exportPath}>
+          <Button size="default" variant="secondary" className="h-9 gap-1">
+            <Download className="w-4" />
+            <span>Añadir partida</span>
+          </Button>
+        </Link>
+      )}
       {/* <Link href={exportPath}>
         <Button size="default" variant="secondary" className="h-9 gap-1">
           <Download className="w-4" />

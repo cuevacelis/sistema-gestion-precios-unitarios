@@ -41,8 +41,9 @@ export default async function GruposDePartidaPage({
   const { idProyecto, slug = [] } = params;
   let isSubGroup = false;
   let lastGrupoPartidaId = 0;
-
+  let isChildrenLastGrupoPartida = false;
   let gruposDePartidas;
+
   if (slug.length === 0) {
     isSubGroup = false;
     gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
@@ -55,6 +56,7 @@ export default async function GruposDePartidaPage({
       Number(idProyecto),
       lastGrupoPartidaId
     );
+    isChildrenLastGrupoPartida = gruposDePartidas.length === 0;
   }
 
   return (
@@ -103,7 +105,9 @@ export default async function GruposDePartidaPage({
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense fallback={<Skeleton className="h-10 w-full" />}>
-            <OptionsTable />
+            <OptionsTable
+              isChildrenLastGrupoPartida={isChildrenLastGrupoPartida}
+            />
           </Suspense>
         </CardContent>
       </Card>
@@ -134,7 +138,11 @@ async function GrupoPartidaNameById({
     return null;
   }
 
-  return <span className="text-muted-foreground">{data.grupar_nombre}</span>;
+  return (
+    <span className="text-muted-foreground">
+      &quot;{data.grupar_nombre}&quot;
+    </span>
+  );
 }
 
 async function PresupuestoNameById({
@@ -148,5 +156,7 @@ async function PresupuestoNameById({
     return null;
   }
 
-  return <span className="text-muted-foreground">{data.pre_nombre}</span>;
+  return (
+    <span className="text-muted-foreground">&quot;{data.pre_nombre}&quot;</span>
+  );
 }

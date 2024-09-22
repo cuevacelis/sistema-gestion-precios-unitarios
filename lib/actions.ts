@@ -14,6 +14,7 @@ import {
   obtenerCountries,
   obtenerDepartments,
   obtenerDistricts,
+  obtenerPartidasByGrupoPartidaId,
   obtenerProvinces,
 } from "./services/sql-queries";
 import {
@@ -507,3 +508,6 @@ export async function actionsEditarGrupoPartida(
     };
   }
 }
+
+// #region Partidas
+

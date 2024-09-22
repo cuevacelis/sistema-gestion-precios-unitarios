@@ -129,8 +129,10 @@ export interface IDataDBObtenerProyectosId {
 
 // #region Grupos de Partidas
 export interface IDataDBObtenerGruposDePartidasId {
-  grupar_nombre: string;
   grupar_id: number;
+  grupar_nombre: string;
+  grupar_total: number;
+  tiene_hijos: boolean;
 }
 
 // #region Partidas

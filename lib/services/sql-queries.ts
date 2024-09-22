@@ -229,7 +229,7 @@ export const obtenerGruposDePartidasIdRecursive = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v2(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
+        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v3(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
           "result"
         )
       )
@@ -277,7 +277,6 @@ export const editarGrupoPartida = async (
   }
 };
 
-// #region Partidas
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
@@ -304,6 +303,23 @@ export const obtenerNombreGruposDePartidasById = cache(
   },
   ["gruposDePartidasNombre"],
   { tags: ["gruposDePartidasNombre"], revalidate: 60 * 60 * 24 }
+);
+
+// #region Partidas
+export const obtenerPartidasByGrupoPartidaId = cache(
+  async (id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("partida")
+        .selectAll()
+        .where("grupar_id", "=", id)
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partidasByGrupoPartidaId"],
+  { tags: ["partidasByGrupoPartidaId"], revalidate: 60 * 60 * 24 }
 );
 
 // #region Clientes
