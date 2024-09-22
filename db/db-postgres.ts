@@ -1,4 +1,4 @@
-import { DB } from "kysely-codegen/dist/db.js";
+import { DB } from "@/lib/typesDB";
 import { createKysely } from "@vercel/postgres-kysely";
 
 let dbInstance: ReturnType<typeof createKysely<DB>> | null = null;
