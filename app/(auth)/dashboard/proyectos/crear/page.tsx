@@ -6,6 +6,7 @@ import { Suspense } from "react";
 
 const NuevoProyecto = dynamic(() => import("./_components/nuevo-proyecto"), {
   ssr: false,
+  loading: () => <p>Cargando...</p>,
 });
 
 export default function NuevoProyectoPage() {
@@ -23,7 +24,7 @@ export default function NuevoProyectoPage() {
   );
 }
 
-async function GetDataNuevoProyecto() {
+export async function GetDataNuevoProyecto() {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (

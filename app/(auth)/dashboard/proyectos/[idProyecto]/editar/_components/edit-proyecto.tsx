@@ -51,7 +51,6 @@ type LoadingKeys =
 
 export default function EditarPresupuestoPage({
   dataClientes,
-  session,
   presupuestoId,
   initialData,
 }: IEditarPresupuesto) {

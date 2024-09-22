@@ -1,15 +1,26 @@
 "use client";
 
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Portal from "../portal/portal";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
-export default function ModalLoading() {
+export default function LoadingModal() {
   return (
     <Portal>
-      <div className="fixed inset-0 flex items-center justify-center bg-[rgba(249,249,249,0.48)] z-50">
-        <div className="flex flex-col justify-center items-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-blue-300 border-4 border-t-blue-500 border-t-4"></div>
-        </div>
-      </div>
+      <Dialog open={true} modal={true}>
+        <DialogContent
+          className="sm:max-w-[425px]"
+          onPointerDownOutside={(e) => e.preventDefault()}
+          hidden={true}
+        >
+          <div className="flex flex-col items-center justify-center p-6">
+            <div className="h-32 w-32 animate-spin rounded-full border-4 border-blue-300 border-t-4 border-t-blue-500"></div>
+            <p className="mt-4 text-lg font-semibold">
+              Cargando, por favor espere...
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Portal>
   );
 }

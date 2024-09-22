@@ -33,7 +33,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { useToast } from "@/components/ui/use-toast";
-import { useSearchResultsToast } from "@/hooks/useSearchResultsToast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -46,10 +46,24 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
   const router = useRouter();
+  const { toast } = useToast();
+  const searchParams = useSearchParams();
+  const totalResults = dataProyectos[0]?.result?.meta?.total_registro ?? 0;
 
-  useSearchResultsToast({
-    totalResults: dataProyectos[0]?.result?.meta?.total_registro ?? 0,
-  });
+  useEffect(
+    function showToastSearch() {
+      const query = searchParams.get("query");
+      if (query) {
+        toast({
+          title:
+            totalResults > 0 ? "Resultados de búsqueda" : "No hay resultados",
+          description: `Se encontraron ${totalResults} resultado(s) para "${query}"`,
+          duration: 5000,
+        });
+      }
+    },
+    [searchParams, totalResults, toast, router]
+  );
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [
@@ -120,7 +134,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
     data: dataProyectos[0]?.result?.data ?? [],
     columns,
-    rowCount: dataProyectos[0]?.result?.meta?.total_registro ?? 0,
+    rowCount: totalResults,
     identifierField: "pre_id",
     initialState: {
       columnVisibility: {
@@ -135,13 +149,36 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const handleDeleteConfirm = async () => {
     if (!rowSelected) return;
     setStatusRespDeletePresupuesto("pending");
-    await actionsDeletePresupuesto(rowSelected.pre_id);
-    setStatusRespDeletePresupuesto("success");
-    setIsShowDeleteModal(false);
-  };
-
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
+    try {
+      await actionsDeletePresupuesto(rowSelected.pre_id);
+      setStatusRespDeletePresupuesto("success");
+      toast({
+        title: "Presupuesto eliminado",
+        description: "El presupuesto ha sido eliminado exitosamente.",
+        action: (
+          <ToastAction
+            altText="Deshacer cambios"
+            onClick={async () => {
+              setStatusRespDeletePresupuesto("pending");
+              await actionsDeletePresupuesto(rowSelected.pre_id, 1);
+              setStatusRespDeletePresupuesto("success");
+            }}
+          >
+            Deshacer cambios
+          </ToastAction>
+        ),
+      });
+    } catch (error) {
+      setStatusRespDeletePresupuesto("error");
+      toast({
+        title: "Error",
+        description:
+          "No se pudo eliminar el presupuesto. Por favor, intente nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsShowDeleteModal(false);
+    }
   };
 
   const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
@@ -160,7 +197,10 @@ export default function TableComponent({ dataProyectos }: IProps) {
   }
 
   return (
-    <ValidateMutation statusMutation={[statusRespDeletePresupuesto]}>
+    <ValidateMutation
+      variant="toast"
+      statusMutation={[statusRespDeletePresupuesto]}
+    >
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <DataTableViewOptions table={table} />
       </div>
@@ -204,14 +244,6 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-64">
-                    <ContextMenuItem
-                      onClick={() =>
-                        handleCopyCode(String(row.original.pre_codigo))
-                      }
-                    >
-                      <Copy className="mr-2 h-4 w-4" />
-                      <span>Copiar: {row.original.pre_codigo}</span>
-                    </ContextMenuItem>
                     <ContextMenuItem>
                       <Copy className="mr-2 h-4 w-4" />
                       <span>Duplicar</span>
@@ -256,6 +288,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
           title="¿Está seguro de eliminar el presupuesto?"
+          message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}

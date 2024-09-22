@@ -1,24 +1,20 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
-import { useCallback, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import NuevoProyecto from "../../../crear/_components/nuevo-proyecto";
 
-interface NuevoProyectoModalProps {
-  dataClientes: any; // Reemplaza 'any' con el tipo correcto
-  session: any; // Reemplaza 'any' con el tipo correcto
+interface ModalProps {
+  children: React.ReactNode;
+  title?: string;
 }
 
-export default function NuevoProyectoModal({
-  dataClientes,
-  session,
-}: NuevoProyectoModalProps) {
+export default function Modal({ children, title }: ModalProps) {
   const router = useRouter();
 
   const handleChangeModal = useCallback(
@@ -32,7 +28,7 @@ export default function NuevoProyectoModal({
 
   return (
     <Dialog
-      key="modal-crear-proyecto"
+      key="modal"
       defaultOpen={true}
       open={true}
       onOpenChange={handleChangeModal}
@@ -42,9 +38,9 @@ export default function NuevoProyectoModal({
         className="sm:max-w-[800px] h-[500px] overflow-y-auto"
       >
         <DialogHeader>
-          <DialogTitle>Crear Nuevo Proyecto</DialogTitle>
+          <DialogTitle>{title || "Modal"}</DialogTitle>
         </DialogHeader>
-        <NuevoProyecto dataClientes={dataClientes} session={session} />
+        {children}
       </DialogContent>
     </Dialog>
   );

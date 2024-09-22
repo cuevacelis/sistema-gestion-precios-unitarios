@@ -12,7 +12,7 @@ export default function SubmitButtonComponent() {
       aria-disabled={pending}
       disabled={pending}
     >
-      {pending ? "Editando..." : "Editar"}
+      {pending ? "Editando, por favor espere..." : "Editar"}
     </Button>
   );
 }

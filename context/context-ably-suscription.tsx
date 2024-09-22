@@ -1,9 +1,9 @@
 "use client";
-import { Toaster } from "@/components/ui/sonner";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
 import * as Ably from "ably";
 import { useChannel, useConnectionStateListener } from "ably/react";
 import { createContext, useContext, useState } from "react";
-import { toast } from "sonner";
 
 interface IContextProps {
   messagesNotification: Ably.Message[];
@@ -22,6 +22,7 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
   const [messagesNotification, setMessagesNotification] = useState<
     Ably.Message[]
   >([]);
+  const { toast } = useToast();
 
   useConnectionStateListener("connected", () => {
     console.log("Connected to Ably!");
@@ -32,12 +33,14 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
       channelName: String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME),
     },
     (message) => {
-      toast(String(message.data.notification.title), {
+      toast({
+        title: String(message.data.notification.title),
         description: String(message.data.notification.body),
-        action: {
-          label: "Ir",
-          onClick: () => alert("github"),
-        },
+        action: (
+          <ToastAction altText="Try again" onClick={() => console.log("Undo")}>
+            Undo
+          </ToastAction>
+        ),
       });
       setMessagesNotification((previousMessages) => [
         ...previousMessages,
@@ -48,7 +51,6 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
 
   return (
     <AblySuscriptionContext.Provider value={{ messagesNotification, channel }}>
-      <Toaster />
       {children}
     </AblySuscriptionContext.Provider>
   );

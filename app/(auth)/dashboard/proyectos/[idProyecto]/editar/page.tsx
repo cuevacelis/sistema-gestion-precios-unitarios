@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
   obtenerClientes,
   obtenerProyectosId,
@@ -9,12 +8,10 @@ import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-const EditarPresupuestoPage = dynamic(
-  () => import("./_components/edit-proyecto"),
-  {
-    ssr: false,
-  }
-);
+const EditarProyecto = dynamic(() => import("./_components/edit-proyecto"), {
+  ssr: false,
+  loading: () => <p>Cargando...</p>,
+});
 
 interface IPropsEditProyecto {
   params: {
@@ -22,7 +19,7 @@ interface IPropsEditProyecto {
   };
 }
 
-export default function NuevoProyectoPage(props: IPropsEditProyecto) {
+export default function EditarProyectoPage(props: IPropsEditProyecto) {
   return (
     <>
       <div className="block p-4 lg:p-6">
@@ -31,7 +28,7 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
           <CardContent>
             <Suspense
               key={props.params?.idProyecto}
-              fallback={<p>cargando...</p>}
+              fallback={<p>Cargando...</p>}
             >
               <GetDataEditarProyecto id={props.params.idProyecto} />
             </Suspense>
@@ -42,7 +39,7 @@ export default function NuevoProyectoPage(props: IPropsEditProyecto) {
   );
 }
 
-async function GetDataEditarProyecto(props: { id: string }) {
+export async function GetDataEditarProyecto(props: { id: string }) {
   const dataEditPresupuesto = await obtenerProyectosId(Number(props.id));
   if (dataEditPresupuesto.length === 0) {
     return notFound();
@@ -50,7 +47,7 @@ async function GetDataEditarProyecto(props: { id: string }) {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (
-    <EditarPresupuestoPage
+    <EditarProyecto
       {...{
         dataClientes,
         session,

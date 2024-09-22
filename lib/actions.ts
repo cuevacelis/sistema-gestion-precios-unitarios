@@ -209,13 +209,16 @@ export async function actionsEditarPresupuesto(
   }
 }
 
-export async function actionsDeletePresupuesto(Pre_Id: number) {
+export async function actionsDeletePresupuesto(
+  Pre_Id: number,
+  newState?: number
+) {
   try {
     // revalidateTag("proyectosPaginados");
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
     });
-    await cambioEstadoPresupuesto(id, 0);
+    await cambioEstadoPresupuesto(id, newState || 0);
     revalidatePath("/dashboard/proyectos");
     redirect("/dashboard/proyectos");
     // revalidateTag("proyectosPaginados");
@@ -510,4 +513,3 @@ export async function actionsEditarGrupoPartida(
 }
 
 // #region Partidas
-
