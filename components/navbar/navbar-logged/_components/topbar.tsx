@@ -29,6 +29,7 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
   Bell,
+  BellOff,
   CheckIcon,
   ComputerIcon,
   LifeBuoy,
@@ -82,10 +83,10 @@ export default function TopBarComponent(props: IProps) {
       );
 
       // Guardar en localStorage
-      localStorage.setItem(
-        "notifications",
-        JSON.stringify(updatedNotifications)
-      );
+      // localStorage.setItem(
+      //   "notifications",
+      //   JSON.stringify(updatedNotifications)
+      // );
 
       return updatedNotifications;
     });
@@ -164,58 +165,76 @@ export default function TopBarComponent(props: IProps) {
         <DropdownMenuContent align="end" className="w-80">
           <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
           <section className="flex flex-col gap-2 overflow-y-auto h-96 my-2">
-            {messagesNotification.map((notification, index) => (
-              <section
-                key={index}
-                className="bg-transparent hover:bg-secondary cursor-pointer grid grid-cols-9 gap-4 mx-2 p-1 rounded-sm"
-                onClick={() => {
-                  if (notification.data.link) {
-                    const a = document.createElement("a");
-                    a.href = notification.data.link;
-                    a.download = "";
-                    a.target = "_blank";
-                    a.click();
-                  } else {
-                    notification.data.action && notification.data.action();
-                  }
-                  markAsRead(String(notification.id));
-                }}
-              >
-                <div className="col-span-2">
-                  <Avatar className="w-14 h-14">
-                    <AvatarImage
-                      src={
-                        "https://scontent.ftru3-1.fna.fbcdn.net/v/t39.30808-1/369992082_6467305320033929_2090341200948135217_n.jpg?stp=cp0_dst-jpg_p56x56&_nc_cat=104&ccb=1-7&_nc_sid=6738e8&_nc_eui2=AeFzzZfFe2X4LzLcNx-Zq83OSkQE4FTtwUZKRATgVO3BRjnjaIp6esV1axwv50sdcOxMx1uQle-jOjYrUPO4cyeC&_nc_ohc=gjbd7-ZC3sEQ7kNvgH97Giv&_nc_ht=scontent.ftru3-1.fna&oh=00_AYDm0t5E53qZAfGDYuckbqoLn5OkFv_n9pSaoZfmzh35hQ&oe=66A46DB2"
-                      }
-                      alt="Avatar"
-                      className="rounded-full"
-                    />
-                    <AvatarFallback>
-                      {obtenerSiglas(String(props.session?.user?.name))}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="col-span-6">
-                  <p className="text-sm font-medium truncate">
-                    {notification.data.title}
-                  </p>
-                  <p className="text-sm text-muted-foreground truncate-multiline">
-                    {notification.data.body}
-                  </p>
-                  <span className="text-sm text-muted-foreground text-blue-500">
-                    {obtenerHoraRelativa(
-                      new Date(Number(notification.timestamp)),
-                      "America/Lima"
-                    )}
-                  </span>
-                </div>
-                <div className="col-span-1 flex items-center">
-                  <span className="text-blue-500 text-3xl">
-                    {notification.extras.isRead ? "" : "."}
-                  </span>
-                </div>
-              </section>
-            ))}
+            {messagesNotification.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full space-y-2">
+                <BellOff className="h-12 w-12 text-muted-foreground" />
+                <p className="text-muted-foreground text-sm font-medium">
+                  No hay notificaciones
+                </p>
+                <p className="text-muted-foreground text-xs text-center">
+                  Las notificaciones aparecerán aquí cuando las recibas
+                </p>
+              </div>
+            ) : (
+              messagesNotification.map((notification, index) => (
+                <section
+                  key={index}
+                  className="bg-transparent hover:bg-secondary cursor-pointer grid grid-cols-9 gap-4 mx-2 p-1 rounded-sm"
+                  onClick={() => {
+                    if (notification.data.link) {
+                      const a = document.createElement("a");
+                      a.href = notification.data.link;
+                      a.download = "";
+                      a.target = "_blank";
+                      a.click();
+                    } else {
+                      notification.data.action && notification.data.action();
+                    }
+                    markAsRead(String(notification.id));
+                  }}
+                >
+                  <div className="col-span-2">
+                    <Avatar className="w-14 h-14">
+                      <AvatarImage
+                        src={
+                          "https://scontent.ftru3-1.fna.fbcdn.net/v/t39.30808-1/369992082_6467305320033929_2090341200948135217_n.jpg?stp=cp0_dst-jpg_p56x56&_nc_cat=104&ccb=1-7&_nc_sid=6738e8&_nc_eui2=AeFzzZfFe2X4LzLcNx-Zq83OSkQE4FTtwUZKRATgVO3BRjnjaIp6esV1axwv50sdcOxMx1uQle-jOjYrUPO4cyeC&_nc_ohc=gjbd7-ZC3sEQ7kNvgH97Giv&_nc_ht=scontent.ftru3-1.fna&oh=00_AYDm0t5E53qZAfGDYuckbqoLn5OkFv_n9pSaoZfmzh35hQ&oe=66A46DB2"
+                        }
+                        alt="Avatar"
+                        className="rounded-full"
+                      />
+                      <AvatarFallback>
+                        {obtenerSiglas(String(props.session?.user?.name))}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="col-span-6">
+                    <p className="text-sm font-medium truncate">
+                      {notification.data.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground truncate-multiline">
+                      {notification.data.body}
+                    </p>
+                    <span className="text-sm text-muted-foreground text-blue-500">
+                      {obtenerHoraRelativa(
+                        new Date(Number(notification.timestamp)),
+                        "America/Lima"
+                      )}
+                    </span>
+                  </div>
+                  <div
+                    className="col-span-1 flex items-center"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Evita que el evento se propague al padre
+                      markAsRead(String(notification.id));
+                    }}
+                  >
+                    <span className="text-blue-500 text-3xl">
+                      {notification.extras.isRead ? "" : "."}
+                    </span>
+                  </div>
+                </section>
+              ))
+            )}
           </section>
         </DropdownMenuContent>
       </DropdownMenu>
