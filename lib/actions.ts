@@ -251,7 +251,7 @@ export async function actionsDeletePresupuesto(
 export async function actionsQueueExportS3Presupuestos() {
   try {
     const dataProyectos = await obtenerProyectosPaginados(50, 1, "");
-    queueS3({
+    await queueS3({
       data: dataProyectos[0].result.data.map((object) => ({
         Código: object.pre_codigo || "",
         Usuario: object.usu_nomapellidos,
