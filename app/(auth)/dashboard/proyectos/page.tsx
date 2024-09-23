@@ -7,6 +7,7 @@ import { ISearchParams } from "@/lib/types";
 import { Folder, ArrowLeft } from "lucide-react";
 import Search from "@/components/search/search";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
+import { auth } from "@/auth";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -30,6 +31,7 @@ interface IProjectPage {
 }
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
+  const session = await auth();
   const query = String(searchParams.query || "");
   const currentPage = Number(searchParams.page) || 1;
   const rowsPerPage = Number(searchParams.rowsPerPage) || 10;
@@ -60,7 +62,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
             key={`options-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<Skeleton className="h-10 w-full" />}
           >
-            <OptionsTable />
+            <OptionsTable session={session} />
           </Suspense>
         </CardContent>
       </Card>

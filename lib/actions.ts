@@ -248,7 +248,13 @@ export async function actionsDeletePresupuesto(
   }
 }
 
-export async function actionsQueueExportS3Presupuestos() {
+export async function actionsQueueExportS3Presupuestos({
+  userId,
+  prefixNameFile,
+}: {
+  userId: string;
+  prefixNameFile: string;
+}) {
   try {
     const dataProyectos = await obtenerProyectosPaginados(50, 1, "");
     await queueS3({
@@ -260,6 +266,8 @@ export async function actionsQueueExportS3Presupuestos() {
         Jornal: object.pre_jornal,
         Fecha: object.pre_fechorregistro,
       })),
+      userId: userId,
+      prefixNameFile: prefixNameFile,
     });
   } catch (error) {
     throw error;

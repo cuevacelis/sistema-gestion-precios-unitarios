@@ -46,11 +46,6 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
       channelName: String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME),
     },
     (message) => {
-      const newNotification = {
-        ...message,
-        extras: { isRead: false }, // Marca como no leída por defecto
-      };
-
       toast(String(message.data.title), {
         description: String(message.data.body),
         action: {
@@ -71,7 +66,7 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
         },
       });
 
-      const updatedNotifications = [...messagesNotification, newNotification];
+      const updatedNotifications = [...messagesNotification, message];
       setMessagesNotification(updatedNotifications);
 
       // Guardar en localStorage

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { actionsQueueExportS3Presupuestos } from "@/lib/actions";
@@ -18,8 +17,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Session } from "next-auth";
 
-export default function OptionsTable() {
+export default function OptionsTable({ session }: { session: Session | null }) {
   const pathname = usePathname();
   const { toast } = useToast();
 
@@ -32,7 +32,10 @@ export default function OptionsTable() {
         description:
           "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
       });
-      await actionsQueueExportS3Presupuestos();
+      await actionsQueueExportS3Presupuestos({
+        userId: String(session?.user?.id),
+        prefixNameFile: "presupuestos",
+      });
     } catch (error) {
       toast({
         title: "Error",
