@@ -13,13 +13,15 @@ export const AblyPimary = ({ children, session }: IPropsAbly) => {
     key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
   });
 
+  const deriveOptions = {
+    filter: `headers.userId == \`"${String(session?.user?.id)}"\` || headers.globalChannel == \`"true"\``,
+  };
+
   return (
     <AblyProvider client={clientAbly}>
       <ChannelProvider
         channelName={process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME!}
-        deriveOptions={{
-          filter: `headers.userId == "${String(session?.user?.id)}" || headers.globalChannel == "true"`,
-        }}
+        deriveOptions={deriveOptions}
       >
         {children}
       </ChannelProvider>

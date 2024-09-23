@@ -31,6 +31,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
         title: "Exportación iniciada",
         description:
           "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
+        duration: 2000,
       });
       await actionsQueueExportS3Presupuestos({
         userId: String(session?.user?.id),
@@ -66,8 +67,13 @@ export default function OptionsTable({ session }: { session: Session | null }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exportación</AlertDialogTitle>
             <AlertDialogDescription>
-              Se le enviara una notificación cuando la exportación haya
-              terminado, el proceso puede tardar unos minutos.
+              Cuando la exportación haya terminado, se le enviará una
+              notificación con el enlace de descarga.
+              <br />
+              <span className="font-bold">
+                El enlace tiene una expiración de 7 días, desde la fecha de
+                generación.
+              </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
