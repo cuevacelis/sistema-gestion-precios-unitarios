@@ -1,8 +1,7 @@
 "use client";
-import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
 import * as Ably from "ably";
 import { useChannel } from "ably/react";
+import { toast } from "sonner";
 import {
   createContext,
   Dispatch,
@@ -10,6 +9,7 @@ import {
   useContext,
   useState,
 } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 interface IContextProps {
   messagesNotification: Ably.Message[];
@@ -41,8 +41,6 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
     return [];
   });
 
-  const { toast } = useToast();
-
   const { channel } = useChannel(
     {
       channelName: String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME),
@@ -53,30 +51,24 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
         extras: { isRead: false }, // Marca como no leída por defecto
       };
 
-      toast({
-        title: String(message.data.title),
+      toast(String(message.data.title), {
         description: String(message.data.body),
-        variant: "default",
-        action: (
-          <ToastAction
-            altText="Try again"
-            onClick={() => {
-              if (message.data.link) {
-                const a = document.createElement("a");
-                a.href = message.data.link;
-                a.download = "";
-                a.target = "_blank";
-                a.click();
-              } else {
-                message.data.action && message.data.action();
-              }
-              // Marcar como leída
-              markAsRead(String(message.id));
-            }}
-          >
-            Click aquí
-          </ToastAction>
-        ),
+        action: {
+          label: "Ir",
+          onClick: () => {
+            if (message.data.link) {
+              const a = document.createElement("a");
+              a.href = message.data.link;
+              a.download = "";
+              a.target = "_blank";
+              a.click();
+            } else {
+              message.data.action && message.data.action();
+            }
+            // Marcar como leída
+            markAsRead(String(message.id));
+          },
+        },
       });
 
       const updatedNotifications = [...messagesNotification, newNotification];
@@ -116,6 +108,7 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
     <AblySuscriptionContext.Provider
       value={{ messagesNotification, setMessagesNotification, channel }}
     >
+      <Toaster />
       {children}
     </AblySuscriptionContext.Provider>
   );

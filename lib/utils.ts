@@ -1,4 +1,3 @@
-import * as Ably from "ably";
 import clsx, { ClassValue } from "clsx";
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
@@ -151,11 +150,6 @@ export function divideArrayToBreadcrumbItems<T>(
   );
   const lastGroup = arr.slice(positionStartLastGroup, arr.length);
   return [firstGroup, middleGroup, lastGroup];
-}
-
-export function getChannel() {
-  let ably = new Ably.Rest(String(process.env.NEXT_PUBLIC_ABLY_API_KEY));
-  return ably.channels.get(String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME));
 }
 
 export function obtenerHoraRelativa(

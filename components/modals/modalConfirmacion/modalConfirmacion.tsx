@@ -17,36 +17,45 @@ interface IProps {
   title?: string;
   message?: string | JSX.Element;
   classNameButtonAction?: string;
+  isLoading?: boolean;
+  messageActionButton?: string;
+  messageActionButtonLoading?: string;
 }
 
-export default function ModalConfirmacionComponent(props: IProps) {
+export default function ModalConfirmacionComponent({
+  show,
+  onClose,
+  onConfirm,
+  title = "¿Está seguro de procesar la solicitud?",
+  message = "Esta acción es irreversible y no se puede deshacer. Una vez que la ejecutes, no habrá manera de revertirla ni de recuperar el estado anterior.",
+  classNameButtonAction,
+  isLoading,
+  messageActionButton = "Continuar",
+  messageActionButtonLoading = "Cargando...",
+}: IProps) {
   const handleClose = () => {
-    props.onClose();
+    onClose();
   };
 
   const handleConfirm = () => {
-    props.onConfirm();
+    onConfirm();
   };
 
   return (
-    <AlertDialog open={props.show}>
+    <AlertDialog open={show}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {props.title || "¿Está seguro de procesar la solicitud?"}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {props.message ||
-              "Esta acción es irreversible y no se puede deshacer. Una vez que la ejecutes, no habrá manera de revertirla ni de recuperar el estado anterior."}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
+          <AlertDialogDescription>{message}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={handleClose}>Cancelar</AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className={cn(props.classNameButtonAction)}
+            className={cn(classNameButtonAction)}
+            disabled={isLoading}
           >
-            Continuar
+            {isLoading ? messageActionButtonLoading : messageActionButton}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

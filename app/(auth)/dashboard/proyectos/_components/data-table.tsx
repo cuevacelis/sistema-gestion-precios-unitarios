@@ -40,11 +40,11 @@ interface IProps {
 }
 
 export default function TableComponent({ dataProyectos }: IProps) {
+  const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
+    useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerProyectosPaginados | null>(null);
-  const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
-    useState<TStatusResponseActions>("idle");
   const router = useRouter();
   const { toast } = useToast();
   const searchParams = useSearchParams();
@@ -198,6 +198,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
 
   return (
     <ValidateMutation
+      showLoading={false}
       variant="toast"
       statusMutation={[statusRespDeletePresupuesto]}
     >
@@ -293,6 +294,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
           classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
+          isLoading={statusRespDeletePresupuesto === "pending"}
+          messageActionButton="Eliminar"
+          messageActionButtonLoading="Eliminando..."
         />
       )}
     </ValidateMutation>

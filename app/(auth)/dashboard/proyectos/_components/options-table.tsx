@@ -63,8 +63,8 @@ export default function OptionsTable() {
           <AlertDialogHeader>
             <AlertDialogTitle>Confirmar exportación</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Está seguro que desea iniciar la exportación de presupuestos?
-              Este proceso puede tardar unos minutos.
+              Se le enviara una notificación cuando la exportación haya
+              terminado, el proceso puede tardar unos minutos.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
