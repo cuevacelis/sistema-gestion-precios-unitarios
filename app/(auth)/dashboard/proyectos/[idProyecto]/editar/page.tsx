@@ -39,7 +39,7 @@ export default function EditarProyectoPage(props: IPropsEditProyecto) {
   );
 }
 
-export async function GetDataEditarProyecto(props: { id: string }) {
+async function GetDataEditarProyecto(props: { id: string }) {
   const dataEditPresupuesto = await obtenerProyectosId(Number(props.id));
   if (dataEditPresupuesto.length === 0) {
     return notFound();

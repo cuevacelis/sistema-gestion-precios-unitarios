@@ -167,19 +167,22 @@ export function obtenerHoraRelativa(
     timeZone
   );
 
-  const diferenciaEnDias = ahora.diff(fechaObjetivo, "days").days;
-  const diferenciaEnHoras = ahora.diff(fechaObjetivo, "hours").hours;
-  const diferenciaEnMinutos = ahora.diff(fechaObjetivo, "minutes").minutes;
+  // Calcular la diferencia en minutos, luego derivar horas y días
+  const diferenciaEnMinutos = Math.floor(
+    ahora.diff(fechaObjetivo, "minutes").minutes
+  );
+  const diferenciaEnHoras = Math.floor(diferenciaEnMinutos / 60);
+  const diferenciaEnDias = Math.floor(diferenciaEnHoras / 24);
 
   if (diferenciaEnDias >= 7) {
     const semanas = Math.floor(diferenciaEnDias / 7);
     return `hace ${semanas} semana${semanas > 1 ? "s" : ""}`;
   } else if (diferenciaEnDias >= 1) {
-    return `hace ${Math.floor(diferenciaEnDias)} día${Math.floor(diferenciaEnDias) > 1 ? "s" : ""}`;
+    return `hace ${diferenciaEnDias} día${diferenciaEnDias > 1 ? "s" : ""}`;
   } else if (diferenciaEnHoras >= 1) {
-    return `hace ${Math.floor(diferenciaEnHoras)} hora${Math.floor(diferenciaEnHoras) > 1 ? "s" : ""}`;
+    return `hace ${diferenciaEnHoras} hora${diferenciaEnHoras > 1 ? "s" : ""}`;
   } else {
-    return `hace ${Math.floor(diferenciaEnMinutos)} minuto${Math.floor(diferenciaEnMinutos) > 1 ? "s" : ""}`;
+    return `hace ${diferenciaEnMinutos} minuto${diferenciaEnMinutos > 1 ? "s" : ""}`;
   }
 }
 

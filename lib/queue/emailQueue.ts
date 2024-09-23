@@ -1,4 +1,3 @@
-// lib/queue/emailQueue.ts
 import { sendToQueue } from "./sqsQueue";
 
 interface EmailData {

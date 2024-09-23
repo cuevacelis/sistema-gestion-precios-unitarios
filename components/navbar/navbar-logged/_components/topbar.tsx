@@ -46,6 +46,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ModuleIconsComponent from "./module-icons";
+import { useAblySuscription } from "@/context/context-ably-suscription";
 
 const BreadcrumbResponsive = dynamic(
   () => import("@/components/breadcrumbs/breadcrumbResponsive"),
@@ -61,6 +62,34 @@ export default function TopBarComponent(props: IProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { stateSidebar, setStateSidebar } = useGestionEstudiantesLogged();
+  const { messagesNotification, setMessagesNotification } =
+    useAblySuscription();
+
+  // Filtrar notificaciones no leídas
+  const unreadNotifications = messagesNotification.filter(
+    (notification) => !notification.extras.isRead
+  );
+
+  const markAsRead = (id: string) => {
+    setMessagesNotification((prevState) => {
+      const updatedNotifications = prevState.map((notification) =>
+        notification.id === id
+          ? {
+              ...notification,
+              extras: { ...notification.extras, isRead: true },
+            }
+          : notification
+      );
+
+      // Guardar en localStorage
+      localStorage.setItem(
+        "notifications",
+        JSON.stringify(updatedNotifications)
+      );
+
+      return updatedNotifications;
+    });
+  };
 
   return (
     <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 border-l bg-background">
@@ -121,24 +150,43 @@ export default function TopBarComponent(props: IProps) {
           <Button
             variant="secondary"
             size="icon"
-            className="h-10 w-10 rounded-full"
+            className="h-10 w-10 rounded-full relative"
           >
             <Bell className="h-5 w-5" />
+            {unreadNotifications.length > 0 && (
+              <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-xs">
+                {unreadNotifications.length}
+              </span>
+            )}
             <span className="sr-only">Toggle notifications</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-80">
           <DropdownMenuLabel>Notificaciones</DropdownMenuLabel>
           <section className="flex flex-col gap-2 overflow-y-auto h-96 my-2">
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+            {messagesNotification.map((notification, index) => (
               <section
-                key={item}
+                key={index}
                 className="bg-transparent hover:bg-secondary cursor-pointer grid grid-cols-9 gap-4 mx-2 p-1 rounded-sm"
+                onClick={() => {
+                  if (notification.data.link) {
+                    const a = document.createElement("a");
+                    a.href = notification.data.link;
+                    a.download = "";
+                    a.target = "_blank";
+                    a.click();
+                  } else {
+                    notification.data.action && notification.data.action();
+                  }
+                  markAsRead(String(notification.id));
+                }}
               >
                 <div className="col-span-2">
                   <Avatar className="w-14 h-14">
                     <AvatarImage
-                      src="https://scontent.ftru3-1.fna.fbcdn.net/v/t39.30808-1/369992082_6467305320033929_2090341200948135217_n.jpg?stp=cp0_dst-jpg_p56x56&_nc_cat=104&ccb=1-7&_nc_sid=6738e8&_nc_eui2=AeFzzZfFe2X4LzLcNx-Zq83OSkQE4FTtwUZKRATgVO3BRjnjaIp6esV1axwv50sdcOxMx1uQle-jOjYrUPO4cyeC&_nc_ohc=gjbd7-ZC3sEQ7kNvgH97Giv&_nc_ht=scontent.ftru3-1.fna&oh=00_AYDm0t5E53qZAfGDYuckbqoLn5OkFv_n9pSaoZfmzh35hQ&oe=66A46DB2"
+                      src={
+                        "https://scontent.ftru3-1.fna.fbcdn.net/v/t39.30808-1/369992082_6467305320033929_2090341200948135217_n.jpg?stp=cp0_dst-jpg_p56x56&_nc_cat=104&ccb=1-7&_nc_sid=6738e8&_nc_eui2=AeFzzZfFe2X4LzLcNx-Zq83OSkQE4FTtwUZKRATgVO3BRjnjaIp6esV1axwv50sdcOxMx1uQle-jOjYrUPO4cyeC&_nc_ohc=gjbd7-ZC3sEQ7kNvgH97Giv&_nc_ht=scontent.ftru3-1.fna&oh=00_AYDm0t5E53qZAfGDYuckbqoLn5OkFv_n9pSaoZfmzh35hQ&oe=66A46DB2"
+                      }
                       alt="Avatar"
                       className="rounded-full"
                     />
@@ -149,22 +197,22 @@ export default function TopBarComponent(props: IProps) {
                 </div>
                 <div className="col-span-6">
                   <p className="text-sm font-medium truncate">
-                    Titulo de notificación {item}
+                    {notification.data.title}
                   </p>
                   <p className="text-sm text-muted-foreground truncate-multiline">
-                    Descripción de notificación larga y larga y larga y larga y
-                    larga y larga y larga y larga y larga y larga y larga y
-                    larga y larga y larga y larga y larga y larga y larga
+                    {notification.data.body}
                   </p>
                   <span className="text-sm text-muted-foreground text-blue-500">
                     {obtenerHoraRelativa(
-                      new Date(Date.now() - 24 * 60 * 60 * 1000),
+                      new Date(Number(notification.timestamp)),
                       "America/Lima"
                     )}
                   </span>
                 </div>
                 <div className="col-span-1 flex items-center">
-                  <span className="text-blue-500 text-3xl">.</span>
+                  <span className="text-blue-500 text-3xl">
+                    {notification.extras.isRead ? "" : "."}
+                  </span>
                 </div>
               </section>
             ))}

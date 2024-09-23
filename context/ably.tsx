@@ -6,13 +6,13 @@ interface IPropsAbly {
   children: React.ReactNode;
 }
 
-const client = new Ably.Realtime({
-  key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
-});
-
 export const AblyPimary = ({ children }: IPropsAbly) => {
+  const clientAbly = new Ably.Realtime({
+    key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
+  });
+
   return (
-    <AblyProvider client={client}>
+    <AblyProvider client={clientAbly}>
       <ChannelProvider
         channelName={String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME)}
       >

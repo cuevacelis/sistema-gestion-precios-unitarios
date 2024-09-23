@@ -49,7 +49,7 @@ type LoadingKeys =
   | "district"
   | "client";
 
-export default function EditarPresupuestoPage({
+export default function EditarProyectosPage({
   dataClientes,
   presupuestoId,
   initialData,

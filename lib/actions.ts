@@ -16,6 +16,7 @@ import {
   obtenerDistricts,
   obtenerPartidasByGrupoPartidaId,
   obtenerProvinces,
+  obtenerProyectosPaginados,
 } from "./services/sql-queries";
 import {
   crearGrupoPartidaSchema,
@@ -26,6 +27,7 @@ import {
 } from "./validations-zod";
 import { IBrowserInfo } from "./types";
 import { headers } from "next/headers";
+import { queueS3 } from "./queue/s3Queue";
 
 // #region Login
 
@@ -243,6 +245,24 @@ export async function actionsDeletePresupuesto(
       message: "Algo salió mal.",
       errors: {},
     };
+  }
+}
+
+export async function actionsQueueExportS3Presupuestos() {
+  try {
+    const dataProyectos = await obtenerProyectosPaginados(50, 1, "");
+    queueS3({
+      data: dataProyectos[0].result.data.map((object) => ({
+        Código: object.pre_codigo || "",
+        Usuario: object.usu_nomapellidos,
+        Nombre: object.pre_nombre,
+        "Razón social": object.cli_nomaperazsocial,
+        Jornal: object.pre_jornal,
+        Fecha: object.pre_fechorregistro,
+      })),
+    });
+  } catch (error) {
+    throw error;
   }
 }
 

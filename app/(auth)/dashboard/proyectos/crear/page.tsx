@@ -24,7 +24,7 @@ export default function NuevoProyectoPage() {
   );
 }
 
-export async function GetDataNuevoProyecto() {
+async function GetDataNuevoProyecto() {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (

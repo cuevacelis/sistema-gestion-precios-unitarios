@@ -2,7 +2,6 @@
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Portal from "../portal/portal";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 
 export default function LoadingModal() {
   return (
