@@ -22,18 +22,17 @@ import {
 export default function OptionsTable() {
   const pathname = usePathname();
   const { toast } = useToast();
-  const [isExporting, setIsExporting] = useState(false);
 
   const createPath = `${pathname}/crear`;
 
-  const handleExport = () => {
+  const handleExport = async () => {
     try {
-      actionsQueueExportS3Presupuestos();
       toast({
         title: "Exportación iniciada",
         description:
           "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
       });
+      await actionsQueueExportS3Presupuestos();
     } catch (error) {
       toast({
         title: "Error",
@@ -41,7 +40,6 @@ export default function OptionsTable() {
         variant: "destructive",
       });
     } finally {
-      setIsExporting(false);
     }
   };
 
