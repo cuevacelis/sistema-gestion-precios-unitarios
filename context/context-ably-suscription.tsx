@@ -25,7 +25,7 @@ const AblySuscriptionContext = createContext<IContextProps | undefined>(
   undefined
 );
 
-export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
+export default function AblySuscriptionProvider({ children }: IPropsAbly) {
   const [messagesNotification, setMessagesNotification] = useState<
     Ably.Message[]
   >(() => {
@@ -50,7 +50,8 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
         description: String(message.data.body),
         action: {
           label: "Ir",
-          onClick: () => {
+          onClick: (e) => {
+            e.stopPropagation();
             if (message.data.link) {
               const a = document.createElement("a");
               a.href = message.data.link;
@@ -107,7 +108,7 @@ export const AblySuscriptionProvider = ({ children }: IPropsAbly) => {
       {children}
     </AblySuscriptionContext.Provider>
   );
-};
+}
 
 export const useAblySuscription = () => {
   const context = useContext(AblySuscriptionContext);

@@ -12,14 +12,15 @@ const EditarGrupoPartida = dynamic(
 
 interface IPropsNuevoGrupoPartida {
   params: {
-    idGrupoPartida: string;
+    slug?: string[];
   };
 }
 
 export default function NuevoGrupoPartidaPage({
   params,
 }: IPropsNuevoGrupoPartida) {
-  const { idGrupoPartida } = params;
+  const { slug = [] } = params;
+  const lastSlug = slug.at(-1);
 
   return (
     <div className="p-4 lg:p-6">
@@ -27,7 +28,7 @@ export default function NuevoGrupoPartidaPage({
       <Card className="overflow-auto mb-6">
         <CardContent>
           <Suspense fallback={<p>Cargando...</p>}>
-            <GetDataEditarGrupoPartida idGrupoPartida={idGrupoPartida} />
+            <GetDataEditarGrupoPartida idGrupoPartida={String(lastSlug)} />
           </Suspense>
         </CardContent>
       </Card>

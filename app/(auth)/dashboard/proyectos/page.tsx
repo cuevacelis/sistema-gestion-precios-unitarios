@@ -4,10 +4,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types";
-import { Folder, ArrowLeft } from "lucide-react";
 import Search from "@/components/search/search";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -44,7 +44,10 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
             <div className="flex items-center gap-4">
               <BackButtonHistory />
               <CardTitle className="text-2xl font-bold flex items-center">
-                <Folder className="mr-2 h-8 w-8" />
+                <ModuleIconsComponent
+                  className="mr-2 h-8 w-8 flex-shrink-0"
+                  modNombre="Proyecto"
+                />
                 Proyectos
               </CardTitle>
             </div>

@@ -1,32 +1,35 @@
 import {
   BracesIcon,
-  Folder,
-  FolderOpenDotIcon,
+  FileBox,
+  Files,
+  FileSpreadsheet,
+  Folders,
   LayoutDashboardIcon,
-  NotebookPenIcon,
   UserRoundCogIcon,
   UsersRoundIcon,
 } from "lucide-react";
 
 interface IProps {
   modNombre: string;
+  className?: string;
 }
 
-export default function ModuleIconsComponent({ modNombre }: IProps) {
-  switch (modNombre) {
-    case "Usuario":
-      return <UserRoundCogIcon className="h-4 w-4" />;
-    case "Presupuesto":
-      return <NotebookPenIcon className="h-4 w-4" />;
-    case "Partida":
-      return <FolderOpenDotIcon className="h-4 w-4" />;
-    case "Proyecto":
-      return <Folder className="h-4 w-4" />;
-    case "Cliente":
-      return <UsersRoundIcon className="h-4 w-4" />;
-    case "DashBoard":
-      return <LayoutDashboardIcon className="h-4 w-4" />;
-    default:
-      return <BracesIcon className="h-4 w-4" />;
+export default function ModuleIconsComponent({ modNombre, className }: IProps) {
+  if (modNombre.toLowerCase().includes("cliente")) {
+    return <UsersRoundIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("usuario")) {
+    return <UserRoundCogIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("proyecto")) {
+    return <Folders className={className} />;
+  } else if (modNombre.toLowerCase().includes("grupos de partida")) {
+    return <Files className={className} />;
+  } else if (modNombre.toLowerCase().includes("partida")) {
+    return <FileSpreadsheet className={className} />;
+  } else if (modNombre.toLowerCase().includes("recurso")) {
+    return <FileBox className={className} />;
+  } else if (modNombre.toLowerCase().includes("dashboard")) {
+    return <LayoutDashboardIcon className={className} />;
+  } else {
+    return <BracesIcon className={className} />;
   }
 }

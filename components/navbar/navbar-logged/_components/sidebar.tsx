@@ -49,15 +49,18 @@ export default function SidebarComponent(props: SidebarProps) {
             return (
               <Link
                 key={module.mod_nombre}
-                href={`/dashboard/${module.mod_nombre.toLowerCase()}s`}
+                href={`/dashboard/${module.mod_nombre.toLowerCase()}`}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
                   pathname.startsWith(
-                    `/dashboard/${module.mod_nombre.toLowerCase()}s`
+                    `/dashboard/${module.mod_nombre.toLowerCase()}`
                   ) && "bg-muted text-primary"
                 )}
               >
-                <ModuleIconsComponent modNombre={module.mod_nombre} />
+                <ModuleIconsComponent
+                  className="h-6 w-6"
+                  modNombre={module.mod_nombre}
+                />
                 {module.mod_nombre}
               </Link>
             );

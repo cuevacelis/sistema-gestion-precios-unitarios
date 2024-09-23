@@ -8,7 +8,7 @@ interface IPropsAbly {
   session: Session | null;
 }
 
-export const AblyPimary = ({ children, session }: IPropsAbly) => {
+export default function AblyPimary({ children, session }: IPropsAbly) {
   const clientAbly = new Ably.Realtime({
     key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
   });
@@ -27,4 +27,4 @@ export const AblyPimary = ({ children, session }: IPropsAbly) => {
       </ChannelProvider>
     </AblyProvider>
   );
-};
+}

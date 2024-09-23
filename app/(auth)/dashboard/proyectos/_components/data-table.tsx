@@ -189,7 +189,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
   };
 
   const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
-    router.push(`/dashboard/proyectos/${row.pre_id}/grupos-de-partida`);
+    router.push(
+      `/dashboard/proyectos/${row.pre_id}/grupos-de-partida/subgrupos`
+    );
   };
 
   if (!table || !table.getRowModel().rows.length) {
@@ -251,7 +253,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`proyectos/${row.original.pre_id}/grupos-de-partida`}
+                        href={`proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
                         className="flex items-center"
                       >
                         <PlusCircle className="mr-2 h-4 w-4" />

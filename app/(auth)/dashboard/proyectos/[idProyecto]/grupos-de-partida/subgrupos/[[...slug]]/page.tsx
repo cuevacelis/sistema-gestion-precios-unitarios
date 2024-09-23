@@ -8,8 +8,8 @@ import {
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Layers } from "lucide-react";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -18,12 +18,12 @@ const BackButtonHistory = dynamic(
   }
 );
 
-const OptionsTable = dynamic(() => import("../_components/options-table"), {
+const OptionsTable = dynamic(() => import("../../_components/options-table"), {
   ssr: false,
   loading: () => <Skeleton className="h-10 w-full" />,
 });
 
-const TableComponent = dynamic(() => import("../_components/data-table"), {
+const TableComponent = dynamic(() => import("../../_components/data-table"), {
   ssr: false,
   loading: () => <TableSkeleton />,
 });
@@ -67,35 +67,30 @@ export default async function GruposDePartidaPage({
             <div className="flex items-center gap-4">
               <BackButtonHistory />
               <CardTitle className="text-2xl font-bold flex items-center">
-                <Layers className="mr-2 h-8 w-8" />
-                <span>
+                <ModuleIconsComponent
+                  className="mr-2 h-8 w-8 flex-shrink-0"
+                  modNombre="Grupos de Partida"
+                />
+                <p className="">
                   Grupos de Partida{" "}
                   {isSubGroup ? (
-                    <>
-                      del grupo{" "}
-                      <Suspense
-                        key={lastGrupoPartidaId}
-                        fallback={<span>Loading...</span>}
-                      >
-                        <GrupoPartidaNameById
-                          idGrupoPartida={lastGrupoPartidaId}
-                        />
-                      </Suspense>
-                    </>
+                    <Suspense
+                      key={lastGrupoPartidaId}
+                      fallback={<span>Loading...</span>}
+                    >
+                      <GrupoPartidaNameById
+                        idGrupoPartida={lastGrupoPartidaId}
+                      />
+                    </Suspense>
                   ) : (
-                    <>
-                      del proyecto{" "}
-                      <Suspense
-                        key={idProyecto}
-                        fallback={<span>Loading...</span>}
-                      >
-                        <PresupuestoNameById
-                          idPresupuesto={Number(idProyecto)}
-                        />
-                      </Suspense>
-                    </>
+                    <Suspense
+                      key={idProyecto}
+                      fallback={<span>Loading...</span>}
+                    >
+                      <PresupuestoNameById idPresupuesto={Number(idProyecto)} />
+                    </Suspense>
                   )}
-                </span>
+                </p>
               </CardTitle>
             </div>
           </div>
@@ -139,9 +134,12 @@ async function GrupoPartidaNameById({
   }
 
   return (
-    <span className="text-muted-foreground">
-      &quot;{data.grupar_nombre}&quot;
-    </span>
+    <>
+      del grupo{" "}
+      <span className="text-muted-foreground">
+        &quot;{data.grupar_nombre}&quot;
+      </span>
+    </>
   );
 }
 
@@ -157,6 +155,11 @@ async function PresupuestoNameById({
   }
 
   return (
-    <span className="text-muted-foreground">&quot;{data.pre_nombre}&quot;</span>
+    <>
+      del proyecto{" "}
+      <span className="text-muted-foreground">
+        &quot;{data.pre_nombre}&quot;
+      </span>
+    </>
   );
 }

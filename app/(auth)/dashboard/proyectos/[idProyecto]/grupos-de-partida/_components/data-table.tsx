@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
@@ -29,9 +29,10 @@ import {
   TStatusResponseActions,
 } from "@/lib/types";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Trash2, Copy, FileEdit, FolderOpen } from "lucide-react";
+import { Trash2, FileEdit, FolderOpen, Layers } from "lucide-react";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
+import { replaceSegmentInPath } from "@/lib/utils";
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
@@ -44,7 +45,9 @@ export default function TableComponent({
   idProyecto,
   currentPath,
 }: IProps) {
+  console.log(currentPath);
   const router = useRouter();
+  const pathname = usePathname();
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerGruposDePartidasId | null>(null);
@@ -53,30 +56,6 @@ export default function TableComponent({
 
   const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
     () => [
-      // {
-      //   id: "select",
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       checked={
-      //         table.getIsAllPageRowsSelected() ||
-      //         (table.getIsSomePageRowsSelected() && "indeterminate")
-      //       }
-      //       onCheckedChange={(value) =>
-      //         table.toggleAllPageRowsSelected(!!value)
-      //       }
-      //       aria-label="Seleccionar todos"
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       checked={row.getIsSelected()}
-      //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-      //       aria-label={`Seleccionar fila ${row.index + 1}`}
-      //     />
-      //   ),
-      //   enableSorting: false,
-      //   enableHiding: false,
-      // },
       {
         id: "grupar_id",
         accessorKey: "grupar_id",
@@ -90,7 +69,6 @@ export default function TableComponent({
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
       },
-      // Añade más columnas según sea necesario
     ],
     []
   );
@@ -110,18 +88,8 @@ export default function TableComponent({
     setIsShowDeleteModal(false);
   };
 
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-  };
-
   const handleNavigateToSubgroup = (grupoPartidaId: number) => {
-    const newPath =
-      currentPath.length > 1
-        ? [...currentPath.slice(1), grupoPartidaId]
-        : [grupoPartidaId];
-    router.push(
-      `/dashboard/proyectos/${idProyecto}/grupos-de-partida/${newPath.join("/")}`
-    );
+    router.push(pathname + "/" + grupoPartidaId);
   };
 
   const handleRowClick = (row: IDataDBObtenerGruposDePartidasId) => {
@@ -137,9 +105,17 @@ export default function TableComponent({
 
   if (dataGruposDePartidas.length === 0) {
     return (
-      <section className="flex items-center justify-center min-h-[400px] p-6 bg-background border border-border rounded-lg shadow-sm">
-        <p className="text-center">
-          No hay grupos de partidas para este proyecto.
+      <section className="flex flex-col items-center justify-center min-h-[400px]">
+        <Layers
+          className="w-16 h-16 text-muted-foreground mb-4"
+          aria-hidden="true"
+        />
+        <h2 className="text-xl font-semibold text-foreground mb-2">
+          No hay grupos de partidas
+        </h2>
+        <p className="text-center text-muted-foreground max-w-md">
+          Aún no se han creado grupos de partidas. Cuando se agreguen,
+          aparecerán aquí.
         </p>
       </section>
     );
@@ -192,14 +168,6 @@ export default function TableComponent({
                   <ContextMenuContent className="w-64">
                     <ContextMenuItem
                       onClick={() =>
-                        handleCopyCode(String(row.original.grupar_nombre))
-                      }
-                    >
-                      <Copy className="mr-2 h-4 w-4" />
-                      <span>Copiar: {row.original.grupar_nombre}</span>
-                    </ContextMenuItem>
-                    <ContextMenuItem
-                      onClick={() =>
                         handleNavigateToSubgroup(row.original.grupar_id)
                       }
                     >
@@ -208,7 +176,15 @@ export default function TableComponent({
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`/dashboard/proyectos/${idProyecto}/grupos-de-partida/${[...currentPath.slice(1), row.original.grupar_id].join("/")}/editar`}
+                        href={
+                          replaceSegmentInPath(
+                            pathname,
+                            "subgrupos",
+                            "editar"
+                          ) +
+                          "/" +
+                          row.original.grupar_id
+                        }
                         className="flex items-center"
                       >
                         <FileEdit className="mr-2 h-4 w-4" />

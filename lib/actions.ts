@@ -28,6 +28,7 @@ import {
 import { IBrowserInfo } from "./types";
 import { headers } from "next/headers";
 import { queueS3 } from "./queue/s3Queue";
+import { replaceSegmentInPath } from "./utils";
 
 // #region Login
 
@@ -456,16 +457,22 @@ export async function actionsCrearGrupoPartida(
 
     // Parsear y modificar la URL del referer
     const url = new URL(referer);
-    const pathSegments = url.pathname
-      .split("/")
-      .filter((segment) => segment !== "crear");
-    url.pathname = pathSegments.join("/");
+    let segments = url.pathname.split("/");
+    let newUrl = url.pathname;
+
+    // Obtener el último slug
+    let lastSegment = segments[segments.length - 1];
+
+    // Verificar si se navega a un subgrupo
+    if (!isNaN(Number(lastSegment))) {
+      newUrl = replaceSegmentInPath(url.pathname, "crear", "subgrupos");
+    } else {
+      newUrl = replaceSegmentInPath(url.pathname, "crear", "subgrupos");
+    }
 
     // Usar la nueva URL para revalidación y redirección
-    const newPath = url.pathname;
-    revalidatePath(newPath);
-
-    return redirect(url.toString());
+    revalidatePath(newUrl.toString());
+    return redirect(newUrl.toString());
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -503,20 +510,24 @@ export async function actionsEditarGrupoPartida(
     });
 
     await editarGrupoPartida(idGrupoPartida, nombreGrupoPartida);
-
     // Parsear y modificar la URL del referer
     const url = new URL(referer);
-    const pathSegments = url.pathname
-      .split("/")
-      .filter((segment) => segment !== "editar")
-      .slice(0, -1);
-    url.pathname = pathSegments.join("/");
+    let segments = url.pathname.split("/");
+    let newUrl = url.pathname;
+
+    // Obtener el último slug
+    let lastSegment = segments[segments.length - 1];
+
+    // Verificar si se navega a un subgrupo
+    if (!isNaN(Number(lastSegment))) {
+      newUrl = replaceSegmentInPath(url.pathname, "editar", "subgrupos", 1);
+    } else {
+      newUrl = replaceSegmentInPath(url.pathname, "editar", "subgrupos");
+    }
 
     // Usar la nueva URL para revalidación y redirección
-    const newPath = url.pathname;
-    revalidatePath(newPath);
-
-    return redirect(url.toString());
+    revalidatePath(newUrl.toString());
+    return redirect(newUrl.toString());
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

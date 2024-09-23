@@ -243,3 +243,24 @@ export function getBrowserInfo(): IBrowserInfo {
     os: os,
   };
 }
+
+export const replaceSegmentInPath = (
+  path: string,
+  target: string,
+  replacement: string,
+  removeLastSegments: number = 0 // Número de slugs a eliminar (por defecto, 0)
+) => {
+  let segments = path.split("/");
+
+  // Reemplazar el segmento objetivo
+  segments = segments.map((segment) =>
+    segment === target ? replacement : segment
+  );
+
+  // Eliminar los últimos slugs si se especifica
+  if (removeLastSegments > 0) {
+    segments = segments.slice(0, -removeLastSegments); // Eliminar los últimos 'removeLastSegments' elementos
+  }
+
+  return segments.join("/");
+};

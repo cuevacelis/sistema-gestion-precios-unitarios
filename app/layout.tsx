@@ -1,12 +1,15 @@
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/toaster";
-import { AblyPimary } from "@/context/ably";
-import { AblySuscriptionProvider } from "@/context/context-ably-suscription";
-import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
+import { Toaster } from "@/components/ui/toaster";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { auth } from "@/auth";
+import dynamic from "next/dynamic";
+import AblySuscriptionProvider from "@/context/context-ably-suscription";
+import ThemeProvider from "@/components/theme-provider";
+const AblyPimary = dynamic(() => import("@/context/ably"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: {

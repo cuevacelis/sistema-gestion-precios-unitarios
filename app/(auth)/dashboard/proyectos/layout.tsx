@@ -5,7 +5,7 @@ interface IPropsLayout {
   modal: React.ReactNode;
 }
 
-export default async function Layout({ children, modal }: IPropsLayout) {
+export default async function ProyectosLayout({ children, modal }: IPropsLayout) {
   return (
     <>
       {children}
