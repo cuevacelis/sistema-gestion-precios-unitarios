@@ -4,15 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import {
-  Loader2,
-  Trash2,
-  Copy,
-  FileEdit,
-  PlusCircle,
-  Edit3Icon,
-  PencilLine,
-} from "lucide-react";
+import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
@@ -42,8 +34,6 @@ import {
   TStatusResponseActions,
 } from "@/lib/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface IProps {
@@ -184,10 +174,16 @@ export default function TableComponent({ dataProyectos }: IProps) {
   };
 
   const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
-    setRowSelection((prev) => ({
-      ...prev,
-      [row.pre_id.toString()]: !prev[row.pre_id.toString()],
-    }));
+    setRowSelection((prev) => {
+      const newSelection = { ...prev };
+      const rowId = row.pre_id.toString();
+      if (newSelection[rowId]) {
+        delete newSelection[rowId];
+      } else {
+        newSelection[rowId] = true;
+      }
+      return newSelection;
+    });
   };
 
   if (!table || !table.getRowModel().rows.length) {
@@ -228,10 +224,10 @@ export default function TableComponent({ dataProyectos }: IProps) {
                   <ContextMenuTrigger asChild>
                     <TableRow
                       data-state={row.getIsSelected() && "selected"}
-                      className="cursor-pointer hover:bg-muted/50 select-none group"
+                      className="hover:bg-muted/50 select-none group"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
+                        <TableCell key={cell.id} className="p-0">
                           <Link
                             href={`/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
                             onClick={(e) => {
@@ -244,7 +240,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                                 `/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`
                               );
                             }}
-                            className="block w-full h-full"
+                            className="block w-full h-full p-2"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,
