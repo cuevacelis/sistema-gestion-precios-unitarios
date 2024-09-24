@@ -1,6 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ColumnDef, flexRender } from "@tanstack/react-table";
+import {
+  Loader2,
+  Trash2,
+  Copy,
+  FileEdit,
+  PlusCircle,
+  Edit3Icon,
+  PencilLine,
+} from "lucide-react";
+import { toast } from "sonner";
+
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
@@ -27,21 +41,9 @@ import {
   ISpPresupuestoObtenPaginado,
   TStatusResponseActions,
 } from "@/lib/types";
-import { ColumnDef, flexRender } from "@tanstack/react-table";
-import {
-  Trash2,
-  Copy,
-  FileEdit,
-  PlusCircle,
-  Edit3Icon,
-  PencilLine,
-} from "lucide-react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
-import { toast } from "sonner";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface IProps {
@@ -188,18 +190,6 @@ export default function TableComponent({ dataProyectos }: IProps) {
     }));
   };
 
-  const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
-    router.push(
-      `/dashboard/proyectos/${row.pre_id}/grupos-de-partida/subgrupos`
-    );
-  };
-
-  const handleRowHover = (row: IDataDBObtenerProyectosPaginados) => {
-    router.prefetch(
-      `/dashboard/proyectos/${row.pre_id}/grupos-de-partida/subgrupos`
-    );
-  };
-
   if (!table || !table.getRowModel().rows.length) {
     return <div>No hay datos disponibles.</div>;
   }
@@ -238,17 +228,29 @@ export default function TableComponent({ dataProyectos }: IProps) {
                   <ContextMenuTrigger asChild>
                     <TableRow
                       data-state={row.getIsSelected() && "selected"}
-                      className="cursor-pointer hover:bg-muted/50 no-select"
-                      onClick={() => handleRowClick(row.original)}
-                      onDoubleClick={() => handleRowDoubleClick(row.original)}
-                      onMouseEnter={() => handleRowHover(row.original)}
+                      className="cursor-pointer hover:bg-muted/50 select-none group"
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          <Link
+                            href={`/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleRowClick(row.original);
+                            }}
+                            onDoubleClick={(e) => {
+                              e.preventDefault();
+                              router.push(
+                                `/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`
+                              );
+                            }}
+                            className="block w-full h-full"
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </Link>
                         </TableCell>
                       ))}
                     </TableRow>
