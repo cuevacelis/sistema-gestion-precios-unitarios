@@ -1,10 +1,14 @@
 import {
   BracesIcon,
+  Download,
   FileBox,
   Files,
   FileSpreadsheet,
   Folders,
   LayoutDashboardIcon,
+  PencilLine,
+  PlusCircle,
+  Trash,
   UserRoundCogIcon,
   UsersRoundIcon,
 } from "lucide-react";
@@ -29,6 +33,14 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <FileBox className={className} />;
   } else if (modNombre.toLowerCase().includes("dashboard")) {
     return <LayoutDashboardIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("editar")) {
+    return <PencilLine className={className} />;
+  } else if (modNombre.toLowerCase().includes("crear")) {
+    return <PlusCircle className={className} />;
+  } else if (modNombre.toLowerCase().includes("exportar")) {
+    return <Download className={className} />;
+  } else if (modNombre.toLowerCase().includes("eliminar")) {
+    return <Trash className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

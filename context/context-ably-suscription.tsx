@@ -46,7 +46,7 @@ export default function AblySuscriptionProvider({ children }: IPropsAbly) {
       channelName: String(process.env.NEXT_PUBLIC_ABLY_CHANNEL_NAME),
     },
     (message) => {
-      toast(String(message.data.title), {
+      toast.info("Notificacion: " + String(message.data.title), {
         description: String(message.data.body),
         action: {
           label: "Ir",
@@ -104,7 +104,7 @@ export default function AblySuscriptionProvider({ children }: IPropsAbly) {
     <AblySuscriptionContext.Provider
       value={{ messagesNotification, setMessagesNotification, channel }}
     >
-      <Toaster />
+      <Toaster richColors expand={false} position="bottom-right" />
       {children}
     </AblySuscriptionContext.Provider>
   );

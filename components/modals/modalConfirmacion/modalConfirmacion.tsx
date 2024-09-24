@@ -9,6 +9,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 interface IProps {
   show: boolean;
@@ -27,11 +28,11 @@ export default function ModalConfirmacionComponent({
   onClose,
   onConfirm,
   title = "¿Está seguro de procesar la solicitud?",
-  message = "Esta acción es irreversible y no se puede deshacer. Una vez que la ejecutes, no habrá manera de revertirla ni de recuperar el estado anterior.",
+  message = "",
   classNameButtonAction,
   isLoading,
   messageActionButton = "Continuar",
-  messageActionButtonLoading = "Cargando...",
+  messageActionButtonLoading = "Cargando",
 }: IProps) {
   const handleClose = () => {
     onClose();
@@ -55,6 +56,7 @@ export default function ModalConfirmacionComponent({
             className={cn(classNameButtonAction)}
             disabled={isLoading}
           >
+            {isLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
             {isLoading ? messageActionButtonLoading : messageActionButton}
           </AlertDialogAction>
         </AlertDialogFooter>
