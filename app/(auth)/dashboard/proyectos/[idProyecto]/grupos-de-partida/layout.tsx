@@ -5,7 +5,10 @@ interface IPropsLayout {
   modal: React.ReactNode;
 }
 
-export default function ProyectosLayout({ children, modal }: IPropsLayout) {
+export default function GruposDePartidaLayout({
+  children,
+  modal,
+}: IPropsLayout) {
   return (
     <>
       {children}

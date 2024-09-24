@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import SubmitButtonComponent from "./button-submit";
 import ErrorMessage from "@/components/validation/message/error-message";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 
@@ -25,6 +24,7 @@ import {
   ISpDistritoObten,
   ISpObtenerClientes,
 } from "@/lib/types";
+import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 
 interface IEditarPresupuesto {
   dataClientes: ISpObtenerClientes[];
@@ -228,9 +228,6 @@ export default function EditarProyectosPage({
       action={handleSubmit}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="col-span-full">
-        <SubmitButtonComponent />
-      </div>
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Nombre usuario</Label>
         <Input
@@ -306,6 +303,13 @@ export default function EditarProyectosPage({
           required
           value={formData.jornal}
           onChange={(e) => handleInputChange("jornal", e.target.value)}
+        />
+      </div>
+      <div className="col-span-full">
+        <SubmitFormButtonComponent
+          disabled={locationData["district"].length === 0}
+          name="Editar"
+          nameLoading="Editando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

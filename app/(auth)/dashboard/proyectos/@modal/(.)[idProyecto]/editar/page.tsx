@@ -27,7 +27,7 @@ export default function EditarProyectoModalPage(
   props: IPropsEditProyectoModalPage
 ) {
   return (
-    <Modal title="Editar proyecto">
+    <Modal title="Editar proyecto" classNameDialogContent="h-[500px]">
       <Suspense fallback={<ModalLoading />}>
         <GetDataEditarProyecto id={props.params.idProyecto} />
       </Suspense>

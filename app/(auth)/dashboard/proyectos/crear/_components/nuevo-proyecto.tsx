@@ -7,7 +7,6 @@ import { Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import SubmitButtonComponent from "./button-submit";
 import ErrorMessage from "@/components/validation/message/error-message";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 
@@ -25,6 +24,7 @@ import {
   ISpDistritoObten,
   ISpObtenerClientes,
 } from "@/lib/types";
+import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 
 interface INuevoProyecto {
   dataClientes: ISpObtenerClientes[];
@@ -182,9 +182,6 @@ export default function NuevoProyecto({
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="col-span-full">
-        <SubmitButtonComponent />
-      </div>
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Nombre usuario</Label>
         <Input
@@ -258,6 +255,12 @@ export default function NuevoProyecto({
           name="jornal"
           required
           onChange={(e) => handleInputChange("jornal", e.target.value)}
+        />
+      </div>
+      <div className="col-span-full">
+        <SubmitFormButtonComponent
+          name="Guardar"
+          nameLoading="Guardando, por favor espere..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

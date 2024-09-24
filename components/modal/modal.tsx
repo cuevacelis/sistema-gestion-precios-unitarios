@@ -12,9 +12,14 @@ import {
 interface ModalProps {
   children: React.ReactNode;
   title?: string;
+  classNameDialogContent?: string;
 }
 
-export default function Modal({ children, title }: ModalProps) {
+export default function Modal({
+  children,
+  title,
+  classNameDialogContent,
+}: ModalProps) {
   const router = useRouter();
 
   const handleChangeModal = useCallback(
@@ -35,7 +40,7 @@ export default function Modal({ children, title }: ModalProps) {
     >
       <DialogContent
         aria-describedby="description"
-        className="sm:max-w-[800px] h-[500px] overflow-y-auto"
+        className={`sm:max-w-[800px] overflow-y-auto ${classNameDialogContent}`}
       >
         <DialogHeader>
           <DialogTitle>{title || "Modal"}</DialogTitle>
