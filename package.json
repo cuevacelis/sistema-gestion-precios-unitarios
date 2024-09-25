@@ -10,7 +10,7 @@
 		"generate": "npx kysely-codegen --url='env(POSTGRES_URL)' --out-file './lib/typesDB.ts'"
 	},
 	"dependencies": {
-		"@aws-sdk/client-sqs": "^3.654.0",
+		"@aws-sdk/client-sqs": "^3.658.0",
 		"@heroicons/react": "^2.1.5",
 		"@next/bundle-analyzer": "^14.2.13",
 		"@radix-ui/react-accordion": "^1.2.0",
@@ -50,7 +50,7 @@
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.0.0",
-		"date-fns": "^3.6.0",
+		"date-fns": "^4.1.0",
 		"embla-carousel-react": "^8.3.0",
 		"input-otp": "^1.2.4",
 		"kysely": "^0.27.4",
@@ -78,13 +78,13 @@
 		"typescript": "5.6.2",
 		"use-debounce": "^10.0.3",
 		"usehooks-ts": "^3.1.0",
-		"vaul": "^0.9.4",
+		"vaul": "^0.9.6",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.2",
 		"@types/luxon": "^3.4.2",
-		"@types/node": "22.6.1",
+		"@types/node": "22.6.2",
 		"@types/react": "18.3.9",
 		"@types/react-dom": "18.3.0",
 		"@types/react-window": "^1.8.8",
