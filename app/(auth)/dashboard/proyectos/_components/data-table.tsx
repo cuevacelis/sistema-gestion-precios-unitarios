@@ -47,7 +47,6 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const totalResults = dataProyectos[0]?.result?.meta?.total_registro ?? 0;
   useSearchToast(totalResults);
   const { width } = useWindowSize();
-  console.log(width);
   const isMobile = width < 768;
   const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
@@ -163,7 +162,6 @@ export default function TableComponent({ dataProyectos }: IProps) {
   };
 
   const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
-    console.log("handleRowClick");
     const rowId = row.pre_id.toString();
     if (isMobile) {
       router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
@@ -181,7 +179,6 @@ export default function TableComponent({ dataProyectos }: IProps) {
   };
 
   const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
-    console.log("handleRowDoubleClick");
     if (!isMobile) {
       router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
     }
