@@ -1,13 +1,50 @@
+import { auth } from "@/auth";
 import NavbarLoggedComponent from "@/components/navbar/navbar-logged/navbar-logged";
+import NavbarLoggedSkeleton from "@/components/navbar/navbar-logged/_components/navbar-logged-skeleton";
+import { getModulosByUserId } from "@/lib/services/sql-queries";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
-export default function AuthDashboardLayout({
+const AblyPimary = dynamic(() => import("@/context/ably"), {
+  ssr: false,
+  loading: () => <NavbarLoggedSkeleton />,
+});
+
+const AblySuscriptionProvider = dynamic(
+  () => import("@/context/context-ably-suscription"),
+  {
+    ssr: false,
+    loading: () => <NavbarLoggedSkeleton />,
+  }
+);
+
+export default async function AuthDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <NavbarLoggedComponent>{children}</NavbarLoggedComponent>
-    </>
+    <Suspense fallback={<NavbarLoggedSkeleton />}>
+      <GetDataNavbarLogged>{children}</GetDataNavbarLogged>
+    </Suspense>
+  );
+}
+
+async function GetDataNavbarLogged({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth();
+  const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  return (
+    <AblyPimary session={session}>
+      <AblySuscriptionProvider>
+        <NavbarLoggedComponent session={session} modulesByUser={modulesByUser}>
+          {children}
+        </NavbarLoggedComponent>
+      </AblySuscriptionProvider>
+    </AblyPimary>
   );
 }

@@ -2,7 +2,7 @@ import { ShieldCheck } from "lucide-react";
 import SkeletonSidebarComponent from "./sidebar-skeleton";
 import TopBarSkeleton from "./topbar-skeleton";
 
-export default function NavbarLoggedClientSkeleton() {
+export default function NavbarLoggedSkeleton() {
   return (
     <div className="flex max-h-screen h-screen overflow-hidden">
       <SkeletonSidebarComponent />
