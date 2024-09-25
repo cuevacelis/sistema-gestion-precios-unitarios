@@ -44,7 +44,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
 
   return (
     <section className="flex flex-wrap items-center gap-4">
-      <Link href={createPath}>
+      <Link href={createPath} scroll={false}>
         <Button size="default" variant="default" className="h-9 gap-1">
           <PlusCircle className="w-4" />
           <span>Nuevo</span>

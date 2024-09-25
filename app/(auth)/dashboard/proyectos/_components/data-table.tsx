@@ -269,6 +269,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     <ContextMenuItem asChild>
                       <Link
                         href={`proyectos/${row.original.pre_id}/editar`}
+                        scroll={false}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent

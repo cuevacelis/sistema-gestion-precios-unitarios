@@ -88,7 +88,6 @@ export async function actionsCrearPresupuesto(
   _prevState: any,
   formData: FormData
 ) {
-  // redirect("/dashboard/proyectos");
   try {
     const {
       nameUser,

@@ -12,13 +12,12 @@ interface IProps {
 
 export default function OptionsTable({ isChildrenLastGrupoPartida }: IProps) {
   const pathname = usePathname();
-
   const createPath = replaceSegmentInPath(pathname, "subgrupos", "crear");
   const exportPath = replaceSegmentInPath(pathname, "subgrupos", "exportar");
 
   return (
     <section className="flex flex-wrap items-center gap-4">
-      <Link href={createPath}>
+      <Link href={createPath} scroll={false}>
         <Button size="default" variant="default" className="h-9 gap-1">
           <PlusCircle className="w-4" />
           <span>Nuevo grupo de partida</span>

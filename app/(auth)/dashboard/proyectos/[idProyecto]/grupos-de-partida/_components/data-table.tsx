@@ -220,6 +220,7 @@ export default function TableComponent({
                           "/" +
                           row.original.grupar_id
                         }
+                        scroll={false}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
