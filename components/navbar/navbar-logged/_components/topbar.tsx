@@ -21,7 +21,6 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useGestionEstudiantesLogged } from "@/context/context-gestion-estudiantes-logged";
 import { actionsSignOut } from "@/lib/actions";
 import {
   ISpModuloObtenerModulosXPusuario,
@@ -62,12 +61,13 @@ const BreadcrumbResponsive = dynamic(
 interface IProps {
   modulesByUser: ISpModuloObtenerModulosXPusuario[];
   session: Session | null;
+  stateSidebar: boolean;
+  setStateSidebar: (state: boolean) => void;
 }
 
 export default function TopBarComponent(props: IProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const { stateSidebar, setStateSidebar } = useGestionEstudiantesLogged();
   const { messagesNotification, setMessagesNotification } =
     useAblySuscription();
   const [statusRespLogout, setStatusRespLogout] =
@@ -143,13 +143,13 @@ export default function TopBarComponent(props: IProps) {
           </SheetContent>
         </Sheet>
         <div className="flex flex-row flex-1 items-center gap-x-4">
-          {!stateSidebar && (
+          {!props.stateSidebar && (
             <Button
               variant="outline"
               size="icon"
               className="h-8 w-8 hidden md:flex"
               onClick={() => {
-                setStateSidebar(!stateSidebar);
+                props.setStateSidebar(!props.stateSidebar);
               }}
             >
               <SidebarOpen className="h-5 w-5" />

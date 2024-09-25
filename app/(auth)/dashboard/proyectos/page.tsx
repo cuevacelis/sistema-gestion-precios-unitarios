@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types";
-import Search from "@/components/search/search";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
@@ -15,6 +14,11 @@ const BackButtonHistory = dynamic(
     ssr: false,
   }
 );
+
+const Search = dynamic(() => import("@/components/search/search"), {
+  ssr: false,
+  loading: () => <></>,
+});
 
 const OptionsTable = dynamic(() => import("./_components/options-table"), {
   ssr: false,

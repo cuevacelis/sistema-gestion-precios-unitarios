@@ -1,31 +1,31 @@
 import { auth } from "@/auth";
 import { getModulosByUserId } from "@/lib/services/sql-queries";
-import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import NavbarLoggedClientSkeleton from "./_components/navbar-logged-client-skeleton";
+import NavbarLoggedClientComponent from "./_components/navbar-logged-client";
 
 interface IProps {
   children: React.ReactNode;
 }
 
-const SidebarComponent = dynamic(() => import("./_components/sidebar"), {
-  ssr: true,
-  loading: () => <p className="text-center w-60">Loading...</p>,
-});
-const TopBarComponent = dynamic(() => import("./_components/topbar"), {
-  ssr: true,
-  loading: () => <p>Loading...</p>,
-});
+export default function NavbarLoggedComponent({ children }: IProps) {
+  return (
+    <Suspense fallback={<NavbarLoggedClientSkeleton />}>
+      <GetDataNavbar>{children}</GetDataNavbar>
+    </Suspense>
+  );
+}
 
-export default async function NavbarLoggedComponent(props: IProps) {
+async function GetDataNavbar({ children }: IProps) {
   const session = await auth();
   const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
-
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
   return (
-    <div className="flex max-h-screen h-screen overflow-hidden">
-      <SidebarComponent {...{ session, modulesByUser }} />
-      <div className="flex-1 overflow-auto items-start gap-4 p-sm:px-6 sm:py-0 md:gap-8 bg-muted dark:bg-muted/50">
-        <TopBarComponent {...{ session, modulesByUser }} />
-        <main className="block overflow-auto p-4 lg:p-6">{props.children}</main>
-      </div>
-    </div>
+    <NavbarLoggedClientComponent
+      session={session}
+      modulesByUser={modulesByUser}
+    >
+      {children}
+    </NavbarLoggedClientComponent>
   );
 }
