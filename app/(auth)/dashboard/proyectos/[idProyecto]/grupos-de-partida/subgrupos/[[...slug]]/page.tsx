@@ -42,21 +42,10 @@ export default async function GruposDePartidaPage({
   let isSubGroup = false;
   let lastGrupoPartidaId = 0;
   let isChildrenLastGrupoPartida = false;
-  let gruposDePartidas;
 
-  if (slug.length === 0) {
-    isSubGroup = false;
-    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
-      Number(idProyecto)
-    );
-  } else {
+  if (slug.length > 0) {
     isSubGroup = true;
     lastGrupoPartidaId = Number(slug[slug.length - 1]);
-    gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
-      Number(idProyecto),
-      lastGrupoPartidaId
-    );
-    isChildrenLastGrupoPartida = gruposDePartidas.length === 0;
   }
 
   return (
@@ -99,7 +88,10 @@ export default async function GruposDePartidaPage({
 
       <Card className="p-6">
         <CardContent className="px-0 py-0">
-          <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+          <Suspense
+            key={lastGrupoPartidaId}
+            fallback={<Skeleton className="h-10 w-full" />}
+          >
             <OptionsTable
               isChildrenLastGrupoPartida={isChildrenLastGrupoPartida}
             />
@@ -109,11 +101,11 @@ export default async function GruposDePartidaPage({
 
       <Card>
         <CardContent className="p-6">
-          <Suspense fallback={<TableSkeleton />}>
-            <TableComponent
-              dataGruposDePartidas={gruposDePartidas}
+          <Suspense key={lastGrupoPartidaId} fallback={<TableSkeleton />}>
+            <TableWrapper
               idProyecto={idProyecto}
-              currentPath={[idProyecto, ...slug]}
+              slug={slug}
+              lastGrupoPartidaId={lastGrupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -161,5 +153,38 @@ async function PresupuestoNameById({
         &quot;{data.pre_nombre}&quot;
       </span>
     </>
+  );
+}
+
+interface TableWrapperProps {
+  idProyecto: string;
+  slug: string[];
+  lastGrupoPartidaId: number;
+}
+
+async function TableWrapper({
+  idProyecto,
+  slug,
+  lastGrupoPartidaId,
+}: TableWrapperProps) {
+  let gruposDePartidas;
+
+  if (slug.length === 0) {
+    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
+      Number(idProyecto)
+    );
+  } else {
+    gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
+      Number(idProyecto),
+      lastGrupoPartidaId
+    );
+  }
+
+  return (
+    <TableComponent
+      dataGruposDePartidas={gruposDePartidas}
+      idProyecto={idProyecto}
+      currentPath={[idProyecto, ...slug]}
+    />
   );
 }
