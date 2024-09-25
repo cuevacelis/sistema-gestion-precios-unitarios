@@ -18,7 +18,7 @@ const AblySuscriptionProvider = dynamic(
   }
 );
 
-export default async function AuthDashboardLayout({
+export default function AuthDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
