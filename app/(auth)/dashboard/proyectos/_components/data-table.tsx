@@ -239,6 +239,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
                         <TableCell key={cell.id}>
                           <Link
                             href={`proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                            }}
                           >
                             {flexRender(
                               cell.column.columnDef.cell,

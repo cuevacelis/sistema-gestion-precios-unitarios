@@ -182,7 +182,12 @@ export default function TableComponent({
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          <Link href={pathname + "/" + row.original.grupar_id}>
+                          <Link
+                            href={pathname + "/" + row.original.grupar_id}
+                            onClick={(e) => {
+                              e.preventDefault();
+                            }}
+                          >
                             {flexRender(
                               cell.column.columnDef.cell,
                               cell.getContext()
