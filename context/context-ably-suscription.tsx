@@ -49,7 +49,7 @@ export default function AblySuscriptionProvider({ children }: IPropsAbly) {
       toast.info("Notificacion: " + String(message.data.title), {
         description: String(message.data.body),
         action: {
-          label: "Ir",
+          label: message.data.textButton || "Ir",
           onClick: (e) => {
             e.stopPropagation();
             if (message.data.link) {
@@ -65,6 +65,7 @@ export default function AblySuscriptionProvider({ children }: IPropsAbly) {
             markAsRead(String(message.id));
           },
         },
+        duration: 8000,
       });
 
       const updatedNotifications = [...messagesNotification, message];

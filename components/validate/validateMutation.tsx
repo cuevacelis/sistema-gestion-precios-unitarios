@@ -12,6 +12,7 @@ interface IProps {
   showLoading?: boolean;
   showSuccess?: boolean;
   showError?: boolean;
+  messageLoading?: string;
 }
 
 export default function ValidateMutation({
@@ -20,6 +21,7 @@ export default function ValidateMutation({
   variant = "modal",
   showLoading = true,
   showSuccess = true,
+  messageLoading,
 }: IProps) {
   const isPending = statusMutation.some((status) => status === "pending");
   const isSuccess = statusMutation.some((status) => status === "success");
@@ -28,7 +30,7 @@ export default function ValidateMutation({
   return (
     <ErrorBoundary errorComponent={undefined}>
       {children}
-      {isPending && showLoading && <ModalLoading />}
+      {isPending && showLoading && <ModalLoading message={messageLoading} />}
       {isSuccess && variant === "modal" && showSuccess && (
         <ModalSuccessComponent />
       )}

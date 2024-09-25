@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
@@ -35,36 +35,24 @@ import {
 } from "@/lib/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { useWindowSize } from "usehooks-ts";
+import { useSearchToast } from "@/hooks/useSearchToast";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
 }
 
 export default function TableComponent({ dataProyectos }: IProps) {
+  const router = useRouter();
+  const totalResults = dataProyectos[0]?.result?.meta?.total_registro ?? 0;
+  useSearchToast(totalResults);
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
   const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerProyectosPaginados | null>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const totalResults = dataProyectos[0]?.result?.meta?.total_registro ?? 0;
-
-  useEffect(
-    function showToastSearch() {
-      const query = searchParams.get("query");
-      if (query) {
-        toast.info(
-          totalResults > 0 ? "Resultados de búsqueda" : "No hay resultados",
-          {
-            description: `Se encontraron ${totalResults} resultado(s) para "${query}"`,
-            duration: 5000,
-          }
-        );
-      }
-    },
-    [searchParams, totalResults]
-  );
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [
@@ -174,16 +162,26 @@ export default function TableComponent({ dataProyectos }: IProps) {
   };
 
   const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
-    setRowSelection((prev) => {
-      const newSelection = { ...prev };
-      const rowId = row.pre_id.toString();
-      if (newSelection[rowId]) {
-        delete newSelection[rowId];
-      } else {
-        newSelection[rowId] = true;
-      }
-      return newSelection;
-    });
+    const rowId = row.pre_id.toString();
+    if (isMobile) {
+      router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
+    } else {
+      setRowSelection((prev) => {
+        const newSelection = { ...prev };
+        if (newSelection[rowId]) {
+          delete newSelection[rowId];
+        } else {
+          newSelection[rowId] = true;
+        }
+        return newSelection;
+      });
+    }
+  };
+
+  const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
+    if (!isMobile) {
+      router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
+    }
   };
 
   if (!table || !table.getRowModel().rows.length) {
@@ -224,23 +222,20 @@ export default function TableComponent({ dataProyectos }: IProps) {
                   <ContextMenuTrigger asChild>
                     <TableRow
                       data-state={row.getIsSelected() && "selected"}
-                      className="hover:bg-muted/50 select-none group"
+                      className="cursor-pointer hover:bg-muted/50 select-none group"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleRowClick(row.original);
+                      }}
+                      onDoubleClick={(e) => {
+                        e.preventDefault();
+                        handleRowDoubleClick(row.original);
+                      }}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="p-0">
+                        <TableCell key={cell.id}>
                           <Link
-                            href={`/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleRowClick(row.original);
-                            }}
-                            onDoubleClick={(e) => {
-                              e.preventDefault();
-                              router.push(
-                                `/dashboard/proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`
-                              );
-                            }}
-                            className="block w-full h-full p-2"
+                            href={`proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
                           >
                             {flexRender(
                               cell.column.columnDef.cell,

@@ -29,10 +29,12 @@ export default function OptionsTable({ session }: { session: Session | null }) {
       toast.info("Exportación iniciada", {
         description:
           "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
+        duration: 3000,
       });
       await actionsQueueExportS3Presupuestos({
         userId: String(session?.user?.id),
         prefixNameFile: "presupuestos",
+        email: String(session?.user?.email),
       });
     } catch (error) {
       toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");

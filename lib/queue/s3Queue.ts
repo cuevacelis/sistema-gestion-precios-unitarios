@@ -4,6 +4,7 @@ interface S3OperationData {
   data?: any;
   userId: string;
   prefixNameFile: string;
+  email?: string;
 }
 
 export async function queueS3(operationData: S3OperationData) {

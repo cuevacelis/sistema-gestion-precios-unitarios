@@ -33,6 +33,8 @@ import { Trash2, FileEdit, FolderOpen, Layers } from "lucide-react";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { replaceSegmentInPath } from "@/lib/utils";
+import { useWindowSize } from "usehooks-ts";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
@@ -45,9 +47,10 @@ export default function TableComponent({
   idProyecto,
   currentPath,
 }: IProps) {
-  console.log(currentPath);
   const router = useRouter();
   const pathname = usePathname();
+  const { width } = useWindowSize();
+  const isMobile = width < 768;
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerGruposDePartidasId | null>(null);
@@ -93,14 +96,26 @@ export default function TableComponent({
   };
 
   const handleRowClick = (row: IDataDBObtenerGruposDePartidasId) => {
-    setRowSelection((prev) => ({
-      ...prev,
-      [row.grupar_id]: !prev[row.grupar_id],
-    }));
+    const rowId = row.grupar_id.toString();
+    if (isMobile) {
+      router.push(pathname + "/" + row.grupar_id);
+    } else {
+      setRowSelection((prev) => {
+        const newSelection = { ...prev };
+        if (newSelection[rowId]) {
+          delete newSelection[rowId];
+        } else {
+          newSelection[rowId] = true;
+        }
+        return newSelection;
+      });
+    }
   };
 
   const handleRowDoubleClick = (row: IDataDBObtenerGruposDePartidasId) => {
-    handleNavigateToSubgroup(row.grupar_id);
+    if (!isMobile) {
+      router.push(pathname + "/" + row.grupar_id);
+    }
   };
 
   if (dataGruposDePartidas.length === 0) {
@@ -122,7 +137,11 @@ export default function TableComponent({
   }
 
   return (
-    <ValidateMutation statusMutation={[statusRespDeleteGrupoPartida]}>
+    <ValidateMutation
+      showLoading={false}
+      variant="toast"
+      statusMutation={[statusRespDeleteGrupoPartida]}
+    >
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <DataTableViewOptions table={table} />
       </div>
@@ -152,15 +171,23 @@ export default function TableComponent({
                     <TableRow
                       data-state={row.getIsSelected() && "selected"}
                       className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => handleRowClick(row.original)}
-                      onDoubleClick={() => handleRowDoubleClick(row.original)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleRowClick(row.original);
+                      }}
+                      onDoubleClick={(e) => {
+                        e.preventDefault();
+                        handleRowDoubleClick(row.original);
+                      }}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          <Link href={pathname + "/" + row.original.grupar_id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </Link>
                         </TableCell>
                       ))}
                     </TableRow>
@@ -171,8 +198,11 @@ export default function TableComponent({
                         handleNavigateToSubgroup(row.original.grupar_id)
                       }
                     >
-                      <FolderOpen className="mr-2 h-4 w-4" />
-                      <span>Ver Subgrupos</span>
+                      <ModuleIconsComponent
+                        className="mr-2 h-4 w-4"
+                        modNombre="Grupos de Partida"
+                      />
+                      <span>Ver grupos de partida</span>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
@@ -187,7 +217,10 @@ export default function TableComponent({
                         }
                         className="flex items-center"
                       >
-                        <FileEdit className="mr-2 h-4 w-4" />
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Editar"
+                        />
                         <span>Editar</span>
                       </Link>
                     </ContextMenuItem>
@@ -196,8 +229,12 @@ export default function TableComponent({
                         setRowSelected(row.original);
                         setIsShowDeleteModal(true);
                       }}
+                      className="text-red-500 focus:text-red-500 focus:bg-[#FF666618] [&>svg]:!text-red-500"
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
+                      <ModuleIconsComponent
+                        className="mr-2 h-4 w-4"
+                        modNombre="Eliminar"
+                      />
                       <span>Eliminar</span>
                     </ContextMenuItem>
                   </ContextMenuContent>
@@ -213,10 +250,14 @@ export default function TableComponent({
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
           title="¿Está seguro de eliminar el grupo de partida?"
+          message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
           classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
+          isLoading={statusRespDeleteGrupoPartida === "pending"}
+          messageActionButton="Eliminar"
+          messageActionButtonLoading="Eliminando"
         />
       )}
     </ValidateMutation>

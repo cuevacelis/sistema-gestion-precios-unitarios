@@ -252,9 +252,11 @@ export async function actionsDeletePresupuesto(
 export async function actionsQueueExportS3Presupuestos({
   userId,
   prefixNameFile,
+  email,
 }: {
   userId: string;
   prefixNameFile: string;
+  email?: string;
 }) {
   try {
     const dataProyectos = await obtenerProyectosPaginados(50, 1, "");
@@ -269,6 +271,7 @@ export async function actionsQueueExportS3Presupuestos({
       })),
       userId: userId,
       prefixNameFile: prefixNameFile,
+      email: email,
     });
   } catch (error) {
     throw error;

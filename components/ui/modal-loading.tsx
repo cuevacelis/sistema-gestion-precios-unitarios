@@ -3,7 +3,11 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Portal from "../portal/portal";
 
-export default function LoadingModal() {
+interface IPropsLoadingModal {
+  message?: string;
+}
+
+export default function LoadingModal({ message }: IPropsLoadingModal) {
   return (
     <Portal>
       <Dialog open={true} modal={true}>
@@ -15,7 +19,7 @@ export default function LoadingModal() {
           <div className="flex flex-col items-center justify-center p-6">
             <div className="h-32 w-32 animate-spin rounded-full border-4 border-blue-300 border-t-4 border-t-blue-500"></div>
             <p className="mt-4 text-lg font-semibold">
-              Cargando, por favor espere...
+              {message || "Cargando, por favor espere..."}
             </p>
           </div>
         </DialogContent>
