@@ -1,14 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ColumnDef, flexRender } from "@tanstack/react-table";
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
+
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
 import ModalConfirmacionComponent from "@/components/modals/modalConfirmacion/modalConfirmacion";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -24,85 +27,114 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
+// import { actionsDeletePartida } from "@/lib/actions";
 import {
-  IDataDBObtenerGruposDePartidasId,
+  IDataDBObtenerPartidasPaginados,
   TStatusResponseActions,
 } from "@/lib/types";
-import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Trash2, FileEdit, FolderOpen, Layers } from "lucide-react";
-import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-import { replaceSegmentInPath } from "@/lib/utils";
-import { useWindowSize } from "usehooks-ts";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { useWindowSize } from "usehooks-ts";
+import { useSearchToast } from "@/hooks/useSearchToast";
+import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
 
 interface IProps {
-  dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
-  idProyecto: string;
-  currentPath: string[];
-  isPartidasDeGrupoPartidaId: boolean;
-  lastGrupoPartidaId: number;
+  dataPartidas: IDataDBObtenerPartidasPaginados[];
 }
 
-export default function TableComponent({
-  dataGruposDePartidas,
-  idProyecto,
-  currentPath,
-  isPartidasDeGrupoPartidaId,
-  lastGrupoPartidaId,
-}: IProps) {
+export default function TableComponent({ dataPartidas }: IProps) {
   const router = useRouter();
-  const pathname = usePathname();
+  const totalResults = dataPartidas.length ?? 0;
+  useSearchToast(totalResults);
   const { width } = useWindowSize();
   const isMobile = width < 768;
+  const [statusRespDeletePartida, setStatusRespDeletePartida] =
+    useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
-    useState<IDataDBObtenerGruposDePartidasId | null>(null);
-  const [statusRespDeleteGrupoPartida, setStatusRespDeleteGrupoPartida] =
-    useState<TStatusResponseActions>("idle");
+    useState<IDataDBObtenerPartidasPaginados | null>(null);
 
-  const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
+  const columns: ColumnDef<IDataDBObtenerPartidasPaginados>[] = useMemo(
     () => [
       {
-        id: "grupar_id",
-        accessorKey: "grupar_id",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Id" />
-        ),
-      },
-      {
-        accessorKey: "grupar_nombre",
+        accessorKey: "par_nombre",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
         ),
       },
+      {
+        accessorKey: "par_renmanobra",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Rendimiento mano de obra" />
+        ),
+      },
+      {
+        accessorKey: "par_renequipo",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Rendimiento equipo" />
+        ),
+      },
+      {
+        accessorKey: "unimed_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Unidad de medida" />
+        ),
+      },
+      {
+        accessorKey: "par_preunitario",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Precio unitario" />
+        ),
+      }
     ],
     []
   );
 
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: dataGruposDePartidas,
+    data: dataPartidas ?? [],
     columns,
-    rowCount: dataGruposDePartidas.length,
-    identifierField: "grupar_id",
+    rowCount: totalResults,
+    identifierField: "pre_id",
+    initialState: {
+      columnVisibility: {
+        usu_nomapellidos: false,
+        pai_nombre: false,
+        prov_nombre: false,
+        dist_nombre: false,
+      },
+    },
   });
 
-  const handleDeleteConfirm = async () => {
-    if (!rowSelected) return;
-    setStatusRespDeleteGrupoPartida("pending");
-    // await actionsDeleteGrupoPartida(rowSelected.grupar_id);
-    setStatusRespDeleteGrupoPartida("success");
-    setIsShowDeleteModal(false);
-  };
+  // const handleDeleteConfirm = async () => {
+  //   if (!rowSelected) return;
+  //   setStatusRespDeletePartida("pending");
+  //   try {
+  //     await actionsDeletePartida(rowSelected.pre_id);
+  //     setStatusRespDeletePartida("success");
+  //     toast.success("Partida eliminado", {
+  //       action: {
+  //         label: "Deshacer cambios",
+  //         onClick: async () => {
+  //           setStatusRespDeletePartida("pending");
+  //           await actionsDeletePartida(rowSelected.pre_id, 1);
+  //           setStatusRespDeletePartida("success");
+  //         },
+  //       },
+  //     });
+  //   } catch (error) {
+  //     setStatusRespDeletePartida("error");
+  //     toast.error(
+  //       "No se pudo eliminar el partida, por favor intente nuevamente."
+  //     );
+  //   } finally {
+  //     setIsShowDeleteModal(false);
+  //   }
+  // };
 
-  const handleNavigateToSubgroup = (grupoPartidaId: number) => {
-    router.push(pathname + "/" + grupoPartidaId);
-  };
-
-  const handleRowClick = (row: IDataDBObtenerGruposDePartidasId) => {
-    const rowId = row.grupar_id.toString();
+  const handleRowClick = (row: IDataDBObtenerPartidasPaginados) => {
+    const rowId = row.par_nombre.toString();
     if (isMobile) {
-      router.push(pathname + "/" + row.grupar_id);
+      // router.push(`partidas/${row.pre_id}/grupos-de-partida/subgrupos`);
     } else {
       setRowSelection((prev) => {
         const newSelection = { ...prev };
@@ -116,63 +148,21 @@ export default function TableComponent({
     }
   };
 
-  const handleRowDoubleClick = (row: IDataDBObtenerGruposDePartidasId) => {
+  const handleRowDoubleClick = (row: IDataDBObtenerPartidasPaginados) => {
     if (!isMobile) {
-      router.push(pathname + "/" + row.grupar_id);
+      // router.push(`partidas/${row.pre_id}/grupos-de-partida/subgrupos`);
     }
   };
 
-  if (isPartidasDeGrupoPartidaId) {
-    return (
-      <section className="flex flex-col items-center justify-center min-h-[400px]">
-        <Layers
-          className="w-16 h-16 text-muted-foreground mb-4"
-          aria-hidden="true"
-        />
-        <h2 className="text-xl font-semibold text-foreground mb-2">
-          Este grupo de partida ya tiene partidas asignada, por lo cual no se
-          puede crear grupos de partidas.
-        </h2>
-        <p className="text-center text-muted-foreground max-w-md">
-          De click abajo para ver las partidas asignadas.
-        </p>
-        <Link
-          href={
-            "/dashboard/grupos_de_partida/" + lastGrupoPartidaId + "/partidas"
-          }
-          scroll={false}
-          className="flex items-center"
-        >
-          <ModuleIconsComponent className="mr-2 h-4 w-4" modNombre="partida" />
-          <span>Ver partidas</span>
-        </Link>
-      </section>
-    );
-  }
-
-  if (dataGruposDePartidas.length === 0 && !isPartidasDeGrupoPartidaId) {
-    return (
-      <section className="flex flex-col items-center justify-center min-h-[400px]">
-        <Layers
-          className="w-16 h-16 text-muted-foreground mb-4"
-          aria-hidden="true"
-        />
-        <h2 className="text-xl font-semibold text-foreground mb-2">
-          No hay grupos de partidas
-        </h2>
-        <p className="text-center text-muted-foreground max-w-md">
-          Aún no se han creado grupos de partidas. Cuando se agreguen,
-          aparecerán aquí.
-        </p>
-      </section>
-    );
+  if (!table || !table.getRowModel().rows.length) {
+    return <div>No hay datos disponibles.</div>;
   }
 
   return (
     <ValidateMutation
       showLoading={false}
       variant="toast"
-      statusMutation={[statusRespDeleteGrupoPartida]}
+      statusMutation={[statusRespDeletePartida]}
     >
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <DataTableViewOptions table={table} />
@@ -202,7 +192,7 @@ export default function TableComponent({
                   <ContextMenuTrigger asChild>
                     <TableRow
                       data-state={row.getIsSelected() && "selected"}
-                      className="cursor-pointer hover:bg-muted/50"
+                      className="cursor-pointer hover:bg-muted/50 select-none group"
                       onClick={(e) => {
                         e.preventDefault();
                         handleRowClick(row.original);
@@ -215,7 +205,8 @@ export default function TableComponent({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           <Link
-                            href={pathname + "/" + row.original.grupar_id}
+                            // href={`partidas/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                            href={`/`}
                             onClick={(e) => {
                               e.preventDefault();
                             }}
@@ -230,47 +221,40 @@ export default function TableComponent({
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-64">
-                    <ContextMenuItem
-                      onClick={() =>
-                        handleNavigateToSubgroup(row.original.grupar_id)
-                      }
-                    >
-                      <ModuleIconsComponent
-                        className="mr-2 h-4 w-4"
-                        modNombre="Grupos de Partida"
-                      />
-                      <span>Ver grupos de partida</span>
+                    <ContextMenuItem disabled>
+                      <Copy className="mr-2 h-4 w-4" />
+                      <span>Duplicar</span>
                     </ContextMenuItem>
-                    {!row.original.tiene_hijos ? (
-                      <ContextMenuItem>
-                        <Link
-                          href={
-                            "/dashboard/grupos_de_partida/" +
-                            row.original.grupar_id +
-                            "/partidas"
-                          }
-                          scroll={false}
-                          className="flex items-center"
-                        >
-                          <ModuleIconsComponent
-                            className="mr-2 h-4 w-4"
-                            modNombre="partida"
-                          />
-                          <span>Agregar partida</span>
-                        </Link>
-                      </ContextMenuItem>
-                    ) : null}
                     <ContextMenuItem asChild>
                       <Link
-                        href={
-                          replaceSegmentInPath(
-                            pathname,
-                            "subgrupos",
-                            "editar"
-                          ) +
-                          "/" +
-                          row.original.grupar_id
-                        }
+                        // href={`/dashboard/partidas/${row.original.pre_id}`}
+                        href={`/`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Ver Detalle"
+                        />
+                        <span>Ver Detalle</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
+                        // href={`partidas/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                        href={`/`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Grupos de Partida"
+                        />
+                        <span>Grupos de Partida</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
+                        // href={`partidas/${row.original.pre_id}/editar`}
+                        href={`/`}
                         scroll={false}
                         className="flex items-center"
                       >
@@ -304,19 +288,19 @@ export default function TableComponent({
           <DataTablePagination table={table} rowSelection={rowSelection} />
         </CardFooter>
       </Card>
-      {isShowDeleteModal && (
+      {/* {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el grupo de partida?"
+          title="¿Está seguro de eliminar el presupuesto?"
           message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
           classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
-          isLoading={statusRespDeleteGrupoPartida === "pending"}
+          isLoading={statusRespDeletePartida === "pending"}
           messageActionButton="Eliminar"
           messageActionButtonLoading="Eliminando"
         />
-      )}
+      )} */}
     </ValidateMutation>
   );
 }

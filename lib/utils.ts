@@ -14,20 +14,6 @@ export const formatCurrency = (amount: number) => {
   });
 };
 
-export const formatDateToLocal = (
-  dateStr: string,
-  locale: string = "en-US"
-) => {
-  const date = new Date(dateStr);
-  const options: Intl.DateTimeFormatOptions = {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  };
-  const formatter = new Intl.DateTimeFormat(locale, options);
-  return formatter.format(date);
-};
-
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -152,16 +138,49 @@ export function divideArrayToBreadcrumbItems<T>(
   return [firstGroup, middleGroup, lastGroup];
 }
 
+// #region Formato de fecha
+
+export function formatDateToDateTime(
+  utcDate: string,
+  userTimezone?: string
+): string {
+  const timezone = userTimezone || DateTime.local().zoneName;
+  const utcDateTime = DateTime.fromISO(utcDate, { zone: "utc" });
+  const userDateTime = utcDateTime.setZone(timezone);
+
+  return userDateTime.toFormat("dd/MM/yyyy HH:mm:ssa");
+}
+
+export function formatDateToDate(
+  utcDate: string,
+  userTimezone?: string
+): string {
+  const timezone = userTimezone || DateTime.local().zoneName;
+  const utcDateTime = DateTime.fromISO(utcDate, { zone: "utc" });
+  const userDateTime = utcDateTime.setZone(timezone);
+  return userDateTime.toFormat("dd/MM/yyyy");
+}
+
+export function formatDateToDateTimeWith12HourFormat(
+  utcDate: string,
+  userTimezone?: string
+): string {
+  const timezone = userTimezone || DateTime.local().zoneName;
+  const utcDateTime = DateTime.fromISO(utcDate, { zone: "utc" });
+  const userDateTime = utcDateTime.setZone(timezone);
+
+  return userDateTime.toFormat("dd/MM/yy h:mma").toLowerCase(); // Formato con hora en 12 horas
+}
+
 export function obtenerHoraRelativa(
-  fechaUTC: Date,
+  utcDate: string,
   timeZone: string = DateTime.local().zoneName
 ): string {
   const ahora = DateTime.now().setZone(timeZone);
-  const fechaObjetivo = DateTime.fromJSDate(fechaUTC, { zone: "utc" }).setZone(
+  const fechaObjetivo = DateTime.fromISO(utcDate, { zone: "utc" }).setZone(
     timeZone
   );
 
-  // Calcular la diferencia en minutos, luego derivar horas y días
   const diferenciaEnMinutos = Math.floor(
     ahora.diff(fechaObjetivo, "minutes").minutes
   );

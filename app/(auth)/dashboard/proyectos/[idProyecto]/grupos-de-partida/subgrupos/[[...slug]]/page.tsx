@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   obtenerGruposDePartidasIdProyecto,
   obtenerGruposDePartidasIdRecursive,
+  obtenerIsPartidasDeGrupoPartidaId,
   obtenerNombreGruposDePartidasById,
   obtenerNombrePresupuestosById,
 } from "@/lib/services/sql-queries";
@@ -10,6 +11,7 @@ import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { IDataDBObtenerGruposDePartidasId } from "@/lib/types";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -42,10 +44,13 @@ export default async function GruposDePartidaPage({
   let isSubGroup = false;
   let lastGrupoPartidaId = 0;
   let isChildrenLastGrupoPartida = false;
+  let isPartidasDeGrupoPartidaId: boolean = false;
 
   if (slug.length > 0) {
     isSubGroup = true;
     lastGrupoPartidaId = Number(slug[slug.length - 1]);
+    isPartidasDeGrupoPartidaId =
+      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
   }
 
   return (
@@ -94,6 +99,7 @@ export default async function GruposDePartidaPage({
           >
             <OptionsTable
               isChildrenLastGrupoPartida={isChildrenLastGrupoPartida}
+              isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -106,6 +112,7 @@ export default async function GruposDePartidaPage({
               idProyecto={idProyecto}
               slug={slug}
               lastGrupoPartidaId={lastGrupoPartidaId}
+              isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -160,14 +167,16 @@ interface TableWrapperProps {
   idProyecto: string;
   slug: string[];
   lastGrupoPartidaId: number;
+  isPartidasDeGrupoPartidaId: boolean;
 }
 
 async function TableWrapper({
   idProyecto,
   slug,
   lastGrupoPartidaId,
+  isPartidasDeGrupoPartidaId,
 }: TableWrapperProps) {
-  let gruposDePartidas;
+  let gruposDePartidas: IDataDBObtenerGruposDePartidasId[] = [];
 
   if (slug.length === 0) {
     gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
@@ -185,6 +194,8 @@ async function TableWrapper({
       dataGruposDePartidas={gruposDePartidas}
       idProyecto={idProyecto}
       currentPath={[idProyecto, ...slug]}
+      isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
+      lastGrupoPartidaId={lastGrupoPartidaId}
     />
   );
 }

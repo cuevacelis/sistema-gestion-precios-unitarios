@@ -6,6 +6,7 @@ import { ISearchParams } from "@/lib/types";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { obtenerPartidasByGrupoPartidaId } from "@/lib/services/sql-queries";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -19,21 +20,33 @@ const Search = dynamic(() => import("@/components/search/search"), {
   loading: () => <></>,
 });
 
-const OptionsTable = dynamic(() => import("./_components/options-table"), {
-  ssr: false,
-  loading: () => <Skeleton className="h-10 w-full" />,
-});
+const OptionsTable = dynamic(
+  () => import("@/app/(auth)/dashboard/partidas/_components/options-table"),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-10 w-full" />,
+  }
+);
 
-// const TableComponent = dynamic(() => import("./_components/data-table"), {
-//   ssr: false,
-//   loading: () => <TableSkeleton />,
-// });
+const TableComponent = dynamic(
+  () => import("@/app/(auth)/dashboard/partidas/_components/data-table"),
+  {
+    ssr: false,
+    loading: () => <TableSkeleton />,
+  }
+);
 
 interface IProjectPage {
   searchParams: ISearchParams;
+  params: {
+    idGrupoDePartida: string;
+  };
 }
 
-export default async function ProyectPage({ searchParams }: IProjectPage) {
+export default async function ProyectPage({
+  searchParams,
+  params,
+}: IProjectPage) {
   const session = await auth();
   const query = String(searchParams.query || "");
   const currentPage = Number(searchParams.page) || 1;
@@ -51,13 +64,13 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
               <CardTitle className="text-2xl font-bold flex items-center">
                 <ModuleIconsComponent
                   className="mr-2 h-8 w-8 flex-shrink-0"
-                  modNombre="Usuario"
+                  modNombre="Partida"
                 />
-                Usuarios
+                Partidas
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar usuarios..."
+              placeholder="Buscar partidas..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>
@@ -67,7 +80,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-usuario-${query}-${currentPage}-${rowsPerPage}`}
+            key={`options-partida-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <OptionsTable session={session} />
@@ -77,31 +90,32 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
       <Card>
         <CardContent className="p-6">
-          {/* <Suspense
-            key={`table-usuario-${query}-${currentPage}-${rowsPerPage}`}
+          <Suspense
+            key={`table-partida-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<TableSkeleton />}
           >
             <GetDataTable
+              idGrupoPartida={params.idGrupoDePartida}
               query={query}
               currentPage={currentPage}
               rowsPerPage={rowsPerPage}
             />
-          </Suspense> */}
+          </Suspense>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-// async function GetDataTable(props: {
-//   query: string;
-//   currentPage: number;
-//   rowsPerPage: number;
-// }) {
-//   const dataUsuarios = await obtenerUsuariosPaginados(
-//     props.rowsPerPage,
-//     props.currentPage,
-//     props.query
-//   );
-//   return <TableComponent dataUsuarios={dataUsuarios} />;
-// }
+async function GetDataTable(props: {
+  idGrupoPartida: string;
+  query: string;
+  currentPage: number;
+  rowsPerPage: number;
+}) {
+  const dataPartidas = await obtenerPartidasByGrupoPartidaId(
+    props.idGrupoPartida
+  );
+
+  return <TableComponent dataPartidas={dataPartidas} />;
+}

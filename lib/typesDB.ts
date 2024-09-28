@@ -28,6 +28,12 @@ export interface Departamento {
   pai_id: number | null;
 }
 
+export interface DetallePartidaGrupoPartida {
+  detpargrupar_id: Generated<number>;
+  grupar_id: number | null;
+  par_id: number | null;
+}
+
 export interface DetallePartidaRecurso {
   detparrec_id: Generated<number>;
   detrec_precio: Numeric | null;
@@ -70,7 +76,6 @@ export interface Pais {
 }
 
 export interface Partida {
-  grupar_id: number | null;
   par_estado: Generated<number>;
   par_id: Generated<number>;
   par_nombre: string;
@@ -161,6 +166,7 @@ export interface Usuario {
 export interface DB {
   cliente: Cliente;
   departamento: Departamento;
+  detalle_partida_grupo_partida: DetallePartidaGrupoPartida;
   detalle_partida_recurso: DetallePartidaRecurso;
   detalle_rol_modulo: DetalleRolModulo;
   distrito: Distrito;

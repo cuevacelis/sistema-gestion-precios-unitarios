@@ -1,6 +1,7 @@
 import {
   BracesIcon,
   Download,
+  EyeIcon,
   FileBox,
   Files,
   FileSpreadsheet,
@@ -41,6 +42,8 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <Download className={className} />;
   } else if (modNombre.toLowerCase().includes("eliminar")) {
     return <Trash className={className} />;
+  } else if (modNombre.toLowerCase().includes("ver detalle")) {
+    return <EyeIcon className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

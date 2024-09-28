@@ -4,6 +4,7 @@ import "server-only";
 import cache from "../cache";
 import {
   IDataDBObtenerGruposDePartidasId,
+  IDataDBObtenerPartidasPaginados,
   IDataDBObtenerProyectosId,
   ISpDepartamentoObten,
   ISpDistritoObten,
@@ -83,6 +84,7 @@ export const obtenerUsuariosPaginados = cache(
 // #region PROYECTOS
 export const obtenerProyectosPaginados = cache(
   async (
+    idUsuario: string,
     elementosPorPagina: number,
     paginaActual: number,
     busqueda: string
@@ -90,7 +92,7 @@ export const obtenerProyectosPaginados = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3(${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
+          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3_vusuario(${idUsuario}, ${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
             "result"
           )
         )
@@ -305,14 +307,41 @@ export const obtenerNombreGruposDePartidasById = cache(
   { tags: ["gruposDePartidasNombre"], revalidate: 60 * 60 * 24 }
 );
 
+export const obtenerIsPartidasDeGrupoPartidaId = cache(
+  async (idGrupoPartida: number) => {
+    try {
+      const result = await getDbPostgres()
+        .selectFrom("partida")
+        .innerJoin(
+          "detalle_partida_grupo_partida",
+          "partida.par_id",
+          "detalle_partida_grupo_partida.par_id"
+        )
+        .select((eb) =>
+          eb.fn.count("detalle_partida_grupo_partida.par_id").as("count")
+        )
+        .where("detalle_partida_grupo_partida.grupar_id", "=", idGrupoPartida)
+        .executeTakeFirst();
+      return Number(result?.count) > 0;
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["isPartidasDeGrupoPartidaId"],
+  { tags: ["isPartidasDeGrupoPartidaId"], revalidate: 60 * 60 * 24 }
+);
+
 // #region Partidas
 export const obtenerPartidasByGrupoPartidaId = cache(
-  async (id: number) => {
+  async (idGrupoPartida: string) => {
     try {
       return getDbPostgres()
-        .selectFrom("partida")
+        .selectFrom(
+          sqlKysely<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_grupo(${idGrupoPartida})`.as(
+            "result"
+          )
+        )
         .selectAll()
-        .where("grupar_id", "=", id)
         .execute();
     } catch (error) {
       throw error;

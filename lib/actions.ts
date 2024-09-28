@@ -258,7 +258,7 @@ export async function actionsQueueExportS3Presupuestos({
   email?: string;
 }) {
   try {
-    const dataProyectos = await obtenerProyectosPaginados(50, 1, "");
+    const dataProyectos = await obtenerProyectosPaginados(userId, 50, 1, "");
     await queueS3({
       data: dataProyectos[0].result.data.map((object) => ({
         Código: object.pre_codigo || "",

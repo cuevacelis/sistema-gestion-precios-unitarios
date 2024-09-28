@@ -51,13 +51,13 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
               <CardTitle className="text-2xl font-bold flex items-center">
                 <ModuleIconsComponent
                   className="mr-2 h-8 w-8 flex-shrink-0"
-                  modNombre="Usuario"
+                  modNombre="Grupos de partida"
                 />
-                Usuarios
+                Grupos de partidas
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar usuarios..."
+              placeholder="Buscar grupos de partidas..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>
@@ -67,7 +67,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-usuario-${query}-${currentPage}-${rowsPerPage}`}
+            key={`options-grupos de partida-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <OptionsTable session={session} />
@@ -78,7 +78,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card>
         <CardContent className="p-6">
           {/* <Suspense
-            key={`table-usuario-${query}-${currentPage}-${rowsPerPage}`}
+            key={`table-grupos de partida-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<TableSkeleton />}
           >
             <GetDataTable
@@ -98,10 +98,10 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 //   currentPage: number;
 //   rowsPerPage: number;
 // }) {
-//   const dataUsuarios = await obtenerUsuariosPaginados(
+//   const dataGrupos de partidas = await obtenerGrupos de partidasPaginados(
 //     props.rowsPerPage,
 //     props.currentPage,
 //     props.query
 //   );
-//   return <TableComponent dataUsuarios={dataUsuarios} />;
+//   return <TableComponent dataGrupos de partidas={dataGrupos de partidas} />;
 // }

@@ -8,12 +8,20 @@ import { usePathname } from "next/navigation";
 
 interface IProps {
   isChildrenLastGrupoPartida: boolean;
+  isPartidasDeGrupoPartidaId: boolean;
 }
 
-export default function OptionsTable({ isChildrenLastGrupoPartida }: IProps) {
+export default function OptionsTable({
+  isChildrenLastGrupoPartida,
+  isPartidasDeGrupoPartidaId,
+}: IProps) {
   const pathname = usePathname();
   const createPath = replaceSegmentInPath(pathname, "subgrupos", "crear");
   const exportPath = replaceSegmentInPath(pathname, "subgrupos", "exportar");
+
+  if (isPartidasDeGrupoPartidaId) {
+    return null;
+  }
 
   return (
     <section className="flex flex-wrap items-center gap-4">

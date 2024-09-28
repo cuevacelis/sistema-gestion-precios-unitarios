@@ -193,7 +193,7 @@ export default function NuevoProyecto({
         />
       </div>
       <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre del presupuesto</Label>
+        <Label className="text-sm w-20 truncate">Nombre del proyecto</Label>
         <Input
           type="text"
           name="name-presupuesto"

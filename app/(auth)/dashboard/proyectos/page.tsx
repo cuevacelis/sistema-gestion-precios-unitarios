@@ -7,6 +7,7 @@ import { ISearchParams } from "@/lib/types";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { Session } from "next-auth";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -38,7 +39,9 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   const session = await auth();
   const query = String(searchParams.query || "");
   const currentPage = Number(searchParams.page) || 1;
-  const rowsPerPage = Number(searchParams.rowsPerPage) || 10;
+  const rowsPerPage =
+    Number(searchParams.rowsPerPage) ||
+    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
 
   return (
     <div className="space-y-6">
@@ -66,7 +69,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-${query}-${currentPage}-${rowsPerPage}`}
+            key={`options-proyecto-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <OptionsTable session={session} />
@@ -77,10 +80,11 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card>
         <CardContent className="p-6">
           <Suspense
-            key={`table-${query}-${currentPage}-${rowsPerPage}`}
+            key={`table-proyecto-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<TableSkeleton />}
           >
             <GetDataTable
+              session={session}
               query={query}
               currentPage={currentPage}
               rowsPerPage={rowsPerPage}
@@ -93,11 +97,13 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 }
 
 async function GetDataTable(props: {
+  session: Session | null;
   query: string;
   currentPage: number;
   rowsPerPage: number;
 }) {
   const dataProyectos = await obtenerProyectosPaginados(
+    String(props.session?.user?.id),
     props.rowsPerPage,
     props.currentPage,
     props.query

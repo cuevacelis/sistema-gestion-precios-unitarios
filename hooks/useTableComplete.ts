@@ -41,7 +41,7 @@ function useUpdateTableComplete<TData extends RowData>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
-  const rowsPerPage = Number(searchParams.get("rowsPerPage")) || 10;
+  const rowsPerPage = Number(searchParams.get("rowsPerPage")) || Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
   const [sorting, setSorting] = useState<SortingState>(
     initialState?.sorting || []
   );

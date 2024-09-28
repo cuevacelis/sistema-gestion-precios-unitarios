@@ -133,10 +133,17 @@ export interface IDataDBObtenerGruposDePartidasId {
   grupar_nombre: string;
   grupar_total: number;
   tiene_hijos: boolean;
+  tiene_partidas: boolean;
 }
 
 // #region Partidas
-export interface IDataDBObtenerPartidasPaginados {}
+export interface IDataDBObtenerPartidasPaginados {
+  par_nombre: string;
+  par_renmanobra: string;
+  par_renequipo: string;
+  unimed_nombre: string;
+  par_preunitario: string;
+}
 
 // #region Clientes
 export interface IDataDBObtenerClientesPaginados {

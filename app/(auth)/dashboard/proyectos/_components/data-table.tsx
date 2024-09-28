@@ -37,6 +37,7 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
+import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -63,15 +64,15 @@ export default function TableComponent({ dataProyectos }: IProps) {
         ),
       },
       {
-        accessorKey: "usu_nomapellidos",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Usuario" />
-        ),
-      },
-      {
         accessorKey: "pre_nombre",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Nombre" />
+        ),
+      },
+      {
+        accessorKey: "usu_nomapellidos",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Usuario" />
         ),
       },
       {
@@ -85,12 +86,15 @@ export default function TableComponent({ dataProyectos }: IProps) {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Jornal" />
         ),
+        cell: ({ row }) => `${row.original.pre_jornal}h`,
       },
       {
         accessorKey: "pre_fechorregistro",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Fecha" />
         ),
+        cell: ({ row }) =>
+          formatDateToDateTimeWith12HourFormat(row.original.pre_fechorregistro),
       },
       {
         accessorKey: "pai_nombre",
@@ -127,7 +131,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
     identifierField: "pre_id",
     initialState: {
       columnVisibility: {
-        pre_fechorregistro: false,
+        usu_nomapellidos: false,
         pai_nombre: false,
         prov_nombre: false,
         dist_nombre: false,
@@ -253,6 +257,18 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     <ContextMenuItem disabled>
                       <Copy className="mr-2 h-4 w-4" />
                       <span>Duplicar</span>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
+                        href={`/dashboard/proyectos/${row.original.pre_id}`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Ver Detalle"
+                        />
+                        <span>Ver Detalle</span>
+                      </Link>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link

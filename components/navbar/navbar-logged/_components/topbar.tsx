@@ -228,8 +228,7 @@ export default function TopBarComponent(props: IProps) {
                       </p>
                       <span className="text-sm text-muted-foreground text-blue-500">
                         {obtenerHoraRelativa(
-                          new Date(Number(notification.timestamp)),
-                          "America/Lima"
+                          new Date(Number(notification.timestamp)).toISOString()
                         )}
                       </span>
                     </div>
