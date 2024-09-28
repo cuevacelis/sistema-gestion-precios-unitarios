@@ -2,14 +2,14 @@ import React from "react";
 
 interface IPropsLayout {
   children: React.ReactNode;
-  modal: React.ReactNode;
+  // modal: React.ReactNode;
 }
 
-export default function PartidasLayout({ children, modal }: IPropsLayout) {
+export default function PartidasLayout({ children }: IPropsLayout) {
   return (
     <>
       {children}
-      {modal}
+      {/* {modal} */}
     </>
   );
 }
