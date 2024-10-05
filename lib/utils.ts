@@ -169,7 +169,7 @@ export function formatDateToDateTimeWith12HourFormat(
   const utcDateTime = DateTime.fromISO(utcDate, { zone: "utc" });
   const userDateTime = utcDateTime.setZone(timezone);
 
-  return userDateTime.toFormat("dd/MM/yy h:mma").toLowerCase(); // Formato con hora en 12 horas
+  return userDateTime.toFormat("dd/MM/yy HH:mma").toLowerCase();
 }
 
 export function obtenerHoraRelativa(

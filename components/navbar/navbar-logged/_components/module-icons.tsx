@@ -6,6 +6,7 @@ import {
   Files,
   FileSpreadsheet,
   Folders,
+  Hourglass,
   LayoutDashboardIcon,
   PencilLine,
   PlusCircle,
@@ -44,6 +45,8 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <Trash className={className} />;
   } else if (modNombre.toLowerCase().includes("ver detalle")) {
     return <EyeIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("jornal")) {
+    return <Hourglass className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

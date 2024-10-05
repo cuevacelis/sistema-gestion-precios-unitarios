@@ -168,7 +168,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const handleRowClick = (row: IDataDBObtenerProyectosPaginados) => {
     const rowId = row.pre_id.toString();
     if (isMobile) {
-      router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
+      router.push(
+        `/dashboard/grupos_de_partida/subgrupos?proyectoId=${row.pre_id}`
+      );
     } else {
       setRowSelection((prev) => {
         const newSelection = { ...prev };
@@ -184,7 +186,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
 
   const handleRowDoubleClick = (row: IDataDBObtenerProyectosPaginados) => {
     if (!isMobile) {
-      router.push(`proyectos/${row.pre_id}/grupos-de-partida/subgrupos`);
+      router.push(
+        `/dashboard/grupos_de_partida/subgrupos?proyectoId=${row.pre_id}`
+      );
     }
   };
 
@@ -239,7 +243,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           <Link
-                            href={`proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                            href={`/dashboard/grupos_de_partida/subgrupos?proyectoId=${row.original.pre_id}`}
                             onClick={(e) => {
                               e.preventDefault();
                             }}
@@ -272,7 +276,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`proyectos/${row.original.pre_id}/grupos-de-partida/subgrupos`}
+                        href={`/dashboard/grupos_de_partida/subgrupos?proyectoId=${row.original.pre_id}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent

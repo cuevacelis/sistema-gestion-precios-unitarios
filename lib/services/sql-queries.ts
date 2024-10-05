@@ -351,6 +351,92 @@ export const obtenerPartidasByGrupoPartidaId = cache(
   { tags: ["partidasByGrupoPartidaId"], revalidate: 60 * 60 * 24 }
 );
 
+export const obtenerNombrePartidasByGrupoPartidaId = cache(
+  async (grupoPartidaId: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<any>`sp_partida_obten_nombre_x_grupo(${grupoPartidaId})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partida"],
+  { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
+export const crearPartida = cache(
+  async (
+    p_par_nombre: string,
+    p_par_renmanobra: number,
+    p_par_renequipo: number,
+    p_unimed_nombre: string,
+    p_grupoPartida_id: number
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<any>`sp_partida_crea(${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre},${p_grupoPartida_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partida"],
+  { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
+export const editarPartida = cache(
+  async (
+    p_par_id: number,
+    p_par_nombre: string,
+    p_par_renmanobra: number,
+    p_par_renequipo: number,
+    p_unimed_nombre: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<any>`sp_partida_actualiza(${p_par_id},${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partida"],
+  { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerPartidaById = cache(
+  async (p_par_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sqlKysely<any>`sp_partida_obten_x_id(${p_par_id})`.as("result")
+        )
+        .selectAll()
+        .executeTakeFirst();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partida"],
+  { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
 // #region Clientes
 export const obtenerClientesPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {

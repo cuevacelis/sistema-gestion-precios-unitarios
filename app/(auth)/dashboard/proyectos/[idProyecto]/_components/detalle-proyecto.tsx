@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDateToDateTime } from "@/lib/utils";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface IPropsDetalleProyecto {
   data: IDataDBObtenerProyectosId;
@@ -30,22 +31,31 @@ export default function DetalleProyecto({ data }: IPropsDetalleProyecto) {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center space-x-2">
-              <UserIcon className="h-4 w-4 text-muted-foreground" />
+              <ModuleIconsComponent
+                className="h-4 w-4 text-muted-foreground"
+                modNombre="usuario"
+              />
               <span className="font-medium">Usuario:</span>
               <span>{data.usu_nomapellidos}</span>
             </div>
             <div className="flex items-center space-x-2">
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
               <span className="font-medium">Fecha de Registro:</span>
-              <span>
-                {formatDateToDateTime(data.pre_fechorregistro)}
-              </span>
+              <span>{formatDateToDateTime(data.pre_fechorregistro)}</span>
             </div>
             <div className="flex items-center space-x-2">
+              <ModuleIconsComponent
+                className="h-4 w-4 text-muted-foreground"
+                modNombre="cliente"
+              />
               <span className="font-medium">Cliente:</span>
               <span>{data.cli_nomaperazsocial}</span>
             </div>
             <div className="flex items-center space-x-2">
+              <ModuleIconsComponent
+                className="h-4 w-4 text-muted-foreground"
+                modNombre="jornal"
+              />
               <span className="font-medium">Jornal:</span>
               <span>{data.pre_jornal}</span>
             </div>
@@ -58,7 +68,6 @@ export default function DetalleProyecto({ data }: IPropsDetalleProyecto) {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center space-x-2">
-              <MapPinIcon className="h-4 w-4 text-muted-foreground" />
               <span className="font-medium">País:</span>
               <span>{data.pai_id}</span>
             </div>

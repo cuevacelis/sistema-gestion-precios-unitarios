@@ -5,6 +5,14 @@ import { getModulosByUserId } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
+const TanstackQueryProvider = dynamic(
+  () => import("@/context/tanstack-query"),
+  {
+    ssr: false,
+    loading: () => <NavbarLoggedSkeleton />,
+  }
+);
+
 const AblyPimary = dynamic(() => import("@/context/ably"), {
   ssr: false,
   loading: () => <NavbarLoggedSkeleton />,
@@ -39,12 +47,17 @@ async function GetDataNavbarLogged({
   const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
   // await new Promise((resolve) => setTimeout(resolve, 5000));
   return (
-    <AblyPimary session={session}>
-      <AblySuscriptionProvider>
-        <NavbarLoggedComponent session={session} modulesByUser={modulesByUser}>
-          {children}
-        </NavbarLoggedComponent>
-      </AblySuscriptionProvider>
-    </AblyPimary>
+    <TanstackQueryProvider>
+      <AblyPimary session={session}>
+        <AblySuscriptionProvider>
+          <NavbarLoggedComponent
+            session={session}
+            modulesByUser={modulesByUser}
+          >
+            {children}
+          </NavbarLoggedComponent>
+        </AblySuscriptionProvider>
+      </AblyPimary>
+    </TanstackQueryProvider>
   );
 }

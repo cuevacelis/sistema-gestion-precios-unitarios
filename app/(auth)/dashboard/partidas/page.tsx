@@ -37,10 +37,12 @@ interface IProjectPage {
 export default async function ProyectPage({ searchParams }: IProjectPage) {
   const session = await auth();
   const query = String(searchParams.query || "");
+  const grupoPartidaId = String(searchParams.grupoPartidaId || "1");
   const currentPage = Number(searchParams.page) || 1;
   const rowsPerPage =
     Number(searchParams.rowsPerPage) ||
     Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+  const uniqueKey = `table-partida-${grupoPartidaId}-${query}-${currentPage}-${rowsPerPage}`;
 
   return (
     <div className="space-y-6">
@@ -68,7 +70,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-partida-${query}-${currentPage}-${rowsPerPage}`}
+            key={uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <OptionsTable session={session} />
@@ -78,14 +80,12 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
       <Card>
         <CardContent className="p-6">
-          <Suspense
-            key={`table-partida-${query}-${currentPage}-${rowsPerPage}`}
-            fallback={<TableSkeleton />}
-          >
+          <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
             <GetDataTable
               query={query}
               currentPage={currentPage}
               rowsPerPage={rowsPerPage}
+              grupoPartidaId={grupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -94,12 +94,18 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   );
 }
 
-async function GetDataTable(props: {
+async function GetDataTable({
+  grupoPartidaId,
+  query,
+  currentPage,
+  rowsPerPage,
+}: {
   query: string;
   currentPage: number;
   rowsPerPage: number;
+  grupoPartidaId: string;
 }) {
-  const dataPartidas = await obtenerPartidasByGrupoPartidaId("1");
+  const dataPartidas = await obtenerPartidasByGrupoPartidaId(grupoPartidaId);
 
   return <TableComponent dataPartidas={dataPartidas} />;
 }

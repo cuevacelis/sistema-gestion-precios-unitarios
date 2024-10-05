@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
@@ -38,21 +38,18 @@ import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
-  idProyecto: string;
-  currentPath: string[];
-  isPartidasDeGrupoPartidaId: boolean;
+  isPartidasAssigned: boolean;
   lastGrupoPartidaId: number;
 }
 
 export default function TableComponent({
   dataGruposDePartidas,
-  idProyecto,
-  currentPath,
-  isPartidasDeGrupoPartidaId,
+  isPartidasAssigned,
   lastGrupoPartidaId,
 }: IProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { width } = useWindowSize();
   const isMobile = width < 768;
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
@@ -96,13 +93,17 @@ export default function TableComponent({
   };
 
   const handleNavigateToSubgroup = (grupoPartidaId: number) => {
-    router.push(pathname + "/" + grupoPartidaId);
+    router.push(
+      pathname + "/" + grupoPartidaId + `?${searchParams.toString()}`
+    );
   };
 
   const handleRowClick = (row: IDataDBObtenerGruposDePartidasId) => {
     const rowId = row.grupar_id.toString();
     if (isMobile) {
-      router.push(pathname + "/" + row.grupar_id);
+      router.push(
+        pathname + "/" + row.grupar_id + `?${searchParams.toString()}`
+      );
     } else {
       setRowSelection((prev) => {
         const newSelection = { ...prev };
@@ -118,16 +119,18 @@ export default function TableComponent({
 
   const handleRowDoubleClick = (row: IDataDBObtenerGruposDePartidasId) => {
     if (!isMobile) {
-      router.push(pathname + "/" + row.grupar_id);
+      router.push(
+        pathname + "/" + row.grupar_id + `?${searchParams.toString()}`
+      );
     }
   };
 
-  if (isPartidasDeGrupoPartidaId) {
+  if (isPartidasAssigned) {
     return (
       <section className="flex flex-col items-center justify-center min-h-[400px]">
-        <Layers
+        <ModuleIconsComponent
           className="w-16 h-16 text-muted-foreground mb-4"
-          aria-hidden="true"
+          modNombre="grupos de partida"
         />
         <h2 className="text-xl font-semibold text-foreground mb-2">
           Este grupo de partida ya tiene partidas asignada, por lo cual no se
@@ -138,7 +141,8 @@ export default function TableComponent({
         </p>
         <Link
           href={
-            "/dashboard/grupos_de_partida/" + lastGrupoPartidaId + "/partidas"
+            "/dashboard/partidas?grupoPartidaId=" +
+            lastGrupoPartidaId?.toString()
           }
           scroll={false}
           className="flex items-center"
@@ -150,7 +154,7 @@ export default function TableComponent({
     );
   }
 
-  if (dataGruposDePartidas.length === 0 && !isPartidasDeGrupoPartidaId) {
+  if (dataGruposDePartidas.length === 0 && !isPartidasAssigned) {
     return (
       <section className="flex flex-col items-center justify-center min-h-[400px]">
         <Layers
@@ -215,7 +219,12 @@ export default function TableComponent({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           <Link
-                            href={pathname + "/" + row.original.grupar_id}
+                            href={
+                              pathname +
+                              "/" +
+                              row.original.grupar_id +
+                              `?${searchParams.toString()}`
+                            }
                             onClick={(e) => {
                               e.preventDefault();
                             }}
@@ -245,9 +254,8 @@ export default function TableComponent({
                       <ContextMenuItem>
                         <Link
                           href={
-                            "/dashboard/grupos_de_partida/" +
-                            row.original.grupar_id +
-                            "/partidas"
+                            "/dashboard/partidas?grupoPartidaId=" +
+                            row.original.grupar_id.toString()
                           }
                           scroll={false}
                           className="flex items-center"

@@ -11,7 +11,9 @@ import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-import { IDataDBObtenerGruposDePartidasId } from "@/lib/types";
+import { IDataDBObtenerGruposDePartidasId, ISearchParams } from "@/lib/types";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -31,26 +33,37 @@ const TableComponent = dynamic(() => import("../../_components/data-table"), {
 });
 
 interface IGruposDePartidaPage {
+  searchParams: ISearchParams;
   params: {
-    idProyecto: string;
     slug?: string[];
   };
 }
 
-export default async function GruposDePartidaPage({
+export default async function GruposDePartidaSubgruposPage({
+  searchParams,
   params,
 }: IGruposDePartidaPage) {
-  const { idProyecto, slug = [] } = params;
-  let isSubGroup = false;
-  let lastGrupoPartidaId = 0;
-  let isChildrenLastGrupoPartida = false;
-  let isPartidasDeGrupoPartidaId: boolean = false;
+  const { slug = [] } = params;
+  const isSubGroup = slug.length > 0;
+  const lastGrupoPartidaId = Number(slug[slug.length - 1]);
+  const proyectoId = searchParams.proyectoId;
+  const uniqueKey = `table-grupos-de-partida-${proyectoId}-${slug.join("-")}`;
 
-  if (slug.length > 0) {
-    isSubGroup = true;
-    lastGrupoPartidaId = Number(slug[slug.length - 1]);
-    isPartidasDeGrupoPartidaId =
-      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
+  if (!proyectoId) {
+    return (
+      <Card className="max-w-md mx-auto mt-8">
+        <CardContent className="p-6">
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Parámetro faltante</AlertTitle>
+            <AlertDescription>
+              Falta el parámetro &#39;proyectoId&#39;. Por favor, asegúrate de
+              incluirlo en la URL.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -69,7 +82,7 @@ export default async function GruposDePartidaPage({
                   Grupos de Partida{" "}
                   {isSubGroup ? (
                     <Suspense
-                      key={lastGrupoPartidaId}
+                      key={uniqueKey}
                       fallback={<span>Loading...</span>}
                     >
                       <GrupoPartidaNameById
@@ -78,10 +91,10 @@ export default async function GruposDePartidaPage({
                     </Suspense>
                   ) : (
                     <Suspense
-                      key={idProyecto}
+                      key={uniqueKey}
                       fallback={<span>Loading...</span>}
                     >
-                      <PresupuestoNameById idPresupuesto={Number(idProyecto)} />
+                      <PresupuestoNameById idPresupuesto={Number(proyectoId)} />
                     </Suspense>
                   )}
                 </p>
@@ -94,12 +107,13 @@ export default async function GruposDePartidaPage({
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={lastGrupoPartidaId}
+            key={uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
-            <OptionsTable
-              isChildrenLastGrupoPartida={isChildrenLastGrupoPartida}
-              isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
+            <OptionsTableData
+              isSubGroup={isSubGroup}
+              idProyecto={String(proyectoId)}
+              lastGrupoPartidaId={lastGrupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -107,12 +121,11 @@ export default async function GruposDePartidaPage({
 
       <Card>
         <CardContent className="p-6">
-          <Suspense key={lastGrupoPartidaId} fallback={<TableSkeleton />}>
+          <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
             <TableWrapper
-              idProyecto={idProyecto}
-              slug={slug}
+              isSubGroup={isSubGroup}
+              idProyecto={String(proyectoId)}
               lastGrupoPartidaId={lastGrupoPartidaId}
-              isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
             />
           </Suspense>
         </CardContent>
@@ -163,38 +176,72 @@ async function PresupuestoNameById({
   );
 }
 
-interface TableWrapperProps {
+interface OptionsTableDataProps {
+  isSubGroup: boolean;
   idProyecto: string;
-  slug: string[];
   lastGrupoPartidaId: number;
-  isPartidasDeGrupoPartidaId: boolean;
 }
 
-async function TableWrapper({
+async function OptionsTableData({
+  isSubGroup,
   idProyecto,
-  slug,
   lastGrupoPartidaId,
-  isPartidasDeGrupoPartidaId,
-}: TableWrapperProps) {
+}: OptionsTableDataProps) {
   let gruposDePartidas: IDataDBObtenerGruposDePartidasId[] = [];
+  let isPartidasAssigned: boolean = false;
 
-  if (slug.length === 0) {
-    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
-      Number(idProyecto)
-    );
-  } else {
+  if (isSubGroup) {
     gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
       Number(idProyecto),
       lastGrupoPartidaId
+    );
+    isPartidasAssigned =
+      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
+  } else {
+    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
+      Number(idProyecto)
+    );
+  }
+  return (
+    <OptionsTable
+      isTheLastChildInTheListGrupoPartida={gruposDePartidas.length === 0}
+      isPartidasAssigned={isPartidasAssigned}
+      lastGrupoPartidaId={lastGrupoPartidaId}
+    />
+  );
+}
+
+interface TableWrapperProps {
+  isSubGroup: boolean;
+  idProyecto: string;
+  lastGrupoPartidaId: number;
+}
+
+async function TableWrapper({
+  isSubGroup,
+  idProyecto,
+  lastGrupoPartidaId,
+}: TableWrapperProps) {
+  let gruposDePartidas: IDataDBObtenerGruposDePartidasId[] = [];
+  let isPartidasAssigned: boolean = false;
+
+  if (isSubGroup) {
+    gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
+      Number(idProyecto),
+      lastGrupoPartidaId
+    );
+    isPartidasAssigned =
+      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
+  } else {
+    gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
+      Number(idProyecto)
     );
   }
 
   return (
     <TableComponent
       dataGruposDePartidas={gruposDePartidas}
-      idProyecto={idProyecto}
-      currentPath={[idProyecto, ...slug]}
-      isPartidasDeGrupoPartidaId={isPartidasDeGrupoPartidaId}
+      isPartidasAssigned={isPartidasAssigned}
       lastGrupoPartidaId={lastGrupoPartidaId}
     />
   );

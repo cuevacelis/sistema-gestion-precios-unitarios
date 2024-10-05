@@ -36,12 +36,12 @@ interface IProjectPage {
 }
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
-  const session = await auth();
   const query = String(searchParams.query || "");
   const currentPage = Number(searchParams.page) || 1;
   const rowsPerPage =
     Number(searchParams.rowsPerPage) ||
     Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+  const uniqueKey = `table-proyecto-${query}-${currentPage}-${rowsPerPage}`;
 
   return (
     <div className="space-y-6">
@@ -69,22 +69,18 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-proyecto-${query}-${currentPage}-${rowsPerPage}`}
+            key={uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
-            <OptionsTable session={session} />
+            <GetDataOptions />
           </Suspense>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="p-6">
-          <Suspense
-            key={`table-proyecto-${query}-${currentPage}-${rowsPerPage}`}
-            fallback={<TableSkeleton />}
-          >
+          <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
             <GetDataTable
-              session={session}
               query={query}
               currentPage={currentPage}
               rowsPerPage={rowsPerPage}
@@ -96,14 +92,19 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   );
 }
 
+async function GetDataOptions() {
+  const session = await auth();
+  return <OptionsTable session={session} />;
+}
+
 async function GetDataTable(props: {
-  session: Session | null;
   query: string;
   currentPage: number;
   rowsPerPage: number;
 }) {
+  const session = await auth();
   const dataProyectos = await obtenerProyectosPaginados(
-    String(props.session?.user?.id),
+    String(session?.user?.id),
     props.rowsPerPage,
     props.currentPage,
     props.query

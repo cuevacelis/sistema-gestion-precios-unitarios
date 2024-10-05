@@ -77,16 +77,17 @@ export function DataTablePagination<TData>({
             <ChevronLeftIcon className="h-4 w-4" />
           </Button>
           <div className="flex items-center gap-1">
-            <Input
+            {/* <Input
               className="h-8 w-12 text-center"
               value={table.getState().pagination.pageIndex + 1}
               onChange={(e) => {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 table.setPageIndex(page);
               }}
-            />
+            /> */}
             <span className="text-sm text-muted-foreground">
-              de {table.getPageCount()}
+              {table.getState().pagination.pageIndex + 1} de{" "}
+              {table.getPageCount()}
             </span>
           </div>
           <Button
