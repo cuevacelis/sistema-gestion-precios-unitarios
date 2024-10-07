@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormState } from "react-dom";
 import { Session } from "next-auth";
 import { Loader2 } from "lucide-react";
@@ -10,13 +10,7 @@ import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 
-import {
-  actionsCrearPresupuesto,
-  actionsObtenerCountries,
-  actionsObtenerDepartments,
-  actionsObtenerProvinces,
-  actionsObtenerDistricts,
-} from "@/lib/actions";
+import { actionsCrearPresupuesto } from "@/lib/actions";
 import {
   ISpPaisObten,
   ISpDepartamentoObten,
@@ -25,9 +19,13 @@ import {
   ISpObtenerClientes,
 } from "@/lib/types";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
+import useCountryQuery from "@/hooks/tanstack-query/useCountryQuery";
+import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
+import useProvinceQuery from "@/hooks/tanstack-query/useProvinceQuery";
+import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
+import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
 
 interface INuevoProyecto {
-  dataClientes: ISpObtenerClientes[];
   session: Session | null;
 }
 
@@ -38,10 +36,7 @@ type LoadingKeys =
   | "district"
   | "client";
 
-export default function NuevoProyecto({
-  dataClientes,
-  session,
-}: INuevoProyecto) {
+export default function NuevoProyecto({ session }: INuevoProyecto) {
   const [stateForm, formActionNewPresupuesto] = useFormState(
     actionsCrearPresupuesto,
     { isError: false, message: "" }
@@ -57,89 +52,52 @@ export default function NuevoProyecto({
     jornal: "",
   });
 
-  const [locationData, setLocationData] = useState({
-    country: [] as ISpPaisObten[],
-    department: [] as ISpDepartamentoObten[],
-    province: [] as ISpProvinciaObten[],
-    district: [] as ISpDistritoObten[],
+  const { data: countries, isLoading: isLoadingCountries } = useCountryQuery({
+    isEnabled: true,
   });
 
-  const [loading, setLoading] = useState<Record<LoadingKeys, boolean>>({
-    country: true,
-    department: false,
-    province: false,
-    district: false,
-    client: false,
+  const { data: departments, isLoading: isLoadingDepartments } =
+    useDepartmentQuery({
+      idCountry: formData.country,
+      isEnabled: !!formData.country,
+    });
+
+  const { data: provinces, isLoading: isLoadingProvinces } = useProvinceQuery({
+    idCountry: formData.country,
+    idDepartment: formData.department,
+    isEnabled: !!formData.country && !!formData.department,
   });
 
-  useEffect(() => {
-    fetchData("country", actionsObtenerCountries);
-  }, []);
+  const { data: districts, isLoading: isLoadingDistricts } = useDistrictQuery({
+    idCountry: formData.country,
+    idDepartment: formData.department,
+    idProvince: formData.province,
+    isEnabled:
+      !!formData.country && !!formData.department && !!formData.province,
+  });
 
-  const fetchData = async (
-    type: LoadingKeys,
-    action: Function,
-    ...params: number[]
-  ) => {
-    setLoading((prev) => ({ ...prev, [type]: true }));
-    try {
-      const dataFetched = await action(...params);
-      if (dataFetched) {
-        setLocationData((prev) => ({
-          ...prev,
-          [type]: dataFetched,
-        }));
-      }
-    } catch (error) {
-      console.error(`Error fetching ${type}:`, error);
-    } finally {
-      setLoading((prev) => ({ ...prev, [type]: false }));
-    }
-  };
+  const { data: clients, isLoading: isLoadingClients } = useClientQuery({
+    isEnabled: true,
+  });
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = async (
-    type: LoadingKeys,
-    value: string | null
-  ) => {
+  const handleSelectChange = (type: LoadingKeys, value: string | null) => {
     handleInputChange(type, value || "");
 
     if (type === "country") {
-      setLocationData((prev) => ({
-        ...prev,
-        department: [],
-        province: [],
-        district: [],
-      }));
       setFormData((prev) => ({
         ...prev,
         department: "",
         province: "",
         district: "",
       }));
-      await fetchData("department", actionsObtenerDepartments, Number(value));
     } else if (type === "department") {
-      setLocationData((prev) => ({ ...prev, province: [], district: [] }));
       setFormData((prev) => ({ ...prev, province: "", district: "" }));
-      await fetchData(
-        "province",
-        actionsObtenerProvinces,
-        Number(formData.country),
-        Number(value)
-      );
     } else if (type === "province") {
-      setLocationData((prev) => ({ ...prev, district: [] }));
       setFormData((prev) => ({ ...prev, district: "" }));
-      await fetchData(
-        "district",
-        actionsObtenerDistricts,
-        Number(formData.country),
-        Number(formData.department),
-        Number(value)
-      );
     }
   };
 
@@ -147,7 +105,8 @@ export default function NuevoProyecto({
     type: LoadingKeys,
     options: { value: string; label: string }[],
     placeholder: string,
-    label: string
+    label: string,
+    isLoading: boolean
   ) => (
     <div className="sm:col-span-3">
       <Label className="text-sm w-20 truncate">{label}</Label>
@@ -155,10 +114,10 @@ export default function NuevoProyecto({
         options={options}
         onSelect={(value) => handleSelectChange(type, value)}
         placeholder={placeholder}
-        disabled={!options.length || loading[type]}
+        disabled={!options.length || isLoading}
         value={formData[type]}
       />
-      {loading[type] && (
+      {isLoading && (
         <div className="mt-2 flex items-center text-sm text-muted-foreground">
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           {`Cargando ${label.toLowerCase()}...`}
@@ -205,48 +164,53 @@ export default function NuevoProyecto({
       </div>
       {renderCombobox(
         "country",
-        locationData.country.map((country) => ({
+        countries?.map((country: ISpPaisObten) => ({
           value: String(country.pai_id),
           label: country.pai_nombre,
-        })),
+        })) || [],
         "Seleccione un país",
-        "País"
+        "País",
+        isLoadingCountries
       )}
       {renderCombobox(
         "department",
-        locationData.department.map((department) => ({
+        departments?.map((department: ISpDepartamentoObten) => ({
           value: String(department.dep_id),
           label: department.dep_nombre,
-        })),
+        })) || [],
         "Seleccione un departamento",
-        "Departamento"
+        "Departamento",
+        isLoadingDepartments
       )}
       {renderCombobox(
         "province",
-        locationData.province.map((province) => ({
+        provinces?.map((province: ISpProvinciaObten) => ({
           value: String(province.prov_id),
           label: province.prov_nombre,
-        })),
+        })) || [],
         "Seleccione una provincia",
-        "Provincia"
+        "Provincia",
+        isLoadingProvinces
       )}
       {renderCombobox(
         "district",
-        locationData.district.map((district) => ({
+        districts?.map((district: ISpDistritoObten) => ({
           value: String(district.dist_id),
           label: district.dist_nombre,
-        })),
+        })) || [],
         "Seleccione un distrito",
-        "Distrito"
+        "Distrito",
+        isLoadingDistricts
       )}
       {renderCombobox(
         "client",
-        dataClientes.map((item) => ({
+        clients?.map((item: ISpObtenerClientes) => ({
           value: item.cli_nomaperazsocial,
           label: item.cli_nomaperazsocial,
-        })),
+        })) || [],
         "Seleccione un cliente",
-        "Cliente"
+        "Cliente",
+        isLoadingClients
       )}
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Jornal</Label>

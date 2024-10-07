@@ -8,21 +8,21 @@ import { ZodError } from "zod";
 import {
   cambioEstadoPresupuesto,
   crearGrupoPartida,
+  crearPartida,
   crearPresupuesto,
   editarGrupoPartida,
+  editarPartida,
   editarPresupuesto,
-  obtenerCountries,
-  obtenerDepartments,
-  obtenerDistricts,
-  obtenerPartidasByGrupoPartidaId,
-  obtenerProvinces,
   obtenerProyectosPaginados,
 } from "./services/sql-queries";
 import {
   crearGrupoPartidaSchema,
+  crearPartidaSchema,
   creatPresupuestoSchema,
+  deletePartidaSchema,
   deletePresupuestoSchema,
   editarGrupoPartidaSchema,
+  editarPartidaSchema,
   editPresupuestoSchema,
 } from "./validations-zod";
 import { IBrowserInfo } from "./types";
@@ -30,8 +30,7 @@ import { headers } from "next/headers";
 import { queueS3 } from "./queue/s3Queue";
 import { replaceSegmentInPath } from "./utils";
 
-// #region Login
-
+// #region LOGIN
 export async function actionsSignInCredentials(
   userAgent: string,
   _prevState: any,
@@ -82,13 +81,14 @@ export async function actionsSignInGoogle() {
   }
 }
 
-// #region Presupuestos
-
+// #region PROYECTOS
 export async function actionsCrearPresupuesto(
   _prevState: any,
   formData: FormData
 ) {
   try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
     const {
       nameUser,
       namePresupuesto,
@@ -120,8 +120,11 @@ export async function actionsCrearPresupuesto(
       jornal
     );
 
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
+    const url = new URL(referer);
+    let newUrl = "/dashboard/proyectos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -151,6 +154,8 @@ export async function actionsEditarPresupuesto(
   formData: FormData
 ) {
   try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
     const {
       idPrespuesto,
       nameUser,
@@ -184,9 +189,12 @@ export async function actionsEditarPresupuesto(
       distrito,
       jornal
     );
-    revalidateTag("proyectosPaginados");
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/proyectos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -216,14 +224,18 @@ export async function actionsDeletePresupuesto(
   newState?: number
 ) {
   try {
-    // revalidateTag("proyectosPaginados");
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
     });
     await cambioEstadoPresupuesto(id, newState || 0);
-    revalidatePath("/dashboard/proyectos");
-    redirect("/dashboard/proyectos");
-    // revalidateTag("proyectosPaginados");
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/proyectos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -277,8 +289,7 @@ export async function actionsQueueExportS3Presupuestos({
   }
 }
 
-// #region Ubicacion
-
+// #region UBICACION
 export async function getBrowserInfoBackend(
   userAgent: string
 ): Promise<IBrowserInfo> {
@@ -329,125 +340,15 @@ export async function getBrowserInfoBackend(
   };
 }
 
-export async function actionsObtenerCountries() {
-  try {
-    revalidateTag("countries");
-    return obtenerCountries();
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
-      return {
-        message: `Error de validación: ${errorMessages}`,
-        isError: true,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        message: error?.message,
-        isError: true,
-      };
-    }
-    return {
-      message: "Algo salió mal.",
-      isError: true,
-    };
-  }
-}
-
-// Acción para obtener los departamentos según el país seleccionado
-export async function actionsObtenerDepartments(idCountry: number) {
-  try {
-    revalidateTag("departments");
-    return obtenerDepartments(idCountry);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
-      return {
-        message: `Error de validación: ${errorMessages}`,
-        isError: true,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        message: error?.message,
-        isError: true,
-      };
-    }
-    return {
-      message: "Algo salió mal.",
-      isError: true,
-    };
-  }
-}
-
-// Acción para obtener las provincias según el país y departamento seleccionados
-export async function actionsObtenerProvinces(
-  idCountry: number,
-  idDepartment: number
-) {
-  try {
-    revalidateTag("provinces");
-    return obtenerProvinces(idCountry, idDepartment);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
-      return {
-        message: `Error de validación: ${errorMessages}`,
-        isError: true,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        message: error?.message,
-        isError: true,
-      };
-    }
-    return {
-      message: "Algo salió mal.",
-      isError: true,
-    };
-  }
-}
-
-// Acción para obtener los distritos según el país, departamento y provincia seleccionados
-export async function actionsObtenerDistricts(
-  idCountry: number,
-  idDepartment: number,
-  idProvince: number
-) {
-  try {
-    revalidateTag("districts");
-    return obtenerDistricts(idCountry, idDepartment, idProvince);
-  } catch (error) {
-    if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
-      return {
-        message: `Error de validación: ${errorMessages}`,
-        isError: true,
-      };
-    }
-    if (error instanceof Error) {
-      return {
-        message: error?.message,
-        isError: true,
-      };
-    }
-    return {
-      message: "Algo salió mal.",
-      isError: true,
-    };
-  }
-}
-
-// #region Grupos de Partidas
-
+// #region GRUPOS DE PARTIDAS
 export async function actionsCrearGrupoPartida(
   _prevState: any,
   formData: FormData
 ) {
   try {
     const headersList = headers();
-    const referer = headersList.get("referer") || "/dashboard/proyectos";
+    const referer =
+      headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
     const { nombreGrupoPartida, idProyecto, idLastGroupPartida } =
       await crearGrupoPartidaSchema.parseAsync({
         nombreGrupoPartida: formData.get("nombreGrupoPartida"),
@@ -457,24 +358,16 @@ export async function actionsCrearGrupoPartida(
 
     await crearGrupoPartida(nombreGrupoPartida, idProyecto, idLastGroupPartida);
 
-    // Parsear y modificar la URL del referer
     const url = new URL(referer);
-    let segments = url.pathname.split("/");
-    let newUrl = url.pathname;
+    let newUrl = replaceSegmentInPath(
+      url.pathname + url.search,
+      "crear",
+      "subgrupos"
+    );
+    // newUrl.searchParams.set("proyectoId", idProyecto.toString());
 
-    // Obtener el último slug
-    let lastSegment = segments[segments.length - 1];
-
-    // Verificar si se navega a un subgrupo
-    if (!isNaN(Number(lastSegment))) {
-      newUrl = replaceSegmentInPath(url.pathname, "crear", "subgrupos");
-    } else {
-      newUrl = replaceSegmentInPath(url.pathname, "crear", "subgrupos");
-    }
-
-    // Usar la nueva URL para revalidación y redirección
-    revalidatePath(newUrl.toString());
-    return redirect(newUrl.toString());
+    revalidatePath(newUrl);
+    return redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -505,31 +398,39 @@ export async function actionsEditarGrupoPartida(
 ) {
   try {
     const headersList = headers();
-    const referer = headersList.get("referer") || "/dashboard/proyectos";
+    const referer =
+      headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
     const { nombreGrupoPartida } = await editarGrupoPartidaSchema.parseAsync({
       idGrupoPartida: idGrupoPartida,
       nombreGrupoPartida: formData.get("nombreGrupoPartida"),
     });
 
     await editarGrupoPartida(idGrupoPartida, nombreGrupoPartida);
-    // Parsear y modificar la URL del referer
-    const url = new URL(referer);
-    let segments = url.pathname.split("/");
-    let newUrl = url.pathname;
 
-    // Obtener el último slug
+    const url = new URL(referer);
+    let newUrl = "";
+
+    let segments = url.pathname.split("/");
     let lastSegment = segments[segments.length - 1];
 
     // Verificar si se navega a un subgrupo
     if (!isNaN(Number(lastSegment))) {
-      newUrl = replaceSegmentInPath(url.pathname, "editar", "subgrupos", 1);
+      newUrl = replaceSegmentInPath(
+        url.pathname + url.search,
+        "editar",
+        "subgrupos",
+        1
+      );
     } else {
-      newUrl = replaceSegmentInPath(url.pathname, "editar", "subgrupos");
+      newUrl = replaceSegmentInPath(
+        url.pathname + url.search,
+        "editar",
+        "subgrupos"
+      );
     }
 
-    // Usar la nueva URL para revalidación y redirección
-    revalidatePath(newUrl.toString());
-    return redirect(newUrl.toString());
+    revalidatePath(newUrl);
+    return redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;
@@ -553,4 +454,164 @@ export async function actionsEditarGrupoPartida(
   }
 }
 
-// #region Partidas
+// #region PARTIDAS
+export async function actionsCrearPartida(_prevState: any, formData: FormData) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/partidas";
+    const {
+      idGrupoPartida,
+      nombrePartida,
+      rendimientoManoDeObra,
+      rendimientoEquipo,
+      unidadMedida,
+    } = await crearPartidaSchema.parseAsync({
+      idGrupoPartida: formData.get("idGrupoPartida"),
+      nombrePartida: formData.get("nombrePartida"),
+      rendimientoManoDeObra: Number(formData.get("rendimientoManoDeObra")),
+      rendimientoEquipo: Number(formData.get("rendimientoEquipo")),
+      unidadMedida: formData.get("unidadMedida"),
+    });
+
+    await crearPartida(
+      Number(idGrupoPartida),
+      nombrePartida,
+      rendimientoManoDeObra,
+      rendimientoEquipo,
+      unidadMedida
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/partidas" + url.search;
+
+    newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
+    newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsEditarPartida(
+  p_par_id: number,
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/partidas";
+    const {
+      idPartida,
+      nombrePartida,
+      rendimientoManoDeObra,
+      rendimientoEquipo,
+      unidadMedida,
+    } = await editarPartidaSchema.parseAsync({
+      idPartida: p_par_id,
+      nombrePartida: formData.get("nombrePartida"),
+      rendimientoManoDeObra: Number(formData.get("rendimientoManoDeObra")),
+      rendimientoEquipo: Number(formData.get("rendimientoEquipo")),
+      unidadMedida: formData.get("unidadMedida"),
+    });
+
+    await editarPartida(
+      Number(idPartida),
+      nombrePartida,
+      rendimientoManoDeObra,
+      rendimientoEquipo,
+      unidadMedida
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/partidas" + url.search;
+
+    newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
+    newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+// export async function actionsDeletePartida(
+//   p_par_id: number,
+//   newState?: number
+// ) {
+//   try {
+//     const headersList = headers();
+//     const referer = headersList.get("referer") || "/dashboard/partidas";
+//     const { idPartida } = await deletePartidaSchema.parseAsync({
+//       id: p_par_id,
+//     });
+//     await cambioEstadoPartida(idPartida, newState || 0);
+
+//     const url = new URL(referer);
+//     let newUrl = "/dashboard/partidas" + url.search;
+
+//     newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
+//     newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
+
+//     revalidatePath(newUrl);
+//     redirect(newUrl);
+//   } catch (error) {
+//     if (isRedirectError(error)) {
+//       throw error;
+//     }
+//     if (error instanceof ZodError) {
+//       return {
+//         message: error.errors.map((err) => err.message),
+//         isError: true,
+//       };
+//     }
+//     if (error instanceof Error) {
+//       return {
+//         message: error?.message,
+//         isError: true,
+//       };
+//     }
+//     return {
+//       message: "Algo salió mal.",
+//       isError: true,
+//     };
+//   }
+// }

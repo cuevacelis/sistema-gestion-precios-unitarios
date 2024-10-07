@@ -62,6 +62,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
             <Search
               placeholder="Buscar partidas..."
               className="w-full sm:w-64 lg:w-96"
+              disabled={true}
             />
           </div>
         </CardHeader>

@@ -8,13 +8,17 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useState, useRef } from "react";
 
+interface ISearchProps {
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
+}
+
 export default function Search({
   placeholder,
   className,
-}: {
-  placeholder?: string;
-  className?: string;
-}) {
+  disabled = false,
+}: ISearchProps) {
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
@@ -60,6 +64,7 @@ export default function Search({
       <Input
         ref={inputRef}
         type="text"
+        disabled={disabled}
         placeholder={placeholder || "Buscar..."}
         value={searchTerm}
         onChange={(e) => {
@@ -85,6 +90,7 @@ export default function Search({
         size="sm"
         variant="ghost"
         className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full hover:bg-muted"
+        disabled={disabled}
       >
         Buscar
       </Button>

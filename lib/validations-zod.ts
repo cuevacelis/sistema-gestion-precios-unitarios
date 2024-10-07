@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// #region CREDENTIALS
 export const credentialsSchema = z.object({
   email: z.string().email({ message: "Correo electrónico no válido." }),
   password: z
@@ -19,6 +20,7 @@ export const credentialsSchema = z.object({
     }),
 });
 
+// #region PRESUPUESTOS
 export const creatPresupuestoSchema = z.object({
   namePresupuesto: z
     .string()
@@ -50,11 +52,13 @@ export const deletePresupuestoSchema = z.object({
   id: z.number().min(1, "El campo 'Pre_Id' es requerido"),
 });
 
+// #region GRUPOS DE PARTIDAS
 export const crearGrupoPartidaSchema = z.object({
+  // idProyecto: z.string().optional(),
+  idProyecto: z.string().min(1, "El campo 'Id de proyecto' es requerido"),
   nombreGrupoPartida: z
     .string()
     .min(1, "El campo 'Nombre del grupo de partida' es requerido"),
-  idProyecto: z.string().min(1, "El campo 'Id de proyecto' es requerido"),
   idLastGroupPartida: z.string().nullable(),
 });
 
@@ -65,4 +69,35 @@ export const editarGrupoPartidaSchema = z.object({
   nombreGrupoPartida: z
     .string()
     .min(1, "El campo 'Nombre del grupo de partida' es requerido"),
+});
+
+// #region PARTIDAS
+export const crearPartidaSchema = z.object({
+  idGrupoPartida: z
+    .string()
+    .min(1, "El campo 'Id de grupo de partida' es requerido"),
+  nombrePartida: z.string().min(1, "El campo 'Nombre de partida' es requerido"),
+  rendimientoManoDeObra: z
+    .number()
+    .min(0, "El campo 'Rendimiento mano de obra' es requerido"),
+  rendimientoEquipo: z
+    .number()
+    .min(0, "El campo 'Rendimiento equipo' es requerido"),
+  unidadMedida: z.string().min(1, "El campo 'Unidad de medida' es requerido"),
+});
+
+export const editarPartidaSchema = z.object({
+  idPartida: z.number().min(1, "El campo 'Id de partida' es requerido"),
+  nombrePartida: z.string().min(1, "El campo 'Nombre de partida' es requerido"),
+  rendimientoManoDeObra: z
+    .number()
+    .min(0, "El campo 'Rendimiento mano de obra' es requerido"),
+  rendimientoEquipo: z
+    .number()
+    .min(0, "El campo 'Rendimiento equipo' es requerido"),
+  unidadMedida: z.string().min(1, "El campo 'Unidad de medida' es requerido"),
+});
+
+export const deletePartidaSchema = z.object({
+  idPartida: z.number().min(1, "El campo 'Id de partida' es requerido"),
 });

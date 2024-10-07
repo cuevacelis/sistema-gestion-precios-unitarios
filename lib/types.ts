@@ -138,6 +138,7 @@ export interface IDataDBObtenerGruposDePartidasId {
 
 // #region Partidas
 export interface IDataDBObtenerPartidasPaginados {
+  par_id: number;
   par_nombre: string;
   par_renmanobra: string;
   par_renequipo: string;

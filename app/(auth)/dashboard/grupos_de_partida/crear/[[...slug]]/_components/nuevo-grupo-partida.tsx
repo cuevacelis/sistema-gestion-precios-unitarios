@@ -23,26 +23,19 @@ export default function NuevoGrupoPartida({
     actionsCrearGrupoPartida,
     { isError: false, message: "" }
   );
-  const [formData, setFormData] = useState({
-    nombreGrupoPartida: "",
+  const [formDataExtra, setFormDataExtra] = useState({
     idProyecto: idProyecto,
     idLastGroupPartida: lastSlug ?? null,
   });
 
-  const handleInputChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = () => {
-    const formDataToSubmit = new FormData();
-
-    Object.entries(formData).forEach(([key, value]) => {
+  const handleSubmit = (formData: FormData) => {
+    Object.entries(formDataExtra).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        formDataToSubmit.append(key, String(value));
+        formData.append(key, String(value));
       }
     });
 
-    formActionNewPresupuesto(formDataToSubmit);
+    formActionNewPresupuesto(formData);
   };
 
   return (
@@ -52,14 +45,7 @@ export default function NuevoGrupoPartida({
     >
       <div className="sm:col-span-3">
         <Label className="text-sm">Nombre del grupo de partida</Label>
-        <Input
-          type="text"
-          name="nombreGrupoPartida"
-          required
-          onChange={(e) =>
-            handleInputChange("nombreGrupoPartida", e.target.value)
-          }
-        />
+        <Input type="text" name="nombreGrupoPartida" required />
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent

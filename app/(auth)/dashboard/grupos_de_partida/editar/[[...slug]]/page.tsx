@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
+import { ISearchParams } from "@/lib/types";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 

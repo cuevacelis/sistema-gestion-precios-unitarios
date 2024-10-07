@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { replaceSegmentInPath } from "@/lib/utils";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface IProps {
   isTheLastChildInTheListGrupoPartida: boolean;
@@ -18,8 +18,8 @@ export default function OptionsTable({
   lastGrupoPartidaId,
 }: IProps) {
   const pathname = usePathname();
-  const createPath = replaceSegmentInPath(pathname, "subgrupos", "crear");
-  const exportPath = replaceSegmentInPath(pathname, "subgrupos", "exportar");
+  const searchParams = useSearchParams();
+  const createPath = `${replaceSegmentInPath(pathname, "subgrupos", "crear")}?${searchParams.toString()}`;
   const partidasPath = `/dashboard/partidas?grupoPartidaId=${lastGrupoPartidaId}`;
 
   if (isPartidasAssigned) {

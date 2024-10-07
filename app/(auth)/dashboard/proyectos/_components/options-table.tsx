@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { actionsQueueExportS3Presupuestos } from "@/lib/actions";
 import { Download, PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,8 +21,8 @@ import { toast } from "sonner";
 
 export default function OptionsTable({ session }: { session: Session | null }) {
   const pathname = usePathname();
-
-  const createPath = `${pathname}/crear`;
+  const searchParams = useSearchParams();
+  const createPath = `${pathname}/crear?${searchParams.toString()}`;
 
   const handleExport = async () => {
     try {

@@ -45,7 +45,7 @@ async function GetDataNavbarLogged({
 }) {
   const session = await auth();
   const modulesByUser = await getModulosByUserId(Number(session?.user?.id));
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+
   return (
     <TanstackQueryProvider>
       <AblyPimary session={session}>

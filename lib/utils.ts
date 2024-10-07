@@ -267,9 +267,12 @@ export const replaceSegmentInPath = (
   path: string,
   target: string,
   replacement: string,
-  removeLastSegments: number = 0 // Número de slugs a eliminar (por defecto, 0)
+  removeLastSegments: number = 0
 ) => {
-  let segments = path.split("/");
+  // Separar la ruta y los parámetros de búsqueda
+  const [pathWithoutParams, searchParams] = path.split("?");
+
+  let segments = pathWithoutParams.split("/");
 
   // Reemplazar el segmento objetivo
   segments = segments.map((segment) =>
@@ -278,8 +281,14 @@ export const replaceSegmentInPath = (
 
   // Eliminar los últimos slugs si se especifica
   if (removeLastSegments > 0) {
-    segments = segments.slice(0, -removeLastSegments); // Eliminar los últimos 'removeLastSegments' elementos
+    segments = segments.slice(0, -removeLastSegments);
   }
 
-  return segments.join("/");
+  let newPath = segments.join("/");
+
+  if (searchParams) {
+    newPath += `?${searchParams}`;
+  }
+
+  return newPath;
 };

@@ -27,24 +27,9 @@ export default function EditarGrupoPartida({
     actionsEditarGrupoPartidaWithId,
     { isError: false, message: "" }
   );
-  const [formData, setFormData] = useState({
-    nombreGrupoPartida: nombreGrupoPartida,
-  });
 
-  const handleInputChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = () => {
-    const formDataToSubmit = new FormData();
-
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formDataToSubmit.append(key, String(value));
-      }
-    });
-
-    formActionNewPresupuesto(formDataToSubmit);
+  const handleSubmit = (formData: FormData) => {
+    formActionNewPresupuesto(formData);
   };
 
   return (
@@ -61,9 +46,6 @@ export default function EditarGrupoPartida({
           name="nombreGrupoPartida"
           required
           defaultValue={nombreGrupoPartida}
-          onChange={(e) =>
-            handleInputChange("nombreGrupoPartida", e.target.value)
-          }
         />
       </div>
       <div className="col-span-full">

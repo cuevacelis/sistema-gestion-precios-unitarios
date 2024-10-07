@@ -277,7 +277,8 @@ export default function TableComponent({
                             "editar"
                           ) +
                           "/" +
-                          row.original.grupar_id
+                          row.original.grupar_id +
+                          `?${searchParams.toString()}`
                         }
                         scroll={false}
                         className="flex items-center"

@@ -6,10 +6,8 @@ import { FetchError } from "./lib/custom-error/fetch-error";
 import { fetchLogged } from "./lib/services/fetch-api";
 import { credentialsSchema } from "./lib/validations-zod";
 import { ZodError } from "zod";
-import { getBrowserInfo } from "./lib/utils";
-import { IBrowserInfo } from "./lib/types";
 
-export const { auth, signIn, signOut, handlers } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/login",
   },
@@ -31,15 +29,15 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
     },
     async authorized({ auth, request }) {
       const pathname = request.nextUrl.pathname;
-      const isValidSession = Boolean(auth?.user);
+      const isValidSession = Boolean(auth);
 
-      if (pathname.startsWith("/dashboard")) {
+      if (pathname.startsWith("/api")) {
         return isValidSession;
-      }
-      if (!pathname.startsWith("/dashboard") && isValidSession) {
+      } else if (pathname.startsWith("/dashboard")) {
+        return isValidSession;
+      } else if (!pathname.startsWith("/dashboard") && isValidSession) {
         return Response.redirect(new URL("/dashboard", request.nextUrl));
-      }
-      if (!pathname.startsWith("/dashboard") && !isValidSession) {
+      } else if (!pathname.startsWith("/dashboard") && !isValidSession) {
         return true;
       }
 

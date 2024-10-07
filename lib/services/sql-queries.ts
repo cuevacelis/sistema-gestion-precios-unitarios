@@ -17,7 +17,7 @@ import {
 } from "../types";
 import { getDbPostgres } from "@/db/db-postgres";
 
-// #region login
+// #region LOGIN
 interface UserCredentials {
   username: string;
   password: string;
@@ -36,6 +36,21 @@ export const findUserByUsernameAndPassword = cache(
         )
         .selectAll()
         .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["credentials"],
+  { tags: ["credentials"] }
+);
+
+export const validateUserId = cache(
+  async (userId: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("usuario")
+        .where("usu_id", "=", userId)
+        .executeTakeFirst();
     } catch (error) {
       throw error;
     }
@@ -64,7 +79,7 @@ export const getModulosByUserId = cache(
   { tags: ["modulesByUserId"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Usuarios
+// #region USUARIOS
 export const obtenerUsuariosPaginados = cache(
   async (
     elementosPorPagina: number,
@@ -206,7 +221,7 @@ export const obtenerNombrePresupuestosById = cache(
   { tags: ["presupuestosNombre"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Grupos de Partidas
+// #region GRUPOS DE PARTIDAS
 export const obtenerGruposDePartidasIdProyecto = async (
   Proyecto_Id: number
 ) => {
@@ -331,7 +346,7 @@ export const obtenerIsPartidasDeGrupoPartidaId = cache(
   { tags: ["isPartidasDeGrupoPartidaId"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Partidas
+// #region PARTIDAS
 export const obtenerPartidasByGrupoPartidaId = cache(
   async (idGrupoPartida: string) => {
     try {
@@ -372,11 +387,11 @@ export const obtenerNombrePartidasByGrupoPartidaId = cache(
 
 export const crearPartida = cache(
   async (
+    p_grupoPartida_id: number,
     p_par_nombre: string,
     p_par_renmanobra: number,
     p_par_renequipo: number,
-    p_unimed_nombre: string,
-    p_grupoPartida_id: number
+    p_unimed_nombre: string
   ) => {
     try {
       return getDbPostgres()
@@ -425,10 +440,10 @@ export const obtenerPartidaById = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<any>`sp_partida_obten_x_id(${p_par_id})`.as("result")
+          sqlKysely<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_id(${p_par_id})`.as("result")
         )
         .selectAll()
-        .executeTakeFirst();
+        .execute();
     } catch (error) {
       throw error;
     }
@@ -437,7 +452,7 @@ export const obtenerPartidaById = cache(
   { tags: ["partida"], revalidate: 60 * 60 * 24 }
 );
 
-// #region Clientes
+// #region CLIENTES
 export const obtenerClientesPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
@@ -469,7 +484,6 @@ export const obtenerClientes = cache(
 );
 
 // #region UBICACION
-
 export const obtenerCountries = cache(
   async () => {
     try {

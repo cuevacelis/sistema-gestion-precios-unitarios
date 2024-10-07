@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
@@ -27,9 +27,10 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-// import { actionsDeletePartida } from "@/lib/actions";
+import { actionsDeletePresupuesto } from "@/lib/actions";
 import {
   IDataDBObtenerPartidasPaginados,
+  ISpPresupuestoObtenPaginado,
   TStatusResponseActions,
 } from "@/lib/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
@@ -44,11 +45,12 @@ interface IProps {
 
 export default function TableComponent({ dataPartidas }: IProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const totalResults = dataPartidas.length ?? 0;
   useSearchToast(totalResults);
   const { width } = useWindowSize();
   const isMobile = width < 768;
-  const [statusRespDeletePartida, setStatusRespDeletePartida] =
+  const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
     useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
@@ -65,7 +67,10 @@ export default function TableComponent({ dataPartidas }: IProps) {
       {
         accessorKey: "par_renmanobra",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Rendimiento mano de obra" />
+          <DataTableColumnHeader
+            column={column}
+            title="Rendimiento mano de obra"
+          />
         ),
       },
       {
@@ -85,7 +90,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Precio unitario" />
         ),
-      }
+      },
     ],
     []
   );
@@ -94,7 +99,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
     data: dataPartidas ?? [],
     columns,
     rowCount: totalResults,
-    identifierField: "pre_id",
+    identifierField: "par_id",
     initialState: {
       columnVisibility: {
         usu_nomapellidos: false,
@@ -105,53 +110,57 @@ export default function TableComponent({ dataPartidas }: IProps) {
     },
   });
 
-  // const handleDeleteConfirm = async () => {
-  //   if (!rowSelected) return;
-  //   setStatusRespDeletePartida("pending");
-  //   try {
-  //     await actionsDeletePartida(rowSelected.pre_id);
-  //     setStatusRespDeletePartida("success");
-  //     toast.success("Partida eliminado", {
-  //       action: {
-  //         label: "Deshacer cambios",
-  //         onClick: async () => {
-  //           setStatusRespDeletePartida("pending");
-  //           await actionsDeletePartida(rowSelected.pre_id, 1);
-  //           setStatusRespDeletePartida("success");
-  //         },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     setStatusRespDeletePartida("error");
-  //     toast.error(
-  //       "No se pudo eliminar el partida, por favor intente nuevamente."
-  //     );
-  //   } finally {
-  //     setIsShowDeleteModal(false);
-  //   }
-  // };
+  const handleDeleteConfirm = async () => {
+    // if (!rowSelected) return;
+    // setStatusRespDeletePresupuesto("pending");
+    // try {
+    //   await actionsDeletePresupuesto(rowSelected.par_id);
+    //   setStatusRespDeletePresupuesto("success");
+    //   toast.success("Proyecto eliminado", {
+    //     action: {
+    //       label: "Deshacer cambios",
+    //       onClick: async () => {
+    //         setStatusRespDeletePresupuesto("pending");
+    //         await actionsDeletePresupuesto(rowSelected.par_id, 1);
+    //         setStatusRespDeletePresupuesto("success");
+    //       },
+    //     },
+    //   });
+    // } catch (error) {
+    //   setStatusRespDeletePresupuesto("error");
+    //   toast.error(
+    //     "No se pudo eliminar el proyecto, por favor intente nuevamente."
+    //   );
+    // } finally {
+    //   setIsShowDeleteModal(false);
+    // }
+  };
 
   const handleRowClick = (row: IDataDBObtenerPartidasPaginados) => {
-    const rowId = row.par_nombre.toString();
-    if (isMobile) {
-      // router.push(`partidas/${row.pre_id}/grupos-de-partida/subgrupos`);
-    } else {
-      setRowSelection((prev) => {
-        const newSelection = { ...prev };
-        if (newSelection[rowId]) {
-          delete newSelection[rowId];
-        } else {
-          newSelection[rowId] = true;
-        }
-        return newSelection;
-      });
-    }
+    // const rowId = row.par_id.toString();
+    // if (isMobile) {
+    //   router.push(
+    //     `/dashboard/grupos_de_partida/subgrupos?grupoPartidaId=${row.par_id}`
+    //   );
+    // } else {
+    //   setRowSelection((prev) => {
+    //     const newSelection = { ...prev };
+    //     if (newSelection[rowId]) {
+    //       delete newSelection[rowId];
+    //     } else {
+    //       newSelection[rowId] = true;
+    //     }
+    //     return newSelection;
+    //   });
+    // }
   };
 
   const handleRowDoubleClick = (row: IDataDBObtenerPartidasPaginados) => {
-    if (!isMobile) {
-      // router.push(`partidas/${row.pre_id}/grupos-de-partida/subgrupos`);
-    }
+    // if (!isMobile) {
+    //   router.push(
+    //     `/dashboard/grupos_de_partida/subgrupos?grupoPartidaId=${row.par_id}`
+    //   );
+    // }
   };
 
   if (!table || !table.getRowModel().rows.length) {
@@ -162,7 +171,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
     <ValidateMutation
       showLoading={false}
       variant="toast"
-      statusMutation={[statusRespDeletePartida]}
+      statusMutation={[statusRespDeletePresupuesto]}
     >
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <DataTableViewOptions table={table} />
@@ -205,8 +214,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           <Link
-                            // href={`partidas/${row.original.pre_id}/grupos-de-partida/subgrupos`}
-                            href={`/`}
+                            href={`/dashboard/partidas?${searchParams.toString()}`}
                             onClick={(e) => {
                               e.preventDefault();
                             }}
@@ -225,10 +233,9 @@ export default function TableComponent({ dataPartidas }: IProps) {
                       <Copy className="mr-2 h-4 w-4" />
                       <span>Duplicar</span>
                     </ContextMenuItem>
-                    <ContextMenuItem asChild>
+                    <ContextMenuItem asChild disabled>
                       <Link
-                        // href={`/dashboard/partidas/${row.original.pre_id}`}
-                        href={`/`}
+                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
@@ -240,21 +247,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        // href={`partidas/${row.original.pre_id}/grupos-de-partida/subgrupos`}
-                        href={`/`}
-                        className="flex items-center"
-                      >
-                        <ModuleIconsComponent
-                          className="mr-2 h-4 w-4"
-                          modNombre="Grupos de Partida"
-                        />
-                        <span>Grupos de Partida</span>
-                      </Link>
-                    </ContextMenuItem>
-                    <ContextMenuItem asChild>
-                      <Link
-                        // href={`partidas/${row.original.pre_id}/editar`}
-                        href={`/`}
+                        href={`partidas/${row.original.par_id}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"
                       >
@@ -288,7 +281,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
           <DataTablePagination table={table} rowSelection={rowSelection} />
         </CardFooter>
       </Card>
-      {/* {isShowDeleteModal && (
+      {isShowDeleteModal && (
         <ModalConfirmacionComponent
           title="¿Está seguro de eliminar el presupuesto?"
           message="Esta acción se puede revertir, aun asi tener precaución."
@@ -296,11 +289,11 @@ export default function TableComponent({ dataPartidas }: IProps) {
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
           classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
-          isLoading={statusRespDeletePartida === "pending"}
+          isLoading={statusRespDeletePresupuesto === "pending"}
           messageActionButton="Eliminar"
           messageActionButtonLoading="Eliminando"
         />
-      )} */}
+      )}
     </ValidateMutation>
   );
 }

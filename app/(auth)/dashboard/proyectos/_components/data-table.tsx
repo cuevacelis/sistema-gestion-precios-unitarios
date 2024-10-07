@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
@@ -45,6 +45,7 @@ interface IProps {
 
 export default function TableComponent({ dataProyectos }: IProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const totalResults = dataProyectos[0]?.result?.meta?.total_registro ?? 0;
   useSearchToast(totalResults);
   const { width } = useWindowSize();
@@ -288,7 +289,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`proyectos/${row.original.pre_id}/editar`}
+                        href={`proyectos/${row.original.pre_id}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"
                       >

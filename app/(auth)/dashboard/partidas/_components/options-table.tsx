@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { actionsQueueExportS3Presupuestos } from "@/lib/actions";
 import { Download, PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,25 +21,25 @@ import { toast } from "sonner";
 
 export default function OptionsTable({ session }: { session: Session | null }) {
   const pathname = usePathname();
-
-  const createPath = `${pathname}/crear`;
+  const searchParams = useSearchParams();
+  const createPath = `${pathname}/crear?${searchParams.toString()}`;
 
   const handleExport = async () => {
-    // try {
-    //   toast.info("Exportación iniciada", {
-    //     description:
-    //       "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
-    //     duration: 3000,
-    //   });
-    //   await actionsQueueExportS3Presupuestos({
-    //     userId: String(session?.user?.id),
-    //     prefixNameFile: "presupuestos",
-    //     email: String(session?.user?.email),
-    //   });
-    // } catch (error) {
-    //   toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");
-    // } finally {
-    // }
+    try {
+      toast.info("Exportación iniciada", {
+        description:
+          "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
+        duration: 3000,
+      });
+      await actionsQueueExportS3Presupuestos({
+        userId: String(session?.user?.id),
+        prefixNameFile: "presupuestos",
+        email: String(session?.user?.email),
+      });
+    } catch (error) {
+      toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");
+    } finally {
+    }
   };
 
   return (
@@ -53,7 +53,12 @@ export default function OptionsTable({ session }: { session: Session | null }) {
 
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button size="default" variant="secondary" className="h-9 gap-1">
+          <Button
+            size="default"
+            variant="secondary"
+            className="h-9 gap-1"
+            disabled
+          >
             <Download className="w-4" />
             <span>Exportar</span>
           </Button>
