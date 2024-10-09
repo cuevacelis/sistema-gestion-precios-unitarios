@@ -22,11 +22,11 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { actionsSignOut } from "@/lib/actions";
+import { actionsSignOut } from "@/lib/actions/actions";
 import {
   ISpModuloObtenerModulosXPusuario,
   TStatusResponseActions,
-} from "@/lib/types";
+} from "@/lib/types/types";
 import { cn, obtenerHoraRelativa, obtenerSiglas } from "@/lib/utils";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";

@@ -1,8 +1,11 @@
 import clsx, { ClassValue } from "clsx";
 import { DateTime } from "luxon";
 import { twMerge } from "tailwind-merge";
-import { IBrowserInfo } from "./types";
+import { IBrowserInfo } from "./types/types";
+import { unstable_cache as nextCache } from "next/cache";
+import { cache as reactCache } from "react";
 
+// #region CLASS-NAME
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -17,30 +20,6 @@ export const formatCurrency = (amount: number) => {
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-export const generatePagination = (currentPage: number, totalPages: number) => {
-  if (totalPages <= 7) {
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
-  }
-
-  if (currentPage <= 3) {
-    return [1, 2, 3, "...", totalPages - 1, totalPages];
-  }
-
-  if (currentPage >= totalPages - 2) {
-    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
-  }
-
-  return [
-    1,
-    "...",
-    currentPage - 1,
-    currentPage,
-    currentPage + 1,
-    "...",
-    totalPages,
-  ];
-};
 
 export function simulateLongWait(timeInMillis: number) {
   return new Promise((resolve) => {
@@ -79,6 +58,32 @@ export const combineFormDatas = (
   return combinedFormData;
 };
 
+// #region PAGINACION
+export const generatePagination = (currentPage: number, totalPages: number) => {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  if (currentPage <= 3) {
+    return [1, 2, 3, "...", totalPages - 1, totalPages];
+  }
+
+  if (currentPage >= totalPages - 2) {
+    return [1, 2, "...", totalPages - 2, totalPages - 1, totalPages];
+  }
+
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+};
+
+// #region SIGLAS-BREADCUMB
 export function obtenerSiglas(nombreCompleto: string): string {
   const palabras = nombreCompleto
     .split(" ")
@@ -138,8 +143,7 @@ export function divideArrayToBreadcrumbItems<T>(
   return [firstGroup, middleGroup, lastGroup];
 }
 
-// #region Formato de fecha
-
+// #region FORMATO DE FECHAS
 export function formatDateToDateTime(
   utcDate: string,
   userTimezone?: string
@@ -209,6 +213,7 @@ export function formatDateTimeForFilename(
   return zonedDate.toFormat("yyyyMMddHHmmss");
 }
 
+// #region BROWSER_INFO
 export function getBrowserInfo(): IBrowserInfo {
   const userAgent: string = navigator.userAgent;
   let browserName: string;
@@ -263,6 +268,7 @@ export function getBrowserInfo(): IBrowserInfo {
   };
 }
 
+// #region RUTAS-SEGMENTOS
 export const replaceSegmentInPath = (
   path: string,
   target: string,
@@ -292,3 +298,18 @@ export const replaceSegmentInPath = (
 
   return newPath;
 };
+
+// #region CACHE
+type Callback = (...args: any[]) => Promise<any>;
+
+export default function cache<T extends Callback>(
+  cb: T,
+  keyParts: string[],
+  options: { revalidate?: number | false; tags?: string[] } = {}
+) {
+  const isActiveCache = process.env.NEXT_PUBLIC_ACTIVE_CACHE === "true";
+  if (isActiveCache) {
+    return nextCache(reactCache(cb), keyParts, options);
+  }
+  return reactCache(cb);
+}

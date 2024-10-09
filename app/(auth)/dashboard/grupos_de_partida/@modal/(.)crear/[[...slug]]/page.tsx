@@ -2,7 +2,7 @@ import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
 import ModalLoading from "@/components/ui/modal-loading";
 import dynamic from "next/dynamic";
-import { ISearchParams } from "@/lib/types";
+import { ISearchParams } from "@/lib/types/types";
 
 const NuevoGrupoPartida = dynamic(
   () => import("../../../crear/[[...slug]]/_components/nuevo-grupo-partida"),

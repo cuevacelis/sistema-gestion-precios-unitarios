@@ -1,4 +1,4 @@
-import { IDataDBObtenerProyectosId } from "@/lib/types";
+import { IDataDBObtenerProyectosId } from "@/lib/types/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

@@ -20,7 +20,7 @@ export default function OptionsTable({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const createPath = `${replaceSegmentInPath(pathname, "subgrupos", "crear")}?${searchParams.toString()}`;
-  const partidasPath = `/dashboard/partidas?grupoPartidaId=${lastGrupoPartidaId}`;
+  const partidasPath = `/dashboard/partidas/crear?grupoPartidaId=${lastGrupoPartidaId}`;
 
   if (isPartidasAssigned) {
     return null;

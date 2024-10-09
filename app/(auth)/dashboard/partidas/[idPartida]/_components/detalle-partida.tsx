@@ -3,7 +3,7 @@ import { CalendarIcon, MapPinIcon, UserIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatDateToDateTime } from "@/lib/utils";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-import { IDataDBObtenerPartidasPaginados } from "@/lib/types";
+import { IDataDBObtenerPartidasPaginados } from "@/lib/types/types";
 
 interface IPropsDetallePartida {
   data: IDataDBObtenerPartidasPaginados;

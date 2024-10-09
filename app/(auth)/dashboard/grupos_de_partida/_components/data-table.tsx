@@ -27,7 +27,7 @@ import ValidateMutation from "@/components/validate/validateMutation";
 import {
   IDataDBObtenerGruposDePartidasId,
   TStatusResponseActions,
-} from "@/lib/types";
+} from "@/lib/types/types";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import { Trash2, FileEdit, FolderOpen, Layers } from "lucide-react";
 import Link from "next/link";
@@ -264,7 +264,7 @@ export default function TableComponent({
                             className="mr-2 h-4 w-4"
                             modNombre="partida"
                           />
-                          <span>Agregar partida</span>
+                          <span>Ver partidas</span>
                         </Link>
                       </ContextMenuItem>
                     ) : null}

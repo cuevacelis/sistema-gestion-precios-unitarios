@@ -1,4 +1,4 @@
-import { DB } from "@/lib/typesDB";
+import { DB } from "@/lib/types/typesDB";
 import { createKysely } from "@vercel/postgres-kysely";
 
 let dbInstance: ReturnType<typeof createKysely<DB>> | null = null;

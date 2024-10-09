@@ -14,7 +14,7 @@ import {
   editarPartida,
   editarPresupuesto,
   obtenerProyectosPaginados,
-} from "./services/sql-queries";
+} from "../services/sql-queries";
 import {
   crearGrupoPartidaSchema,
   crearPartidaSchema,
@@ -24,11 +24,11 @@ import {
   editarGrupoPartidaSchema,
   editarPartidaSchema,
   editPresupuestoSchema,
-} from "./validations-zod";
-import { IBrowserInfo } from "./types";
+} from "../validations/validations-zod";
+import { IBrowserInfo } from "../types/types";
 import { headers } from "next/headers";
-import { queueS3 } from "./queue/s3Queue";
-import { replaceSegmentInPath } from "./utils";
+import { queueS3 } from "../queue/s3Queue";
+import { replaceSegmentInPath } from "../utils";
 
 // #region LOGIN
 export async function actionsSignInCredentials(
@@ -79,6 +79,57 @@ export async function actionsSignInGoogle() {
     }
     throw error;
   }
+}
+
+// #region UBICACION
+export async function getBrowserInfoBackend(
+  userAgent: string
+): Promise<IBrowserInfo> {
+  let browserName = "Unknown Browser";
+  let fullVersion = "Unknown Version";
+  let majorVersion = 0;
+  let os = "Unknown OS";
+
+  // Detectar el sistema operativo
+  if (/Windows/.test(userAgent)) os = "Windows";
+  if (/Mac/.test(userAgent)) os = "MacOS";
+  if (/X11/.test(userAgent)) os = "UNIX";
+  if (/Linux/.test(userAgent)) os = "Linux";
+
+  // Detectar el nombre y la versión del navegador
+  if (/OPR|Opera/.test(userAgent)) {
+    browserName = "Opera";
+    fullVersion = userAgent.split("OPR/")[1] || userAgent.split("Opera/")[1];
+  } else if (/Edg/.test(userAgent)) {
+    browserName = "Microsoft Edge";
+    fullVersion = userAgent.split("Edg/")[1];
+  } else if (/Chrome/.test(userAgent)) {
+    browserName = "Google Chrome";
+    fullVersion = userAgent.split("Chrome/")[1];
+  } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
+    browserName = "Safari";
+    fullVersion = userAgent.split("Version/")[1];
+  } else if (/Firefox/.test(userAgent)) {
+    browserName = "Mozilla Firefox";
+    fullVersion = userAgent.split("Firefox/")[1];
+  } else if (/MSIE/.test(userAgent) || /Trident/.test(userAgent)) {
+    // Para versiones antiguas de IE
+    browserName = "Internet Explorer";
+    fullVersion = userAgent.split("MSIE ")[1] || userAgent.split("rv:")[1];
+  }
+
+  // Obtener la versión principal
+  if (fullVersion) {
+    majorVersion = parseInt(fullVersion.split(".")[0], 10);
+  }
+
+  return {
+    browserName,
+    fullVersion,
+    majorVersion,
+    userAgent,
+    os,
+  };
 }
 
 // #region PROYECTOS
@@ -287,57 +338,6 @@ export async function actionsQueueExportS3Presupuestos({
   } catch (error) {
     throw error;
   }
-}
-
-// #region UBICACION
-export async function getBrowserInfoBackend(
-  userAgent: string
-): Promise<IBrowserInfo> {
-  let browserName = "Unknown Browser";
-  let fullVersion = "Unknown Version";
-  let majorVersion = 0;
-  let os = "Unknown OS";
-
-  // Detectar el sistema operativo
-  if (/Windows/.test(userAgent)) os = "Windows";
-  if (/Mac/.test(userAgent)) os = "MacOS";
-  if (/X11/.test(userAgent)) os = "UNIX";
-  if (/Linux/.test(userAgent)) os = "Linux";
-
-  // Detectar el nombre y la versión del navegador
-  if (/OPR|Opera/.test(userAgent)) {
-    browserName = "Opera";
-    fullVersion = userAgent.split("OPR/")[1] || userAgent.split("Opera/")[1];
-  } else if (/Edg/.test(userAgent)) {
-    browserName = "Microsoft Edge";
-    fullVersion = userAgent.split("Edg/")[1];
-  } else if (/Chrome/.test(userAgent)) {
-    browserName = "Google Chrome";
-    fullVersion = userAgent.split("Chrome/")[1];
-  } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
-    browserName = "Safari";
-    fullVersion = userAgent.split("Version/")[1];
-  } else if (/Firefox/.test(userAgent)) {
-    browserName = "Mozilla Firefox";
-    fullVersion = userAgent.split("Firefox/")[1];
-  } else if (/MSIE/.test(userAgent) || /Trident/.test(userAgent)) {
-    // Para versiones antiguas de IE
-    browserName = "Internet Explorer";
-    fullVersion = userAgent.split("MSIE ")[1] || userAgent.split("rv:")[1];
-  }
-
-  // Obtener la versión principal
-  if (fullVersion) {
-    majorVersion = parseInt(fullVersion.split(".")[0], 10);
-  }
-
-  return {
-    browserName,
-    fullVersion,
-    majorVersion,
-    userAgent,
-    os,
-  };
 }
 
 // #region GRUPOS DE PARTIDAS
@@ -615,3 +615,5 @@ export async function actionsEditarPartida(
 //     };
 //   }
 // }
+
+// #region RECURSOS

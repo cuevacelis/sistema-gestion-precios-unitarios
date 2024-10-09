@@ -27,12 +27,12 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { actionsDeletePresupuesto } from "@/lib/actions";
+import { actionsDeletePresupuesto } from "@/lib/actions/actions";
 import {
   IDataDBObtenerPartidasPaginados,
   ISpPresupuestoObtenPaginado,
   TStatusResponseActions,
-} from "@/lib/types";
+} from "@/lib/types/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";

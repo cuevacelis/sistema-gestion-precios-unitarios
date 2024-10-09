@@ -1,6 +1,6 @@
-import { getBrowserInfoBackend } from "@/lib/actions";
+import { getBrowserInfoBackend } from "@/lib/actions/actions";
 import { findUserByUsernameAndPassword } from "@/lib/services/sql-queries";
-import { IBodyLogin } from "@/lib/types";
+import { IBodyLogin } from "@/lib/types/types";
 import { DateTime } from "luxon";
 import { queueEmail } from "@/lib/queue/emailQueue";
 

@@ -1,4 +1,4 @@
-import { ISearchParams } from "@/lib/types";
+import { ISearchParams } from "@/lib/types/types";
 import { redirect } from "next/navigation";
 
 interface ISubgruposDePartidaPageProps {

@@ -1,5 +1,5 @@
 import { FetchError } from "../custom-error/fetch-error";
-import { IBodyLogin } from "../types";
+import { IBodyLogin } from "../types/types";
 
 export async function fetchLogged(params: IBodyLogin) {
   try {

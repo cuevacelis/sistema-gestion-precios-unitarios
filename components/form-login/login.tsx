@@ -1,6 +1,6 @@
 "use client";
 
-import { actionsSignInCredentials } from "@/lib/actions";
+import { actionsSignInCredentials } from "@/lib/actions/actions";
 import { useFormState } from "react-dom";
 import SubmitButtonComponent from "./button-submit";
 import InputPassComponent from "./input-pass";

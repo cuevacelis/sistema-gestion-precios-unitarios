@@ -11,7 +11,7 @@ import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-import { IDataDBObtenerGruposDePartidasId, ISearchParams } from "@/lib/types";
+import { IDataDBObtenerGruposDePartidasId, ISearchParams } from "@/lib/types/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 

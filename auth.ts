@@ -4,7 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import { CredentialsError } from "./lib/custom-error/auth-error";
 import { FetchError } from "./lib/custom-error/fetch-error";
 import { fetchLogged } from "./lib/services/fetch-api";
-import { credentialsSchema } from "./lib/validations-zod";
+import { credentialsSchema } from "./lib/validations/validations-zod";
 import { ZodError } from "zod";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({

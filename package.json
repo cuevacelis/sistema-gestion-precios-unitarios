@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"generate": "npx kysely-codegen --url='env(POSTGRES_URL)' --out-file './lib/typesDB.ts'"
+		"generate": "npx kysely-codegen --url='env(POSTGRES_URL)' --out-file './lib/types/typesDB.ts'"
 	},
 	"dependencies": {
 		"@aws-sdk/client-sqs": "^3.667.0",

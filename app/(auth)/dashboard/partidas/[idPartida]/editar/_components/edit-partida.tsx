@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 
-import { actionsEditarPartida } from "@/lib/actions";
+import { actionsEditarPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { useSearchParams } from "next/navigation";
-import { IDataDBObtenerPartidasPaginados } from "@/lib/types";
+import { IDataDBObtenerPartidasPaginados } from "@/lib/types/types";
 
 interface IEditarPartida {
   data: IDataDBObtenerPartidasPaginados;

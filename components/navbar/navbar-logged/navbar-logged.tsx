@@ -1,5 +1,5 @@
 "use client";
-import { ISpModuloObtenerModulosXPusuario } from "@/lib/types";
+import { ISpModuloObtenerModulosXPusuario } from "@/lib/types/types";
 import { Session } from "next-auth";
 import { useState } from "react";
 import TopBarSkeleton from "./_components/topbar-skeleton";

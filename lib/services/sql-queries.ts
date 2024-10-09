@@ -1,11 +1,11 @@
-import { unstable_noStore } from "next/cache";
-import { sql as sqlKysely } from "kysely";
 import "server-only";
-import cache from "../cache";
+import { unstable_noStore } from "next/cache";
+import { sql } from "kysely";
 import {
   IDataDBObtenerGruposDePartidasId,
   IDataDBObtenerPartidasPaginados,
   IDataDBObtenerProyectosId,
+  IDataDBObtenerRecursosPaginados,
   ISpDepartamentoObten,
   ISpDistritoObten,
   ISpModuloObtenerModulosXPusuario,
@@ -14,8 +14,9 @@ import {
   ISpPresupuestoObtenPaginado,
   ISpProvinciaObten,
   ISpUsuarioObtenLoginV2,
-} from "../types";
+} from "../types/types";
 import { getDbPostgres } from "@/db/db-postgres";
+import cache from "../utils";
 
 // #region LOGIN
 interface UserCredentials {
@@ -30,7 +31,7 @@ export const findUserByUsernameAndPassword = cache(
 
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpUsuarioObtenLoginV2>`sp_usuario_obten_login_v2(${username}, ${password})`.as(
+          sql<ISpUsuarioObtenLoginV2>`sp_usuario_obten_login_v2(${username}, ${password})`.as(
             "result"
           )
         )
@@ -65,7 +66,7 @@ export const getModulosByUserId = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpModuloObtenerModulosXPusuario>`sp_modulo_obtener_modulos_x_usuario(${userId})`.as(
+          sql<ISpModuloObtenerModulosXPusuario>`sp_modulo_obtener_modulos_x_usuario(${userId})`.as(
             "result"
           )
         )
@@ -96,6 +97,110 @@ export const obtenerUsuariosPaginados = cache(
   { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
+// #region CLIENTES
+export const obtenerClientesPaginados = cache(
+  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
+    try {
+      // return sql`SELECT sp_cliente_obten_paginadov2(${elementosPorPagina},${paginaActual},${nombre})`;
+      return [];
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientesPaginados"],
+  { tags: ["clientesPaginados"] }
+);
+
+export const obtenerClientes = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpObtenerClientes>`sp_cliente_obten_nombre()`.as("result")
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+// #region UBICACION
+export const obtenerCountries = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom(sql<ISpPaisObten>`sp_pais_obten()`.as("result"))
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["countries"],
+  { tags: ["countries"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerDepartments = cache(
+  async (idCountry: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpDepartamentoObten>`sp_departamento_obten_x_pais(${idCountry})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["departments"],
+  { tags: ["departments"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerProvinces = cache(
+  async (idCountry: number, idDepartment: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpProvinciaObten>`sp_provincia_obten_x_pais_x_departamento(${idCountry}, ${idDepartment})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["provinces"],
+  { tags: ["provinces"], revalidate: 60 * 60 * 24 * 30 }
+);
+
+export const obtenerDistricts = cache(
+  async (idCountry: number, idDepartment: number, idProvince: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpDistritoObten>`sp_distrito_obten_x_pais_x_departamento_x_provincia(${idCountry}, ${idDepartment}, ${idProvince})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["districts"],
+  { tags: ["districts"], revalidate: 60 * 60 * 24 * 30 }
+);
+
 // #region PROYECTOS
 export const obtenerProyectosPaginados = cache(
   async (
@@ -107,7 +212,7 @@ export const obtenerProyectosPaginados = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3_vusuario(${idUsuario}, ${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
+          sql<ISpPresupuestoObtenPaginado>`sp_presupuesto_obten_paginadov3_vusuario(${idUsuario}, ${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
             "result"
           )
         )
@@ -125,7 +230,7 @@ export const obtenerProyectosId = async (Pre_Id: number) => {
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<IDataDBObtenerProyectosId>`sp_presupuesto_obten_x_id(${Pre_Id})`.as(
+        sql<IDataDBObtenerProyectosId>`sp_presupuesto_obten_x_id(${Pre_Id})`.as(
           "result"
         )
       )
@@ -149,7 +254,7 @@ export const crearPresupuesto = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<any>`sp_presupuesto_crea_v2(${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
+        sql<any>`sp_presupuesto_crea_v2(${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
           "result"
         )
       )
@@ -175,7 +280,7 @@ export const editarPresupuesto = async (
     unstable_noStore();
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<any>`sp_presupuesto_actualiza_v2(${p_pre_id}, ${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
+        sql<any>`sp_presupuesto_actualiza_v2(${p_pre_id}, ${usuNomApellidosUsuario}, ${nombrePresupuesto}, ${cliNomApeRazSocial}, ${idCountry}, ${idDepartment}, ${idProvince}, ${idDistrict}, ${idJournal})`.as(
           "result"
         )
       )
@@ -194,7 +299,7 @@ export const cambioEstadoPresupuesto = async (
     unstable_noStore();
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<any>`sp_presupuesto_actualiza_estado(${pre_Id}, ${pre_Estado})`.as(
+        sql<any>`sp_presupuesto_actualiza_estado(${pre_Id}, ${pre_Estado})`.as(
           "result"
         )
       )
@@ -228,7 +333,7 @@ export const obtenerGruposDePartidasIdProyecto = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto(${Proyecto_Id})`.as(
+        sql<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto(${Proyecto_Id})`.as(
           "result"
         )
       )
@@ -246,7 +351,7 @@ export const obtenerGruposDePartidasIdRecursive = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v3(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
+        sql<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v3(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
           "result"
         )
       )
@@ -265,7 +370,7 @@ export const crearGrupoPartida = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida},${nombreGrupoPartida})`.as(
+        sql<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida},${nombreGrupoPartida})`.as(
           "result"
         )
       )
@@ -283,7 +388,7 @@ export const editarGrupoPartida = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sqlKysely<any>`sp_grupo_partida_actualiza(${idGrupoPartida},${nombreGrupoPartida})`.as(
+        sql<any>`sp_grupo_partida_actualiza(${idGrupoPartida},${nombreGrupoPartida})`.as(
           "result"
         )
       )
@@ -352,7 +457,7 @@ export const obtenerPartidasByGrupoPartidaId = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_grupo(${idGrupoPartida})`.as(
+          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_grupo(${idGrupoPartida})`.as(
             "result"
           )
         )
@@ -371,7 +476,7 @@ export const obtenerNombrePartidasByGrupoPartidaId = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<any>`sp_partida_obten_nombre_x_grupo(${grupoPartidaId})`.as(
+          sql<any>`sp_partida_obten_nombre_x_grupo(${grupoPartidaId})`.as(
             "result"
           )
         )
@@ -396,7 +501,7 @@ export const crearPartida = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<any>`sp_partida_crea(${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre},${p_grupoPartida_id})`.as(
+          sql<any>`sp_partida_crea(${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre},${p_grupoPartida_id})`.as(
             "result"
           )
         )
@@ -421,7 +526,7 @@ export const editarPartida = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<any>`sp_partida_actualiza(${p_par_id},${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre})`.as(
+          sql<any>`sp_partida_actualiza(${p_par_id},${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre})`.as(
             "result"
           )
         )
@@ -440,7 +545,9 @@ export const obtenerPartidaById = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_id(${p_par_id})`.as("result")
+          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_id(${p_par_id})`.as(
+            "result"
+          )
         )
         .selectAll()
         .execute();
@@ -452,59 +559,13 @@ export const obtenerPartidaById = cache(
   { tags: ["partida"], revalidate: 60 * 60 * 24 }
 );
 
-// #region CLIENTES
-export const obtenerClientesPaginados = cache(
-  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
-    try {
-      // return sql`SELECT sp_cliente_obten_paginadov2(${elementosPorPagina},${paginaActual},${nombre})`;
-      return [];
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["clientesPaginados"],
-  { tags: ["clientesPaginados"] }
-);
-
-export const obtenerClientes = cache(
+// #region RECURSOS
+export const obtenerRecursosPaginados = cache(
   async () => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sqlKysely<ISpObtenerClientes>`sp_cliente_obten_nombre()`.as("result")
-        )
-        .selectAll()
-        .execute();
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["clientes"],
-  { tags: ["clientes"] }
-);
-
-// #region UBICACION
-export const obtenerCountries = cache(
-  async () => {
-    try {
-      return getDbPostgres()
-        .selectFrom(sqlKysely<ISpPaisObten>`sp_pais_obten()`.as("result"))
-        .selectAll()
-        .execute();
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["countries"],
-  { tags: ["countries"], revalidate: 60 * 60 * 24 * 30 }
-);
-
-export const obtenerDepartments = cache(
-  async (idCountry: number) => {
-    try {
-      return getDbPostgres()
-        .selectFrom(
-          sqlKysely<ISpDepartamentoObten>`sp_departamento_obten_x_pais(${idCountry})`.as(
+          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten_nombre()`.as(
             "result"
           )
         )
@@ -514,44 +575,6 @@ export const obtenerDepartments = cache(
       throw error;
     }
   },
-  ["departments"],
-  { tags: ["departments"], revalidate: 60 * 60 * 24 * 30 }
-);
-
-export const obtenerProvinces = cache(
-  async (idCountry: number, idDepartment: number) => {
-    try {
-      return getDbPostgres()
-        .selectFrom(
-          sqlKysely<ISpProvinciaObten>`sp_provincia_obten_x_pais_x_departamento(${idCountry}, ${idDepartment})`.as(
-            "result"
-          )
-        )
-        .selectAll()
-        .execute();
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["provinces"],
-  { tags: ["provinces"], revalidate: 60 * 60 * 24 * 30 }
-);
-
-export const obtenerDistricts = cache(
-  async (idCountry: number, idDepartment: number, idProvince: number) => {
-    try {
-      return getDbPostgres()
-        .selectFrom(
-          sqlKysely<ISpDistritoObten>`sp_distrito_obten_x_pais_x_departamento_x_provincia(${idCountry}, ${idDepartment}, ${idProvince})`.as(
-            "result"
-          )
-        )
-        .selectAll()
-        .execute();
-    } catch (error) {
-      throw error;
-    }
-  },
-  ["districts"],
-  { tags: ["districts"], revalidate: 60 * 60 * 24 * 30 }
+  ["recursosPaginados"],
+  { tags: ["recursosPaginados"] }
 );

@@ -10,14 +10,14 @@ import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 
-import { actionsEditarPresupuesto } from "@/lib/actions";
+import { actionsEditarPresupuesto } from "@/lib/actions/actions";
 import {
   ISpPaisObten,
   ISpDepartamentoObten,
   ISpProvinciaObten,
   ISpDistritoObten,
   ISpObtenerClientes,
-} from "@/lib/types";
+} from "@/lib/types/types";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 
 import useCountryQuery from "@/hooks/tanstack-query/useCountryQuery";

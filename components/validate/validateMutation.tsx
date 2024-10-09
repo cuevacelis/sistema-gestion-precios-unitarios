@@ -1,6 +1,6 @@
 "use client";
 
-import { TStatusResponseActions } from "@/lib/types";
+import { TStatusResponseActions } from "@/lib/types/types";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 import ModalSuccessComponent from "../modals/modalSuccess/modalSucces";
 import ModalLoading from "../ui/modal-loading";

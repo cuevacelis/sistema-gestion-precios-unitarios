@@ -47,8 +47,6 @@ export interface ISpUsuarioObtenLoginV2 {
   usu_fechoraregistro: string;
   usu_observacion: any;
   usu_estado: number;
-  usu_tokenactualizado: any;
-  usu_fechoratokenactualizado: any;
 }
 
 // #region SIDEBAR
@@ -56,7 +54,7 @@ export interface ISpModuloObtenerModulosXPusuario {
   mod_nombre: string;
 }
 
-// #region Usuarios
+// #region USUARIOS
 export interface IDataDBObtenerUsuariosPaginados {
   Usu_Id: number;
   Usu_Correo: string;
@@ -67,7 +65,42 @@ export interface IDataDBObtenerUsuariosPaginados {
   Pre_Estado: number;
 }
 
-// #region Proyectos
+// #region CLIENTES
+export interface IDataDBObtenerClientesPaginados {
+  Cli_Id: number;
+  Cli_NomApeRazSocial: string;
+  Cli_Abreviatura: string;
+  TipDoc_Nombre: string;
+  Cli_NumDocumento: string;
+  Pre_Estado: number;
+}
+
+// #region UBICACION
+export interface ISpPaisObten {
+  pai_id: number;
+  pai_nombre: string;
+}
+
+export interface ISpDepartamentoObten {
+  dep_id: number;
+  dep_nombre: string;
+}
+
+export interface ISpProvinciaObten {
+  prov_id: number;
+  prov_nombre: string;
+}
+
+export interface ISpDistritoObten {
+  dist_id: number;
+  dist_nombre: string;
+}
+
+export interface ISpObtenerClientes {
+  cli_nomaperazsocial: string;
+}
+
+// #region PROYECTOS
 export interface IDataDBObtenerProyectosPaginados {
   pre_id: number;
   pre_codigo?: string;
@@ -127,7 +160,7 @@ export interface IDataDBObtenerProyectosId {
   pre_estado: number;
 }
 
-// #region Grupos de Partidas
+// #region GRUPOS DE PARTIDAS
 export interface IDataDBObtenerGruposDePartidasId {
   grupar_id: number;
   grupar_nombre: string;
@@ -136,7 +169,11 @@ export interface IDataDBObtenerGruposDePartidasId {
   tiene_partidas: boolean;
 }
 
-// #region Partidas
+export interface IDataDBGrupoDePartidas {
+  NomGruPar_Nombre: string;
+}
+
+// #region PARTIDAS
 export interface IDataDBObtenerPartidasPaginados {
   par_id: number;
   par_nombre: string;
@@ -146,42 +183,8 @@ export interface IDataDBObtenerPartidasPaginados {
   par_preunitario: string;
 }
 
-// #region Clientes
-export interface IDataDBObtenerClientesPaginados {
-  Cli_Id: number;
-  Cli_NomApeRazSocial: string;
-  Cli_Abreviatura: string;
-  TipDoc_Nombre: string;
-  Cli_NumDocumento: string;
-  Pre_Estado: number;
-}
-
-export interface ISpObtenerClientes {
-  cli_nomaperazsocial: string;
-}
-
-// #region GrupoDePartidas
-export interface IDataDBGrupoDePartidas {
-  NomGruPar_Nombre: string;
-}
-
-// #region Ubicacion
-export interface ISpPaisObten {
-  pai_id: number;
-  pai_nombre: string;
-}
-
-export interface ISpDepartamentoObten {
-  dep_id: number;
-  dep_nombre: string;
-}
-
-export interface ISpProvinciaObten {
-  prov_id: number;
-  prov_nombre: string;
-}
-
-export interface ISpDistritoObten {
-  dist_id: number;
-  dist_nombre: string;
+// #region RECURSOS
+export interface IDataDBObtenerRecursosPaginados {
+  rec_id: number;
+  rec_nombre: string;
 }

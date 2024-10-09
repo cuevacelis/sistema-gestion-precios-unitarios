@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ISpModuloObtenerModulosXPusuario } from "@/lib/types";
+import { ISpModuloObtenerModulosXPusuario } from "@/lib/types/types";
 import { cn } from "@/lib/utils";
 import { SidebarClose } from "lucide-react";
 import { Session } from "next-auth";
