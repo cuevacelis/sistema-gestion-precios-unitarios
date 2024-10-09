@@ -6,6 +6,7 @@ import { ISearchParams } from "@/lib/types/types";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { obtenerRecursosPaginados } from "@/lib/services/sql-queries";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -24,10 +25,10 @@ const OptionsTable = dynamic(() => import("./_components/options-table"), {
   loading: () => <Skeleton className="h-10 w-full" />,
 });
 
-// const TableComponent = dynamic(() => import("./_components/data-table"), {
-//   ssr: false,
-//   loading: () => <TableSkeleton />,
-// });
+const TableComponent = dynamic(() => import("./_components/data-table"), {
+  ssr: false,
+  loading: () => <TableSkeleton />,
+});
 
 interface IProjectPage {
   searchParams: ISearchParams;
@@ -77,7 +78,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
       <Card>
         <CardContent className="p-6">
-          {/* <Suspense
+          <Suspense
             key={`table-recurso-${query}-${currentPage}-${rowsPerPage}`}
             fallback={<TableSkeleton />}
           >
@@ -86,22 +87,18 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
               currentPage={currentPage}
               rowsPerPage={rowsPerPage}
             />
-          </Suspense> */}
+          </Suspense>
         </CardContent>
       </Card>
     </div>
   );
 }
 
-// async function GetDataTable(props: {
-//   query: string;
-//   currentPage: number;
-//   rowsPerPage: number;
-// }) {
-//   const dataRecursos = await obtenerRecursosPaginados(
-//     props.rowsPerPage,
-//     props.currentPage,
-//     props.query
-//   );
-//   return <TableComponent dataRecursos={dataRecursos} />;
-// }
+async function GetDataTable(props: {
+  query: string;
+  currentPage: number;
+  rowsPerPage: number;
+}) {
+  const dataRecursos = await obtenerRecursosPaginados();
+  return <TableComponent dataRecursos={dataRecursos} />;
+}
