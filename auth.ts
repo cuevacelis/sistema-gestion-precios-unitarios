@@ -3,9 +3,9 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { CredentialsError } from "./lib/custom-error/auth-error";
 import { FetchError } from "./lib/custom-error/fetch-error";
-import { fetchLogged } from "./lib/services/fetch-api";
 import { credentialsSchema } from "./lib/validations/validations-zod";
 import { ZodError } from "zod";
+import { loginVerifyAction } from "./lib/actions/actions";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -56,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } =
             await credentialsSchema.parseAsync(credentials);
 
-          const dataLogin = await fetchLogged({
+          const dataLogin = await loginVerifyAction({
             username: email,
             password: password,
             userAgent: String(credentials.userAgent),

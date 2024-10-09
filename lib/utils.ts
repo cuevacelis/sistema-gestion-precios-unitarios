@@ -311,5 +311,5 @@ export default function cache<T extends Callback>(
   if (isActiveCache) {
     return nextCache(reactCache(cb), keyParts, options);
   }
-  return reactCache(cb);
+  return cb;
 }
