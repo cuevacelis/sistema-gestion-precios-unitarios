@@ -13,6 +13,7 @@ const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
   {
     ssr: false,
+    loading: () => <Skeleton className="h-9 w-9" />,
   }
 );
 

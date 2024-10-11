@@ -38,7 +38,6 @@ export default function OptionsTable({ session }: { session: Session | null }) {
       });
     } catch (error) {
       toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");
-    } finally {
     }
   };
 

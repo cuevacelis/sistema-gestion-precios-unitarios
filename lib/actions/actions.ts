@@ -32,6 +32,7 @@ import { queueS3 } from "../queue/s3Queue";
 import { replaceSegmentInPath } from "../utils";
 import { DateTime } from "luxon";
 import { queueEmail } from "../queue/emailQueue";
+import { LambdaClient, InvokeCommand } from "@aws-sdk/client-lambda";
 
 // #region LOGIN
 export async function actionsSignInCredentials(
@@ -398,21 +399,24 @@ export async function actionsQueueExportS3Presupuestos({
   email?: string;
 }) {
   try {
-    const dataProyectos = await obtenerProyectosPaginados(userId, 50, 1, "");
-    await queueS3({
-      data: dataProyectos[0].result.data.map((object) => ({
-        Código: object.pre_codigo || "",
-        Usuario: object.usu_nomapellidos,
-        Nombre: object.pre_nombre,
-        "Razón social": object.cli_nomaperazsocial,
-        Jornal: object.pre_jornal,
-        Fecha: object.pre_fechorregistro,
-      })),
-      userId: userId,
-      prefixNameFile: prefixNameFile,
-      email: email,
+    const lambdaClient = new LambdaClient({ region: "us-east-1" });
+    const command = new InvokeCommand({
+      FunctionName: "sgpu-serverless-dev-getProyectosExport",
+      InvocationType: "Event",
+      Payload: Buffer.from(
+        JSON.stringify({
+          body: JSON.stringify({
+            userId,
+            prefixNameFile,
+            email,
+          }),
+        })
+      ),
     });
+
+    await lambdaClient.send(command);
   } catch (error) {
+    console.error("Error en el proceso de exportación:", error);
     throw error;
   }
 }

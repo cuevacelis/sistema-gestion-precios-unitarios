@@ -55,6 +55,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerProyectosPaginados | null>(null);
+  const searchParamsShowColumns = searchParams.getAll("fshow");
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
     () => [
@@ -132,10 +133,19 @@ export default function TableComponent({ dataProyectos }: IProps) {
     identifierField: "pre_id",
     initialState: {
       columnVisibility: {
-        usu_nomapellidos: false,
-        pai_nombre: false,
-        prov_nombre: false,
-        dist_nombre: false,
+        pre_codigo: searchParamsShowColumns.includes("pre_codigo") || false,
+        pre_nombre: searchParamsShowColumns.includes("pre_nombre") || true,
+        usu_nomapellidos:
+          searchParamsShowColumns.includes("usu_nomapellidos") || false,
+        cli_nomaperazsocial:
+          searchParamsShowColumns.includes("cli_nomaperazsocial") || true,
+        pre_jornal: searchParamsShowColumns.includes("pre_jornal") || true,
+        pre_fechorregistro:
+          searchParamsShowColumns.includes("pre_fechorregistro") || true,
+        pai_nombre: searchParamsShowColumns.includes("pai_nombre") || false,
+        dep_nombre: searchParamsShowColumns.includes("dep_nombre") || true,
+        prov_nombre: searchParamsShowColumns.includes("prov_nombre") || false,
+        dist_nombre: searchParamsShowColumns.includes("dist_nombre") || false,
       },
     },
   });
