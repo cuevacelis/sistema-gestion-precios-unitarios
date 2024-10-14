@@ -192,4 +192,11 @@ export interface IDataDBObtenerPartidasPaginados {
 export interface IDataDBObtenerRecursosPaginados {
   rec_id: number;
   rec_nombre: string;
+  par_id: number;
+  par_nombre: string;
+  tiprec_nombre: string;
+  unimed_nombre: string;
+  rec_cantidad: number;
+  rec_cuadrilla: number;
+  detrec_precio: number;
 }

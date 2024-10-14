@@ -660,3 +660,148 @@ export const obtenerRecursosPaginados = cache(
   ["recursosPaginados"],
   { tags: ["recursosPaginados"] }
 );
+
+export const crearAsignacionRecursoToPartida = cache(
+  async (
+    p_par_id: number,
+    p_rec_id: number,
+    p_pre_id: number,
+    p_rec_cantidad: number,
+    p_rec_cuadrilla: number,
+    p_rec_precio: number
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_recurso_crea_x_partida_x_presupuesto(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const editarAsignacionRecursoToPartida = cache(
+  async (
+    p_par_id: number,
+    p_rec_id: number,
+    p_pre_id: number,
+    p_rec_cantidad: number,
+    p_rec_cuadrilla: number,
+    p_rec_precio: number
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_recurso_actualiza_x_partida_x_presupuesto_v2(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerRecursoById = cache(
+  async (p_rec_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten_x_id(${p_rec_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerRecursosByNombre = cache(
+  async (p_rec_nombre: string) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten_x_nombre(${p_rec_nombre})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerTipoRecurso = cache(
+  async () => {
+    try {
+      return getDbPostgres().selectFrom("tipo_recurso").selectAll().execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["tipoRecurso"],
+  { tags: ["tipoRecurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const crearRecurso = cache(
+  async (
+    p_rec_nombre: string,
+    p_tiprec_id: number,
+    p_unimed_id: number,
+    p_rec_indunificado: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_recurso_crea(${p_rec_nombre}, ${p_tiprec_id}, ${p_unimed_id}, ${p_rec_indunificado})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const cambioEstadoRecurso = cache(
+  async (p_rec_id: number, newState: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_recurso_actualiza_estado(${p_rec_id}, ${newState})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);

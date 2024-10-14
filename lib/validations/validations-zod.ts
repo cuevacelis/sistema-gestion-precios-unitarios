@@ -104,3 +104,11 @@ export const editarPartidaSchema = z.object({
 export const deletePartidaSchema = z.object({
   idPartida: z.number().min(1, "El campo 'Id de partida' es requerido"),
 });
+
+// #region RECURSOS
+export const crearRecursoSchema = z.object({
+  nombreRecurso: z.string().min(1, "El campo 'Nombre de recurso' es requerido"),
+  tipoRecurso: z.string().min(1, "El campo 'Tipo de recurso' es requerido"),
+  unidadMedida: z.string().min(1, "El campo 'Unidad de medida' es requerido"),
+  indunificado: z.string().min(1, "El campo 'Indunificado' es requerido"),
+});

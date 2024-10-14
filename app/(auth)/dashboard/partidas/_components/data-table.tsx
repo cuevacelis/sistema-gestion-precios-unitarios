@@ -291,6 +291,30 @@ export default function TableComponent({ dataPartidas }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
+                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Recurso"
+                        />
+                        <span>Asignar recurso</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
+                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Recurso"
+                        />
+                        <span>Editar recurso asignado</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
                         href={`partidas/${row.original.par_id}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"
@@ -327,7 +351,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el presupuesto?"
+          title="¿Está seguro de eliminar la partida?"
           message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}

@@ -36,7 +36,6 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
-import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
 
 interface IProps {
   dataRecursos: IDataDBObtenerRecursosPaginados[];
@@ -54,19 +53,62 @@ export default function TableComponent({ dataRecursos }: IProps) {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerRecursosPaginados | null>(null);
+  const searchParamsShowColumns = searchParams.getAll("fshow");
 
   const columns: ColumnDef<IDataDBObtenerRecursosPaginados>[] = useMemo(
     () => [
       {
         accessorKey: "rec_id",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Código" />
+          <DataTableColumnHeader column={column} title="Id recurso" />
+        ),
+      },
+      {
+        accessorKey: "par_id",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id partida" />
+        ),
+      },
+      {
+        accessorKey: "par_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Nombre partida" />
         ),
       },
       {
         accessorKey: "rec_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre" />
+          <DataTableColumnHeader column={column} title="Nombre del recurso" />
+        ),
+      },
+      {
+        accessorKey: "tiprec_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Tipo recurso" />
+        ),
+      },
+      {
+        accessorKey: "unimed_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Unidad de medida" />
+        ),
+      },
+      {
+        accessorKey: "rec_cantidad",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Cantidad" />
+        ),
+      },
+      {
+        accessorKey: "rec_cuadrilla",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Cuadrilla" />
+        ),
+      },
+      {
+        accessorKey: "detrec_precio",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Precio" />
         ),
       },
     ],
@@ -80,10 +122,31 @@ export default function TableComponent({ dataRecursos }: IProps) {
     identifierField: "rec_id",
     initialState: {
       columnVisibility: {
-        usu_nomapellidos: false,
-        pai_nombre: false,
-        prov_nombre: false,
-        dist_nombre: false,
+        rec_id:
+          searchParamsShowColumns.includes("rec_id") ||
+          searchParamsShowColumns.length === 0,
+        par_id: searchParamsShowColumns.includes("par_id") || false,
+        par_nombre:
+          searchParamsShowColumns.includes("par_nombre") ||
+          searchParamsShowColumns.length === 0,
+        rec_nombre:
+          searchParamsShowColumns.includes("rec_nombre") ||
+          searchParamsShowColumns.length === 0,
+        tiprec_nombre:
+          searchParamsShowColumns.includes("tiprec_nombre") ||
+          searchParamsShowColumns.length === 0,
+        unimed_nombre:
+          searchParamsShowColumns.includes("unimed_nombre") ||
+          searchParamsShowColumns.length === 0,
+        rec_cantidad:
+          searchParamsShowColumns.includes("rec_cantidad") ||
+          searchParamsShowColumns.length === 0,
+        rec_cuadrilla:
+          searchParamsShowColumns.includes("rec_cuadrilla") ||
+          searchParamsShowColumns.length === 0,
+        detrec_precio:
+          searchParamsShowColumns.includes("detrec_precio") ||
+          searchParamsShowColumns.length === 0,
       },
     },
   });
@@ -119,24 +182,24 @@ export default function TableComponent({ dataRecursos }: IProps) {
 
   const handleRowClick = (row: IDataDBObtenerRecursosPaginados) => {
     const rowId = row.rec_id.toString();
-    if (isMobile) {
-      router.push(`/dashboard/recursos?proyectoId=${row.rec_id}`);
-    } else {
-      setRowSelection((prev) => {
-        const newSelection = { ...prev };
-        if (newSelection[rowId]) {
-          delete newSelection[rowId];
-        } else {
-          newSelection[rowId] = true;
-        }
-        return newSelection;
-      });
-    }
+    // if (isMobile) {
+    //   router.push(`/dashboard/recursos?partidaId=${row.rec_id}`);
+    // } else {
+    //   setRowSelection((prev) => {
+    //     const newSelection = { ...prev };
+    //     if (newSelection[rowId]) {
+    //       delete newSelection[rowId];
+    //     } else {
+    //       newSelection[rowId] = true;
+    //     }
+    //     return newSelection;
+    //   });
+    // }
   };
 
   const handleRowDoubleClick = (row: IDataDBObtenerRecursosPaginados) => {
     if (!isMobile) {
-      router.push(`/dashboard/recursos?proyectoId=${row.rec_id}`);
+      // router.push(`/dashboard/recursos?partidaId=${row.rec_id}`);
     }
   };
 
@@ -191,7 +254,8 @@ export default function TableComponent({ dataRecursos }: IProps) {
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
                           <Link
-                            href={`/dashboard/recursos?proyectoId=${row.original.rec_id}`}
+                            // href={`/dashboard/recursos?partidaId=${row.original.rec_id}`}
+                            href={`/dashboard/recursos`}
                             onClick={(e) => {
                               e.preventDefault();
                             }}
@@ -210,7 +274,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
                       <Copy className="mr-2 h-4 w-4" />
                       <span>Duplicar</span>
                     </ContextMenuItem>
-                    <ContextMenuItem asChild>
+                    <ContextMenuItem asChild disabled>
                       <Link
                         href={`/dashboard/recurso/${row.original.rec_id}`}
                         className="flex items-center"
@@ -220,18 +284,6 @@ export default function TableComponent({ dataRecursos }: IProps) {
                           modNombre="Ver Detalle"
                         />
                         <span>Ver Detalle</span>
-                      </Link>
-                    </ContextMenuItem>
-                    <ContextMenuItem asChild>
-                      <Link
-                        href={`/dashboard/recursos?proyectoId=${row.original.rec_id}`}
-                        className="flex items-center"
-                      >
-                        <ModuleIconsComponent
-                          className="mr-2 h-4 w-4"
-                          modNombre="Grupos de Partida"
-                        />
-                        <span>Grupos de Partida</span>
                       </Link>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>

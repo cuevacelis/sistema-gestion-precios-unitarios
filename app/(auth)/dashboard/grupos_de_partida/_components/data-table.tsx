@@ -290,35 +290,75 @@ export default function TableComponent({
                     </TableRow>
                   </ContextMenuTrigger>
                   <ContextMenuContent className="w-64">
-                    <ContextMenuItem
-                      onClick={() =>
-                        handleNavigateToSubgroup(row.original.grupar_id)
-                      }
-                    >
-                      <ModuleIconsComponent
-                        className="mr-2 h-4 w-4"
-                        modNombre="Grupos de Partida"
-                      />
-                      <span>Ver grupos de partida</span>
-                    </ContextMenuItem>
-                    {!row.original.tiene_hijos ? (
-                      <ContextMenuItem>
-                        <Link
-                          href={
-                            "/dashboard/partidas?grupoPartidaId=" +
-                            row.original.grupar_id.toString()
-                          }
-                          scroll={false}
-                          className="flex items-center"
-                        >
-                          <ModuleIconsComponent
-                            className="mr-2 h-4 w-4"
-                            modNombre="partida"
-                          />
-                          <span>Ver partidas</span>
-                        </Link>
-                      </ContextMenuItem>
-                    ) : null}
+                    {row.original.tiene_hijos ? (
+                      <>
+                        <ContextMenuItem>
+                          <Link
+                            href={`${pathname}/${row.original.grupar_id}?${searchParams.toString()}`}
+                            scroll={false}
+                            className="flex items-center"
+                          >
+                            <ModuleIconsComponent
+                              className="mr-2 h-4 w-4"
+                              modNombre="Grupos de Partida"
+                            />
+                            <span>Ver grupos de partida</span>
+                          </Link>
+                        </ContextMenuItem>
+                        <ContextMenuItem>
+                          <Link
+                            href={`${replaceSegmentInPath(
+                              pathname,
+                              "subgrupos",
+                              "crear"
+                            )}/${row.original.grupar_id}?${searchParams.toString()}`}
+                            scroll={false}
+                            className="flex items-center"
+                          >
+                            <ModuleIconsComponent
+                              className="mr-2 h-4 w-4"
+                              modNombre="Grupos de Partida"
+                            />
+                            <span>Agregar grupo de partida</span>
+                          </Link>
+                        </ContextMenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <ContextMenuItem>
+                          <Link
+                            href={
+                              "/dashboard/partidas?grupoPartidaId=" +
+                              row.original.grupar_id.toString()
+                            }
+                            scroll={false}
+                            className="flex items-center"
+                          >
+                            <ModuleIconsComponent
+                              className="mr-2 h-4 w-4"
+                              modNombre="partida"
+                            />
+                            <span>Ver partidas</span>
+                          </Link>
+                        </ContextMenuItem>
+                        <ContextMenuItem>
+                          <Link
+                            href={
+                              "/dashboard/partidas/crear?grupoPartidaId=" +
+                              row.original.grupar_id.toString()
+                            }
+                            scroll={false}
+                            className="flex items-center"
+                          >
+                            <ModuleIconsComponent
+                              className="mr-2 h-4 w-4"
+                              modNombre="partida"
+                            />
+                            <span>Agregar partidas</span>
+                          </Link>
+                        </ContextMenuItem>
+                      </>
+                    )}
                     <ContextMenuItem asChild>
                       <Link
                         href={

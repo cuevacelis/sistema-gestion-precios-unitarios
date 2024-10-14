@@ -37,11 +37,8 @@ interface IProjectPage {
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
   const session = await auth();
-  const query = String(searchParams.query || "");
-  const currentPage = Number(searchParams.page) || 1;
-  const rowsPerPage =
-    Number(searchParams.rowsPerPage) ||
-    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+  const { page, rowsPerPage, query, grupoPartidaId } = searchParams;
+  const uniqueKey = `table-recursos-${grupoPartidaId}-${page}-${rowsPerPage}-${query}`;
 
   return (
     <div className="space-y-6">
@@ -61,6 +58,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
             <Search
               placeholder="Buscar recursos..."
               className="w-full sm:w-64 lg:w-96"
+              disabled={true}
             />
           </div>
         </CardHeader>
@@ -69,7 +67,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={`options-recurso-${query}-${currentPage}-${rowsPerPage}`}
+            key={uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <OptionsTable session={session} />
@@ -79,15 +77,8 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
 
       <Card>
         <CardContent className="p-6">
-          <Suspense
-            key={`table-recurso-${query}-${currentPage}-${rowsPerPage}`}
-            fallback={<TableSkeleton />}
-          >
-            <GetDataTable
-              query={query}
-              currentPage={currentPage}
-              rowsPerPage={rowsPerPage}
-            />
+          <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
+            <GetDataTable searchParams={searchParams} />
           </Suspense>
         </CardContent>
       </Card>
@@ -95,11 +86,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   );
 }
 
-async function GetDataTable(props: {
-  query: string;
-  currentPage: number;
-  rowsPerPage: number;
-}) {
+async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const dataRecursos = await obtenerRecursosPaginados();
   return <TableComponent dataRecursos={dataRecursos} />;
 }

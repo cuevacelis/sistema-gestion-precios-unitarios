@@ -13,6 +13,7 @@ import {
   crearGrupoPartida,
   crearPartida,
   crearPresupuesto,
+  crearRecurso,
   editarGrupoPartida,
   editarPartida,
   editarPresupuesto,
@@ -22,6 +23,7 @@ import {
 import {
   crearGrupoPartidaSchema,
   crearPartidaSchema,
+  crearRecursoSchema,
   creatPresupuestoSchema,
   deleteGrupoPartidaSchema,
   deletePartidaSchema,
@@ -774,3 +776,49 @@ export async function actionsDeletePartida(
 }
 
 // #region RECURSOS
+export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/recursos";
+    const { nombreRecurso, tipoRecurso, unidadMedida, indunificado } =
+      await crearRecursoSchema.parseAsync({
+        nombreRecurso: formData.get("nombreRecurso"),
+        tipoRecurso: formData.get("tipoRecurso"),
+        unidadMedida: formData.get("unidadMedida"),
+        indunificado: formData.get("indunificado"),
+      });
+
+    await crearRecurso(
+      nombreRecurso,
+      Number(tipoRecurso),
+      Number(unidadMedida),
+      indunificado
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/recursos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
