@@ -1,35 +1,36 @@
 "use client";
 
-import { useState } from "react";
 import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
-
 import { actionsEditarGrupoPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
+import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
 
 interface IEditarGrupoPartida {
-  idGrupoPartida: string;
-  nombreGrupoPartida?: string;
+  idGrupoPartida: string | null;
+  dataGrupoPartida: Awaited<
+    ReturnType<typeof obtenerNombreGruposDePartidasById>
+  >;
 }
 
 export default function EditarGrupoPartida({
   idGrupoPartida,
-  nombreGrupoPartida,
+  dataGrupoPartida,
 }: IEditarGrupoPartida) {
   const actionsEditarGrupoPartidaWithId = actionsEditarGrupoPartida.bind(
     null,
     Number(idGrupoPartida)
   );
 
-  const [stateForm, formActionNewPresupuesto] = useFormState(
+  const [stateForm, formActionEditGrupoPartida] = useFormState(
     actionsEditarGrupoPartidaWithId,
     { isError: false, message: "" }
   );
 
   const handleSubmit = (formData: FormData) => {
-    formActionNewPresupuesto(formData);
+    formActionEditGrupoPartida(formData);
   };
 
   return (
@@ -45,7 +46,7 @@ export default function EditarGrupoPartida({
           type="text"
           name="nombreGrupoPartida"
           required
-          defaultValue={nombreGrupoPartida}
+          defaultValue={dataGrupoPartida?.grupar_nombre}
         />
       </div>
       <div className="col-span-full">

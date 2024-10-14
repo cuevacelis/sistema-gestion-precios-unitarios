@@ -1,9 +1,5 @@
-import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  obtenerClientes,
-  obtenerProyectosId,
-} from "@/lib/services/sql-queries";
+import { obtenerProyectosId } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

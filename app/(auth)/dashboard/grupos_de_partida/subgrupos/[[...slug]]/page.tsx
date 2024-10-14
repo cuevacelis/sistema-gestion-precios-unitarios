@@ -11,9 +11,13 @@ import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-import { IDataDBObtenerGruposDePartidasId, ISearchParams } from "@/lib/types/types";
+import {
+  IDataDBObtenerGruposDePartidasId,
+  ISearchParams,
+} from "@/lib/types/types";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
+import { convertToStringOrNull } from "@/lib/utils";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -46,26 +50,9 @@ export default async function GruposDePartidaSubgruposPage({
 }: IGruposDePartidaPage) {
   const { slug = [] } = params;
   const isSubGroup = slug.length > 0;
-  const lastGrupoPartidaId = Number(slug[slug.length - 1]);
-  const proyectoId = searchParams.proyectoId;
-  const uniqueKey = `table-grupos-de-partida-${proyectoId}-${slug.join("-")}`;
-
-  if (!proyectoId) {
-    return (
-      <Card className="max-w-md mx-auto mt-8">
-        <CardContent className="p-6">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Parámetro faltante</AlertTitle>
-            <AlertDescription>
-              Falta el parámetro &#39;proyectoId&#39;. Por favor, asegúrate de
-              incluirlo en la URL.
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-      </Card>
-    );
-  }
+  const lastGrupoPartidaId = slug[slug.length - 1];
+  const { page, rowsPerPage, query, proyectoId } = searchParams;
+  const uniqueKey = `table-grupos-de-partida-${page}-${rowsPerPage}-${query}-${proyectoId}-${slug.join("-")}`;
 
   return (
     <div className="space-y-6">
@@ -95,7 +82,7 @@ export default async function GruposDePartidaSubgruposPage({
                       key={uniqueKey}
                       fallback={<span>Loading...</span>}
                     >
-                      <PresupuestoNameById idPresupuesto={Number(proyectoId)} />
+                      <PresupuestoNameById idPresupuesto={proyectoId} />
                     </Suspense>
                   )}
                 </p>
@@ -113,7 +100,7 @@ export default async function GruposDePartidaSubgruposPage({
           >
             <OptionsTableData
               isSubGroup={isSubGroup}
-              idProyecto={String(proyectoId)}
+              idProyecto={proyectoId}
               lastGrupoPartidaId={lastGrupoPartidaId}
             />
           </Suspense>
@@ -125,7 +112,7 @@ export default async function GruposDePartidaSubgruposPage({
           <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
             <TableWrapper
               isSubGroup={isSubGroup}
-              idProyecto={String(proyectoId)}
+              idProyecto={proyectoId}
               lastGrupoPartidaId={lastGrupoPartidaId}
             />
           </Suspense>
@@ -138,9 +125,10 @@ export default async function GruposDePartidaSubgruposPage({
 async function GrupoPartidaNameById({
   idGrupoPartida,
 }: {
-  idGrupoPartida: number;
+  idGrupoPartida: string | string[] | undefined;
 }) {
-  const data = await obtenerNombreGruposDePartidasById(idGrupoPartida);
+  if (!idGrupoPartida) return null;
+  const data = await obtenerNombreGruposDePartidasById(String(idGrupoPartida));
 
   if (!data) {
     return null;
@@ -148,7 +136,7 @@ async function GrupoPartidaNameById({
 
   return (
     <>
-      del grupo{" "}
+      del <span className="underline">grupo</span>{" "}
       <span className="text-muted-foreground">
         &quot;{data.grupar_nombre}&quot;
       </span>
@@ -159,9 +147,10 @@ async function GrupoPartidaNameById({
 async function PresupuestoNameById({
   idPresupuesto,
 }: {
-  idPresupuesto: number;
+  idPresupuesto: string | string[] | undefined;
 }) {
-  const data = await obtenerNombrePresupuestosById(idPresupuesto);
+  if (!idPresupuesto) return null;
+  const data = await obtenerNombrePresupuestosById(String(idPresupuesto));
 
   if (!data) {
     return null;
@@ -169,7 +158,7 @@ async function PresupuestoNameById({
 
   return (
     <>
-      del proyecto{" "}
+      del <span className="underline">proyecto</span>{" "}
       <span className="text-muted-foreground">
         &quot;{data.pre_nombre}&quot;
       </span>
@@ -179,8 +168,8 @@ async function PresupuestoNameById({
 
 interface OptionsTableDataProps {
   isSubGroup: boolean;
-  idProyecto: string;
-  lastGrupoPartidaId: number;
+  idProyecto: string | string[] | undefined;
+  lastGrupoPartidaId: string | string[] | undefined;
 }
 
 async function OptionsTableData({
@@ -193,29 +182,30 @@ async function OptionsTableData({
 
   if (isSubGroup) {
     gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
-      Number(idProyecto),
-      lastGrupoPartidaId
+      convertToStringOrNull(idProyecto),
+      String(lastGrupoPartidaId)
     );
-    isPartidasAssigned =
-      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
+    isPartidasAssigned = await obtenerIsPartidasDeGrupoPartidaId(
+      String(lastGrupoPartidaId)
+    );
   } else {
     gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
-      Number(idProyecto)
+      convertToStringOrNull(idProyecto)
     );
   }
   return (
     <OptionsTable
       isTheLastChildInTheListGrupoPartida={gruposDePartidas.length === 0}
       isPartidasAssigned={isPartidasAssigned}
-      lastGrupoPartidaId={lastGrupoPartidaId}
+      lastGrupoPartidaId={String(lastGrupoPartidaId)}
     />
   );
 }
 
 interface TableWrapperProps {
   isSubGroup: boolean;
-  idProyecto: string;
-  lastGrupoPartidaId: number;
+  idProyecto: string | string[] | undefined;
+  lastGrupoPartidaId: string | string[] | undefined;
 }
 
 async function TableWrapper({
@@ -228,14 +218,15 @@ async function TableWrapper({
 
   if (isSubGroup) {
     gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
-      Number(idProyecto),
-      lastGrupoPartidaId
+      convertToStringOrNull(idProyecto),
+      String(lastGrupoPartidaId)
     );
-    isPartidasAssigned =
-      await obtenerIsPartidasDeGrupoPartidaId(lastGrupoPartidaId);
+    isPartidasAssigned = await obtenerIsPartidasDeGrupoPartidaId(
+      String(lastGrupoPartidaId)
+    );
   } else {
     gruposDePartidas = await obtenerGruposDePartidasIdProyecto(
-      Number(idProyecto)
+      convertToStringOrNull(idProyecto)
     );
   }
 
@@ -243,7 +234,7 @@ async function TableWrapper({
     <TableComponent
       dataGruposDePartidas={gruposDePartidas}
       isPartidasAssigned={isPartidasAssigned}
-      lastGrupoPartidaId={lastGrupoPartidaId}
+      lastGrupoPartidaId={String(lastGrupoPartidaId)}
     />
   );
 }

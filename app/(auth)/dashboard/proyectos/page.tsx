@@ -37,12 +37,8 @@ interface IProjectPage {
 }
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
-  const query = String(searchParams.query || "");
-  const currentPage = Number(searchParams.page) || 1;
-  const rowsPerPage =
-    Number(searchParams.rowsPerPage) ||
-    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
-  const uniqueKey = `table-proyecto-${query}-${currentPage}-${rowsPerPage}`;
+  const { page, rowsPerPage, query } = searchParams;
+  const uniqueKey = `table-proyecto-${page}-${rowsPerPage}-${query}`;
 
   return (
     <div className="space-y-6">
@@ -81,11 +77,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card>
         <CardContent className="p-6">
           <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
-            <GetDataTable
-              query={query}
-              currentPage={currentPage}
-              rowsPerPage={rowsPerPage}
-            />
+            <GetDataTable searchParams={searchParams} />
           </Suspense>
         </CardContent>
       </Card>
@@ -98,17 +90,20 @@ async function GetDataOptions() {
   return <OptionsTable session={session} />;
 }
 
-async function GetDataTable(props: {
-  query: string;
-  currentPage: number;
-  rowsPerPage: number;
-}) {
+async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const session = await auth();
+  const query = String(searchParams.query || "");
+  const currentPage = Number(searchParams.page) || 1;
+  const rowsPerPage =
+    Number(searchParams.rowsPerPage) ||
+    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+
   const dataProyectos = await obtenerProyectosPaginados(
     String(session?.user?.id),
-    props.rowsPerPage,
-    props.currentPage,
-    props.query
+    rowsPerPage,
+    currentPage,
+    query
   );
+
   return <TableComponent dataProyectos={dataProyectos} />;
 }

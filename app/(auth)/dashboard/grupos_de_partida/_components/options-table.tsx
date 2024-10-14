@@ -9,7 +9,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 interface IProps {
   isTheLastChildInTheListGrupoPartida: boolean;
   isPartidasAssigned: boolean;
-  lastGrupoPartidaId: number;
+  lastGrupoPartidaId: string;
 }
 
 export default function OptionsTable({

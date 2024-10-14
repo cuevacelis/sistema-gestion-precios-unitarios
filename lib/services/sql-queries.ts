@@ -241,6 +241,14 @@ export const obtenerProyectosId = async (Pre_Id: number) => {
   }
 };
 
+export const obtenerProyectos = async () => {
+  try {
+    return getDbPostgres().selectFrom("presupuesto").selectAll().execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const crearPresupuesto = async (
   usuNomApellidosUsuario: string,
   nombrePresupuesto: string,
@@ -310,13 +318,32 @@ export const cambioEstadoPresupuesto = async (
   }
 };
 
+export const cambioEstadoPresupuestoRecursivo = cache(
+  async (id: number, newState: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_presupuesto_actualiza_estado_general(${id}, ${newState})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["presupuesto"],
+  { tags: ["presupuesto"], revalidate: 60 * 60 * 24 }
+);
+
 export const obtenerNombrePresupuestosById = cache(
-  async (id: number) => {
+  async (id: string) => {
     try {
       return getDbPostgres()
         .selectFrom("presupuesto")
         .select("pre_nombre")
-        .where("pre_id", "=", id)
+        .where("pre_id", "=", Number(id))
         .executeTakeFirst();
     } catch (error) {
       throw error;
@@ -328,7 +355,7 @@ export const obtenerNombrePresupuestosById = cache(
 
 // #region GRUPOS DE PARTIDAS
 export const obtenerGruposDePartidasIdProyecto = async (
-  Proyecto_Id: number
+  Proyecto_Id: string | null
 ) => {
   try {
     return getDbPostgres()
@@ -345,13 +372,13 @@ export const obtenerGruposDePartidasIdProyecto = async (
 };
 
 export const obtenerGruposDePartidasIdRecursive = async (
-  Proyecto_Id: number,
-  Grupo_Partida_Id: number
+  Proyecto_Id: string | null,
+  Grupo_Partida_Id: string
 ) => {
   try {
     return getDbPostgres()
       .selectFrom(
-        sql<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v3(${Proyecto_Id}, ${Grupo_Partida_Id})`.as(
+        sql<IDataDBObtenerGruposDePartidasId>`sp_grupo_partida_obten_x_presupuesto_x_grupo_partida_v4(${Grupo_Partida_Id},${Proyecto_Id})`.as(
           "result"
         )
       )
@@ -370,7 +397,7 @@ export const crearGrupoPartida = async (
   try {
     return getDbPostgres()
       .selectFrom(
-        sql<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida},${nombreGrupoPartida})`.as(
+        sql<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida || null},${nombreGrupoPartida || null})`.as(
           "result"
         )
       )
@@ -412,12 +439,12 @@ export const obtenerGruposDePartidasPaginados = cache(
 );
 
 export const obtenerNombreGruposDePartidasById = cache(
-  async (id: number) => {
+  async (id: string) => {
     try {
       return getDbPostgres()
         .selectFrom("grupo_partida")
-        .select("grupar_nombre")
-        .where("grupar_id", "=", id)
+        .selectAll()
+        .where("grupar_id", "=", Number(id))
         .executeTakeFirst();
     } catch (error) {
       throw error;
@@ -428,7 +455,7 @@ export const obtenerNombreGruposDePartidasById = cache(
 );
 
 export const obtenerIsPartidasDeGrupoPartidaId = cache(
-  async (idGrupoPartida: number) => {
+  async (idGrupoPartida: string) => {
     try {
       const result = await getDbPostgres()
         .selectFrom("partida")
@@ -440,7 +467,11 @@ export const obtenerIsPartidasDeGrupoPartidaId = cache(
         .select((eb) =>
           eb.fn.count("detalle_partida_grupo_partida.par_id").as("count")
         )
-        .where("detalle_partida_grupo_partida.grupar_id", "=", idGrupoPartida)
+        .where(
+          "detalle_partida_grupo_partida.grupar_id",
+          "=",
+          Number(idGrupoPartida)
+        )
         .executeTakeFirst();
       return Number(result?.count) > 0;
     } catch (error) {

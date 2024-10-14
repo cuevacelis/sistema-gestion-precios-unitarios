@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import ModalLoading from "@/components/ui/modal-loading";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
+import { convertToStringOrNull } from "@/lib/utils";
 
 const EditarGrupoPartida = dynamic(
   () => import("../../../editar/[[...slug]]/_components/editar-grupo-partida"),
@@ -25,26 +26,25 @@ export default function EditarGruposDePartidaModalPage({
   return (
     <Modal title="Editar grupo de partida">
       <Suspense fallback={<ModalLoading />}>
-        <GetDataEditarGrupoPartida idGrupoPartida={String(lastSlug)} />
+        <GetDataEditarGrupoPartida idGrupoPartida={lastSlug} />
       </Suspense>
     </Modal>
   );
 }
 
 interface IParams {
-  idGrupoPartida: string;
+  idGrupoPartida?: string;
 }
 
 async function GetDataEditarGrupoPartida({ idGrupoPartida }: IParams) {
-  const data = await obtenerNombreGruposDePartidasById(Number(idGrupoPartida));
-  const nombreGrupoPartida = data?.grupar_nombre;
+  const dataGrupoPartida = await obtenerNombreGruposDePartidasById(
+    String(idGrupoPartida)
+  );
 
   return (
     <EditarGrupoPartida
-      {...{
-        idGrupoPartida,
-        nombreGrupoPartida,
-      }}
+      idGrupoPartida={convertToStringOrNull(idGrupoPartida)}
+      dataGrupoPartida={dataGrupoPartida}
     />
   );
 }

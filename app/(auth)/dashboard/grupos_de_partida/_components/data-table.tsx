@@ -39,7 +39,7 @@ import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
   isPartidasAssigned: boolean;
-  lastGrupoPartidaId: number;
+  lastGrupoPartidaId: string;
 }
 
 export default function TableComponent({
@@ -57,6 +57,7 @@ export default function TableComponent({
     useState<IDataDBObtenerGruposDePartidasId | null>(null);
   const [statusRespDeleteGrupoPartida, setStatusRespDeleteGrupoPartida] =
     useState<TStatusResponseActions>("idle");
+  const searchParamsShowColumns = searchParams.getAll("fshow");
 
   const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
     () => [
@@ -68,9 +69,24 @@ export default function TableComponent({
         ),
       },
       {
+        accessorKey: "pre_id",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id Proyecto" />
+        ),
+      },
+      {
+        accessorKey: "pre_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Nombre proyecto" />
+        ),
+      },
+      {
         accessorKey: "grupar_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre" />
+          <DataTableColumnHeader
+            column={column}
+            title="Nombre grupo de partida"
+          />
         ),
       },
     ],
@@ -82,6 +98,20 @@ export default function TableComponent({
     columns,
     rowCount: dataGruposDePartidas.length,
     identifierField: "grupar_id",
+    initialState: {
+      columnVisibility: {
+        grupar_id:
+          searchParamsShowColumns.includes("grupar_id") ||
+          searchParamsShowColumns.length === 0,
+        pre_id: searchParamsShowColumns.includes("pre_id") || false,
+        pre_nombre:
+          searchParamsShowColumns.includes("pre_nombre") ||
+          searchParamsShowColumns.length === 0,
+        grupar_nombre:
+          searchParamsShowColumns.includes("grupar_nombre") ||
+          searchParamsShowColumns.length === 0,
+      },
+    },
   });
 
   const handleDeleteConfirm = async () => {

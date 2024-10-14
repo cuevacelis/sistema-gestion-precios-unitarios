@@ -21,7 +21,7 @@ export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-export function simulateLongWait(timeInMillis: number) {
+export async function simulateLongWait(timeInMillis: number) {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve("Tiempo de espera completado");
@@ -312,4 +312,22 @@ export default function cache<T extends Callback>(
     return nextCache(reactCache(cb), keyParts, options);
   }
   return cb;
+}
+
+export function convertToStringOrNull(
+  input: string | string[] | undefined
+): string | null {
+  if (typeof input === "undefined") {
+    return null; // Si es undefined, retorna null
+  }
+
+  if (Array.isArray(input)) {
+    return input.length > 0 ? input[0] : null; // Si es un array, retorna el primer elemento o null si está vacío
+  }
+
+  return input; // Si es un string, retorna el string tal cual
+}
+
+export function convertirEspaciosAGuionesBajos(texto: string): string {
+  return texto.replace(/\s+/g, "_");
 }

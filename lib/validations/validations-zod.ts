@@ -54,8 +54,7 @@ export const deletePresupuestoSchema = z.object({
 
 // #region GRUPOS DE PARTIDAS
 export const crearGrupoPartidaSchema = z.object({
-  // idProyecto: z.string().optional(),
-  idProyecto: z.string().min(1, "El campo 'Id de proyecto' es requerido"),
+  idProyecto: z.string().min(1, "El campo 'Proyecto' es requerido"),
   nombreGrupoPartida: z
     .string()
     .min(1, "El campo 'Nombre del grupo de partida' es requerido"),

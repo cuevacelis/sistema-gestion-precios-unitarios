@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Settings2 } from "lucide-react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTableSearchParams } from "@/hooks/useTableSearchParams";
 
 interface DataTableViewOptionsProps<TData> {

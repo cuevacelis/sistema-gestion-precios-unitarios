@@ -27,7 +27,10 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { actionsDeletePresupuesto } from "@/lib/actions/actions";
+import {
+  actionsDeleteEstadoPresupuestoRecursivo,
+  actionsDeletePresupuesto,
+} from "@/lib/actions/actions";
 import {
   IDataDBObtenerProyectosPaginados,
   ISpPresupuestoObtenPaginado,
@@ -38,6 +41,7 @@ import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
 import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
@@ -55,6 +59,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerProyectosPaginados | null>(null);
+  const [isDeleteRecursive, setIsDeleteRecursive] = useState(false);
   const searchParamsShowColumns = searchParams.getAll("fshow");
 
   const columns: ColumnDef<IDataDBObtenerProyectosPaginados>[] = useMemo(
@@ -134,16 +139,24 @@ export default function TableComponent({ dataProyectos }: IProps) {
     initialState: {
       columnVisibility: {
         pre_codigo: searchParamsShowColumns.includes("pre_codigo") || false,
-        pre_nombre: searchParamsShowColumns.includes("pre_nombre") || true,
+        pre_nombre:
+          searchParamsShowColumns.includes("pre_nombre") ||
+          searchParamsShowColumns.length === 0,
         usu_nomapellidos:
           searchParamsShowColumns.includes("usu_nomapellidos") || false,
         cli_nomaperazsocial:
-          searchParamsShowColumns.includes("cli_nomaperazsocial") || true,
-        pre_jornal: searchParamsShowColumns.includes("pre_jornal") || true,
+          searchParamsShowColumns.includes("cli_nomaperazsocial") ||
+          searchParamsShowColumns.length === 0,
+        pre_jornal:
+          searchParamsShowColumns.includes("pre_jornal") ||
+          searchParamsShowColumns.length === 0,
         pre_fechorregistro:
-          searchParamsShowColumns.includes("pre_fechorregistro") || true,
+          searchParamsShowColumns.includes("pre_fechorregistro") ||
+          searchParamsShowColumns.length === 0,
         pai_nombre: searchParamsShowColumns.includes("pai_nombre") || false,
-        dep_nombre: searchParamsShowColumns.includes("dep_nombre") || true,
+        dep_nombre:
+          searchParamsShowColumns.includes("dep_nombre") ||
+          searchParamsShowColumns.length === 0,
         prov_nombre: searchParamsShowColumns.includes("prov_nombre") || false,
         dist_nombre: searchParamsShowColumns.includes("dist_nombre") || false,
       },
@@ -154,14 +167,25 @@ export default function TableComponent({ dataProyectos }: IProps) {
     if (!rowSelected) return;
     setStatusRespDeletePresupuesto("pending");
     try {
-      await actionsDeletePresupuesto(rowSelected.pre_id);
+      if (isDeleteRecursive) {
+        await actionsDeleteEstadoPresupuestoRecursivo(rowSelected.pre_id);
+      } else {
+        await actionsDeletePresupuesto(rowSelected.pre_id);
+      }
       setStatusRespDeletePresupuesto("success");
       toast.success("Proyecto eliminado", {
         action: {
           label: "Deshacer cambios",
           onClick: async () => {
             setStatusRespDeletePresupuesto("pending");
-            await actionsDeletePresupuesto(rowSelected.pre_id, 1);
+            if (isDeleteRecursive) {
+              await actionsDeleteEstadoPresupuestoRecursivo(
+                rowSelected.pre_id,
+                1
+              );
+            } else {
+              await actionsDeletePresupuesto(rowSelected.pre_id, 1);
+            }
             setStatusRespDeletePresupuesto("success");
           },
         },
@@ -336,7 +360,26 @@ export default function TableComponent({ dataProyectos }: IProps) {
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
           title="¿Está seguro de eliminar el presupuesto?"
-          message="Esta acción se puede revertir, aun asi tener precaución."
+          message={
+            <section className="flex flex-col gap-2">
+              Esta acción se puede revertir, aun asi tener precaución.
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="delete-recursive"
+                  checked={isDeleteRecursive}
+                  onCheckedChange={(checked) =>
+                    setIsDeleteRecursive(checked as boolean)
+                  }
+                />
+                <label
+                  htmlFor="delete-recursive"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  Eliminar tambien grupos de partidas y partidas.
+                </label>
+              </div>
+            </section>
+          }
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { ISpModuloObtenerModulosXPusuario } from "@/lib/types/types";
-import { cn } from "@/lib/utils";
+import { cn, convertirEspaciosAGuionesBajos } from "@/lib/utils";
 import { SidebarClose } from "lucide-react";
 import { Session } from "next-auth";
 import Link from "next/link";
@@ -48,11 +48,11 @@ export default function SidebarComponent(props: SidebarProps) {
             return (
               <Link
                 key={module.mod_nombre}
-                href={`/dashboard/${module.mod_nombre.toLowerCase()}`}
+                href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
                   pathname.startsWith(
-                    `/dashboard/${module.mod_nombre.toLowerCase()}`
+                    `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
                   ) && "bg-muted text-primary"
                 )}
               >

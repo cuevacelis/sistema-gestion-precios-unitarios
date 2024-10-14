@@ -27,7 +27,12 @@ import {
   ISpModuloObtenerModulosXPusuario,
   TStatusResponseActions,
 } from "@/lib/types/types";
-import { cn, obtenerHoraRelativa, obtenerSiglas } from "@/lib/utils";
+import {
+  cn,
+  convertirEspaciosAGuionesBajos,
+  obtenerHoraRelativa,
+  obtenerSiglas,
+} from "@/lib/utils";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
@@ -125,12 +130,12 @@ export default function TopBarComponent(props: IProps) {
                 return (
                   <SheetClose asChild key={module.mod_nombre}>
                     <Link
-                      href={`/dashboard/${module.mod_nombre.toLowerCase()}`}
+                      href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
                       key={module.mod_nombre}
                       className={cn(
                         "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
                         pathname.startsWith(
-                          `/dashboard/${module.mod_nombre.toLowerCase()}`
+                          `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
                         ) && "bg-muted text-primary"
                       )}
                     >

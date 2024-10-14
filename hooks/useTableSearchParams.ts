@@ -19,8 +19,8 @@ export function useTableSearchParams<TData>(table: Table<TData>) {
   }, [table]);
 
   const updateSearchParams = useCallback(
-    (filterName: string, columnId: string, isVisible: boolean) => {
-      const newParams = new URLSearchParams(searchParams.toString());
+    (keySearchParam: string, columnId: string, isVisible: boolean) => {
+      const params = new URLSearchParams(searchParams.toString());
       const visibleColumnIds = getVisibleColumnIds();
 
       if (isVisible) {
@@ -29,10 +29,13 @@ export function useTableSearchParams<TData>(table: Table<TData>) {
         visibleColumnIds.delete(columnId);
       }
 
-      newParams.delete(filterName);
-      visibleColumnIds.forEach((id) => newParams.append(filterName, id));
+      // Convertimos el Set a un array y lo ordenamos alfabéticamente
+      const sortedColumnIds = Array.from(visibleColumnIds).sort();
 
-      router.replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+      params.delete(keySearchParam);
+      sortedColumnIds.forEach((id) => params.append(keySearchParam, id));
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [searchParams, getVisibleColumnIds, router, pathname]
   );

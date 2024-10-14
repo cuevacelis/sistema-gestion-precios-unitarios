@@ -164,6 +164,8 @@ export interface IDataDBObtenerProyectosId {
 export interface IDataDBObtenerGruposDePartidasId {
   grupar_id: number;
   grupar_nombre: string;
+  pre_id: number;
+  pre_nombre: string;
   grupar_total: number;
   tiene_hijos: boolean;
   tiene_partidas: boolean;

@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
-import { ISearchParams } from "@/lib/types/types";
+import { convertToStringOrNull } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -11,15 +11,15 @@ const EditarGrupoPartida = dynamic(
   }
 );
 
-interface IPropsNuevoGrupoPartida {
+interface IPropsEditarGrupoPartida {
   params: {
     slug?: string[];
   };
 }
 
-export default function NuevoGrupoPartidaPage({
+export default function EditarGrupoPartidaPage({
   params,
-}: IPropsNuevoGrupoPartida) {
+}: IPropsEditarGrupoPartida) {
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);
 
@@ -29,7 +29,7 @@ export default function NuevoGrupoPartidaPage({
       <Card className="overflow-auto mb-6">
         <CardContent>
           <Suspense fallback={<p>Cargando...</p>}>
-            <GetDataEditarGrupoPartida idGrupoPartida={String(lastSlug)} />
+            <GetDataEditarGrupoPartida idGrupoPartida={lastSlug} />
           </Suspense>
         </CardContent>
       </Card>
@@ -38,19 +38,18 @@ export default function NuevoGrupoPartidaPage({
 }
 
 interface IParams {
-  idGrupoPartida: string;
+  idGrupoPartida?: string;
 }
 
 async function GetDataEditarGrupoPartida({ idGrupoPartida }: IParams) {
-  const data = await obtenerNombreGruposDePartidasById(Number(idGrupoPartida));
-  const nombreGrupoPartida = data?.grupar_nombre;
+  const dataGrupoPartida = await obtenerNombreGruposDePartidasById(
+    String(idGrupoPartida)
+  );
 
   return (
     <EditarGrupoPartida
-      {...{
-        idGrupoPartida,
-        nombreGrupoPartida,
-      }}
+      idGrupoPartida={convertToStringOrNull(idGrupoPartida)}
+      dataGrupoPartida={dataGrupoPartida}
     />
   );
 }

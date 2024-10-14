@@ -15,7 +15,7 @@ interface IProps {
   show: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  title?: string;
+  title?: string | JSX.Element;
   message?: string | JSX.Element;
   classNameButtonAction?: string;
   isLoading?: boolean;

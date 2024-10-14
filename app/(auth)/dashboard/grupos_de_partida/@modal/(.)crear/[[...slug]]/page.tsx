@@ -1,8 +1,10 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import ModalLoading from "@/components/ui/modal-loading";
 import dynamic from "next/dynamic";
 import { ISearchParams } from "@/lib/types/types";
+import { obtenerProyectos } from "@/lib/services/sql-queries";
+import { Skeleton } from "@/components/ui/skeleton";
+import { convertToStringOrNull } from "@/lib/utils";
 
 const NuevoGrupoPartida = dynamic(
   () => import("../../../crear/[[...slug]]/_components/nuevo-grupo-partida"),
@@ -22,46 +24,32 @@ export default async function NuevoProyectoModalPage({
   searchParams,
   params,
 }: IPropsNuevoGrupoPartida) {
+  const { proyectoId } = searchParams;
   const { slug = [] } = params;
-  const proyectoId = searchParams.proyectoId;
   const lastSlug = slug.at(-1);
-
-  if (!proyectoId) {
-    return (
-      <div className="p-4 lg:p-6">
-        <h1 className="text-2xl font-semibold mb-4">Crear Grupo de Partida</h1>
-        <p className="text-muted-foreground">
-          Falta el parámetro &#39;proyectoId&#39;. Por favor, asegúrate de
-          incluirlo en la URL.
-        </p>
-      </div>
-    );
-  }
+  const uniqueKey = `grupos-de-partida-crear-modal-${proyectoId}-${lastSlug}`;
 
   return (
     <Modal title="Crear nuevo grupo de partida">
-      <Suspense fallback={<ModalLoading />}>
-        <GetDataNuevoGrupoPartida
-          idProyecto={String(proyectoId)}
-          lastSlug={lastSlug}
-        />
+      <Suspense key={uniqueKey} fallback={<Skeleton className="h-10 w-full" />}>
+        <GetDataNuevoGrupoPartida idProyecto={proyectoId} lastSlug={lastSlug} />
       </Suspense>
     </Modal>
   );
 }
 
 interface IParams {
-  idProyecto: string;
+  idProyecto?: string | string[] | undefined;
   lastSlug?: string;
 }
 
 async function GetDataNuevoGrupoPartida({ idProyecto, lastSlug }: IParams) {
+  const dataProyectos = await obtenerProyectos();
   return (
     <NuevoGrupoPartida
-      {...{
-        idProyecto,
-        lastSlug,
-      }}
+      idProyecto={convertToStringOrNull(idProyecto)}
+      lastSlug={convertToStringOrNull(lastSlug)}
+      dataProyectos={dataProyectos}
     />
   );
 }

@@ -1,12 +1,13 @@
 "use server";
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import {
   cambioEstadoPresupuesto,
+  cambioEstadoPresupuestoRecursivo,
   crearGrupoPartida,
   crearPartida,
   crearPresupuesto,
@@ -28,7 +29,6 @@ import {
 } from "../validations/validations-zod";
 import { IBodyLogin, IBrowserInfo } from "../types/types";
 import { headers } from "next/headers";
-import { queueS3 } from "../queue/s3Queue";
 import { replaceSegmentInPath } from "../utils";
 import { DateTime } from "luxon";
 import { queueEmail } from "../queue/emailQueue";
@@ -385,6 +385,47 @@ export async function actionsDeletePresupuesto(
     return {
       message: "Algo salió mal.",
       errors: {},
+    };
+  }
+}
+
+export async function actionsDeleteEstadoPresupuestoRecursivo(
+  Pre_Id: number,
+  newState?: number
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/proyectos";
+    const { id } = await deletePresupuestoSchema.parseAsync({
+      id: Pre_Id,
+    });
+
+    await cambioEstadoPresupuestoRecursivo(id, newState || 0);
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/proyectos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
     };
   }
 }
