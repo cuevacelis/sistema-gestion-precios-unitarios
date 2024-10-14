@@ -118,9 +118,12 @@ export default function TableComponent({
     if (!rowSelected) return;
     setStatusRespDeleteGrupoPartida("pending");
     try {
-      await actionsDeleteGrupoPartida(rowSelected.grupar_id);
+      const respDelete = await actionsDeleteGrupoPartida(rowSelected.grupar_id);
+      if (respDelete?.isError) {
+        throw respDelete.message;
+      }
       setStatusRespDeleteGrupoPartida("success");
-      toast.success("Grupo de partida eliminado", {
+      toast.success("Grupo de partida eliminada", {
         action: {
           label: "Deshacer cambios",
           onClick: async () => {
@@ -133,7 +136,7 @@ export default function TableComponent({
     } catch (error) {
       setStatusRespDeleteGrupoPartida("error");
       toast.error(
-        "No se pudo eliminar el grupo de partida, por favor intente nuevamente."
+        "No se pudo eliminar el grupo de partida, por favor intente nuevamente"
       );
     } finally {
       setIsShowDeleteModal(false);

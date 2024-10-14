@@ -85,10 +85,6 @@ export default function NuevoGrupoPartida({
           </AlertDescription>
         </Alert>
       </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm">Nombre del grupo de partida</Label>
-        <Input type="text" name="nombreGrupoPartida" required />
-      </div>
       <div className={cn("col-span-full sm:col-span-3", {})}>
         <Label className="text-sm w-20 truncate">Seleccione un proyecto</Label>
         <ComboboxSingleSelection
@@ -100,6 +96,10 @@ export default function NuevoGrupoPartida({
           disabled={isSubGroup}
           value={formDataExtra["idProyecto"]}
         />
+      </div>
+      <div className="sm:col-span-3">
+        <Label className="text-sm">Nombre del grupo de partida</Label>
+        <Input type="text" name="nombreGrupoPartida" required />
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent

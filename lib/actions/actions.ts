@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import {
   cambioEstadoGrupoPartida,
+  cambioEstadoPartida,
   cambioEstadoPresupuesto,
   cambioEstadoPresupuestoRecursivo,
   crearGrupoPartida,
@@ -640,18 +641,15 @@ export async function actionsCrearPartida(_prevState: any, formData: FormData) {
     });
 
     await crearPartida(
-      Number(idGrupoPartida),
       nombrePartida,
       rendimientoManoDeObra,
       rendimientoEquipo,
-      unidadMedida
+      Number(unidadMedida),
+      Number(idGrupoPartida)
     );
 
     const url = new URL(referer);
     let newUrl = "/dashboard/partidas" + url.search;
-
-    newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
-    newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
 
     revalidatePath(newUrl);
     redirect(newUrl);
@@ -679,7 +677,6 @@ export async function actionsCrearPartida(_prevState: any, formData: FormData) {
 }
 
 export async function actionsEditarPartida(
-  p_par_id: number,
   _prevState: any,
   formData: FormData
 ) {
@@ -693,7 +690,7 @@ export async function actionsEditarPartida(
       rendimientoEquipo,
       unidadMedida,
     } = await editarPartidaSchema.parseAsync({
-      idPartida: p_par_id,
+      idPartida: formData.get("idPartida"),
       nombrePartida: formData.get("nombrePartida"),
       rendimientoManoDeObra: Number(formData.get("rendimientoManoDeObra")),
       rendimientoEquipo: Number(formData.get("rendimientoEquipo")),
@@ -705,14 +702,11 @@ export async function actionsEditarPartida(
       nombrePartida,
       rendimientoManoDeObra,
       rendimientoEquipo,
-      unidadMedida
+      Number(unidadMedida)
     );
 
     const url = new URL(referer);
     let newUrl = "/dashboard/partidas" + url.search;
-
-    newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
-    newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
 
     revalidatePath(newUrl);
     redirect(newUrl);
@@ -739,47 +733,44 @@ export async function actionsEditarPartida(
   }
 }
 
-// export async function actionsDeletePartida(
-//   p_par_id: number,
-//   newState?: number
-// ) {
-//   try {
-//     const headersList = headers();
-//     const referer = headersList.get("referer") || "/dashboard/partidas";
-//     const { idPartida } = await deletePartidaSchema.parseAsync({
-//       id: p_par_id,
-//     });
-//     await cambioEstadoPartida(idPartida, newState || 0);
+export async function actionsDeletePartida(
+  p_par_id: number,
+  newState?: number
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/partidas";
+    const { idPartida } = await deletePartidaSchema.parseAsync({
+      idPartida: p_par_id,
+    });
+    await cambioEstadoPartida(idPartida, newState || 0);
 
-//     const url = new URL(referer);
-//     let newUrl = "/dashboard/partidas" + url.search;
+    const url = new URL(referer);
+    let newUrl = "/dashboard/partidas" + url.search;
 
-//     newUrl = replaceSegmentInPath(newUrl, "crear", "subgrupos");
-//     newUrl = replaceSegmentInPath(newUrl, "subgrupos", "editar");
-
-//     revalidatePath(newUrl);
-//     redirect(newUrl);
-//   } catch (error) {
-//     if (isRedirectError(error)) {
-//       throw error;
-//     }
-//     if (error instanceof ZodError) {
-//       return {
-//         message: error.errors.map((err) => err.message),
-//         isError: true,
-//       };
-//     }
-//     if (error instanceof Error) {
-//       return {
-//         message: error?.message,
-//         isError: true,
-//       };
-//     }
-//     return {
-//       message: "Algo salió mal.",
-//       isError: true,
-//     };
-//   }
-// }
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
 
 // #region RECURSOS

@@ -1,6 +1,10 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import { obtenerPartidaById } from "@/lib/services/sql-queries";
+import {
+  obtenerGruposDePartidas,
+  obtenerPartidaById,
+  obtenerUnidadesDeMedida,
+} from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -19,22 +23,34 @@ interface IPropsEditPartidaModalPage {
   };
 }
 
-export default function EditarPartidaModalPage(
-  props: IPropsEditPartidaModalPage
-) {
+export default function EditarPartidaModalPage({
+  params,
+}: IPropsEditPartidaModalPage) {
   return (
     <Modal title="Editar partida" classNameDialogContent="h-[500px]">
-      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
-        <GetDataEditarPartida id={props.params.idPartida} />
+      <Suspense
+        key={params.idPartida}
+        fallback={<Skeleton className="h-10 w-full" />}
+      >
+        <GetDataEditarPartida idPartida={params.idPartida} />
       </Suspense>
     </Modal>
   );
 }
 
-async function GetDataEditarPartida(props: { id: string }) {
-  const dataEditPresupuesto = await obtenerPartidaById(Number(props.id));
-  if (dataEditPresupuesto.length === 0) {
+async function GetDataEditarPartida({ idPartida }: { idPartida: string }) {
+  const dataPartida = await obtenerPartidaById(Number(idPartida));
+  if (dataPartida.length === 0) {
     return notFound();
   }
-  return <EditarPartida data={dataEditPresupuesto[0]} />;
+  const dataGruposDePartidas = await obtenerGruposDePartidas();
+  const dataUnidadesDeMedida = await obtenerUnidadesDeMedida();
+
+  return (
+    <EditarPartida
+      dataPartida={dataPartida[0]}
+      dataGruposDePartidas={dataGruposDePartidas}
+      dataUnidadesDeMedida={dataUnidadesDeMedida}
+    />
+  );
 }

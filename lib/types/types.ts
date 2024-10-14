@@ -182,6 +182,7 @@ export interface IDataDBObtenerPartidasPaginados {
   par_renmanobra: string;
   par_renequipo: string;
   unimed_nombre: string;
+  unimed_id: number;
   par_preunitario: string;
   grupar_id: number;
   grupar_nombre: string;

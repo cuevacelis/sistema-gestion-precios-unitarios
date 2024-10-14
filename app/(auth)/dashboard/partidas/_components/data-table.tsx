@@ -27,7 +27,10 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { actionsDeletePresupuesto } from "@/lib/actions/actions";
+import {
+  actionsDeletePartida,
+  actionsDeletePresupuesto,
+} from "@/lib/actions/actions";
 import {
   IDataDBObtenerPartidasPaginados,
   ISpPresupuestoObtenPaginado,
@@ -37,7 +40,6 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
-import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
 
 interface IProps {
   dataPartidas: IDataDBObtenerPartidasPaginados[];
@@ -50,7 +52,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
   useSearchToast(totalResults);
   const { width } = useWindowSize();
   const isMobile = width < 768;
-  const [statusRespDeletePresupuesto, setStatusRespDeletePresupuesto] =
+  const [statusRespDeletePartida, setstatusRespDeletePartida] =
     useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
@@ -150,29 +152,32 @@ export default function TableComponent({ dataPartidas }: IProps) {
   });
 
   const handleDeleteConfirm = async () => {
-    // if (!rowSelected) return;
-    // setStatusRespDeletePresupuesto("pending");
-    // try {
-    //   await actionsDeletePresupuesto(rowSelected.par_id);
-    //   setStatusRespDeletePresupuesto("success");
-    //   toast.success("Proyecto eliminado", {
-    //     action: {
-    //       label: "Deshacer cambios",
-    //       onClick: async () => {
-    //         setStatusRespDeletePresupuesto("pending");
-    //         await actionsDeletePresupuesto(rowSelected.par_id, 1);
-    //         setStatusRespDeletePresupuesto("success");
-    //       },
-    //     },
-    //   });
-    // } catch (error) {
-    //   setStatusRespDeletePresupuesto("error");
-    //   toast.error(
-    //     "No se pudo eliminar el proyecto, por favor intente nuevamente."
-    //   );
-    // } finally {
-    //   setIsShowDeleteModal(false);
-    // }
+    if (!rowSelected) return;
+    setstatusRespDeletePartida("pending");
+    try {
+      const respDelete = await actionsDeletePartida(rowSelected.par_id);
+      if (respDelete?.isError) {
+        throw respDelete.message;
+      }
+      setstatusRespDeletePartida("success");
+      toast.success("Partida eliminada", {
+        action: {
+          label: "Deshacer cambios",
+          onClick: async () => {
+            setstatusRespDeletePartida("pending");
+            await actionsDeletePartida(rowSelected.par_id, 1);
+            setstatusRespDeletePartida("success");
+          },
+        },
+      });
+    } catch (error) {
+      setstatusRespDeletePartida("error");
+      toast.error(
+        "No se pudo eliminar la partida, por favor intente nuevamente."
+      );
+    } finally {
+      setIsShowDeleteModal(false);
+    }
   };
 
   const handleRowClick = (row: IDataDBObtenerPartidasPaginados) => {
@@ -210,7 +215,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
     <ValidateMutation
       showLoading={false}
       variant="toast"
-      statusMutation={[statusRespDeletePresupuesto]}
+      statusMutation={[statusRespDeletePartida]}
     >
       <div className="relative mb-6 flex flex-row gap-2 items-center">
         <DataTableViewOptions table={table} />
@@ -328,7 +333,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
           onClose={() => setIsShowDeleteModal(false)}
           onConfirm={handleDeleteConfirm}
           classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
-          isLoading={statusRespDeletePresupuesto === "pending"}
+          isLoading={statusRespDeletePartida === "pending"}
           messageActionButton="Eliminar"
           messageActionButtonLoading="Eliminando"
         />

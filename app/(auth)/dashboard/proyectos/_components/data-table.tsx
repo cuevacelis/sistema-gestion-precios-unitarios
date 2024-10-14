@@ -168,7 +168,12 @@ export default function TableComponent({ dataProyectos }: IProps) {
     setStatusRespDeletePresupuesto("pending");
     try {
       if (isDeleteRecursive) {
-        await actionsDeleteEstadoPresupuestoRecursivo(rowSelected.pre_id);
+        const respDelete = await actionsDeleteEstadoPresupuestoRecursivo(
+          rowSelected.pre_id
+        );
+        if (respDelete?.isError) {
+          throw respDelete.message;
+        }
       } else {
         await actionsDeletePresupuesto(rowSelected.pre_id);
       }

@@ -389,16 +389,16 @@ export const obtenerGruposDePartidasIdRecursive = async (
   }
 };
 
-export const obtenerGruposDePartidasPaginados = cache(
-  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
+export const obtenerGruposDePartidas = cache(
+  async () => {
     try {
-      return [];
+      return getDbPostgres().selectFrom("grupo_partida").selectAll().execute();
     } catch (error) {
       throw error;
     }
   },
-  ["gruposDePartidasPaginados"],
-  { tags: ["gruposDePartidasPaginados"] }
+  ["gruposDePartidas"],
+  { tags: ["gruposDePartidas"], revalidate: 60 * 60 * 24 }
 );
 
 export const obtenerNombreGruposDePartidasById = cache(
@@ -540,18 +540,37 @@ export const obtenerNombrePartidasByGrupoPartidaId = cache(
   { tags: ["partida"], revalidate: 60 * 60 * 24 }
 );
 
+export const obtenerPartidaById = cache(
+  async (p_par_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_id(${p_par_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["partida"],
+  { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
 export const crearPartida = cache(
   async (
-    p_grupoPartida_id: number,
     p_par_nombre: string,
     p_par_renmanobra: number,
     p_par_renequipo: number,
-    p_unimed_nombre: string
+    unimed_id: number,
+    p_grupoPartida_id: number
   ) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_partida_crea(${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre},${p_grupoPartida_id})`.as(
+          sql<any>`sp_partida_crea(${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${unimed_id},${p_grupoPartida_id})`.as(
             "result"
           )
         )
@@ -571,12 +590,12 @@ export const editarPartida = cache(
     p_par_nombre: string,
     p_par_renmanobra: number,
     p_par_renequipo: number,
-    p_unimed_nombre: string
+    unimed_id: number
   ) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_partida_actualiza(${p_par_id},${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${p_unimed_nombre})`.as(
+          sql<any>`sp_partida_actualiza(${p_par_id},${p_par_nombre},${p_par_renmanobra},${p_par_renequipo},${unimed_id})`.as(
             "result"
           )
         )
@@ -590,12 +609,12 @@ export const editarPartida = cache(
   { tags: ["partida"], revalidate: 60 * 60 * 24 }
 );
 
-export const obtenerPartidaById = cache(
-  async (p_par_id: number) => {
+export const cambioEstadoPartida = cache(
+  async (p_par_id: number, newState: number) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_id(${p_par_id})`.as(
+          sql<any>`sp_partida_actualiza_estado(${p_par_id}, ${newState})`.as(
             "result"
           )
         )
@@ -607,6 +626,19 @@ export const obtenerPartidaById = cache(
   },
   ["partida"],
   { tags: ["partida"], revalidate: 60 * 60 * 24 }
+);
+
+//#region UNIDADES_DE_MEDIDA
+export const obtenerUnidadesDeMedida = cache(
+  async () => {
+    try {
+      return getDbPostgres().selectFrom("unidad_medida").selectAll().execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["unidadesDeMedida"],
+  { tags: ["unidadesDeMedida"], revalidate: 60 * 60 * 24 }
 );
 
 // #region RECURSOS

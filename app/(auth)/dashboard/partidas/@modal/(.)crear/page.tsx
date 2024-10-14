@@ -2,6 +2,10 @@ import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  obtenerGruposDePartidas,
+  obtenerUnidadesDeMedida,
+} from "@/lib/services/sql-queries";
 
 const NuevoPartida = dynamic(
   () => import("../../crear/_components/nueva-partida"),
@@ -22,5 +26,12 @@ export default async function NuevoPartidaModalPage() {
 }
 
 async function GetDataNuevoPartida() {
-  return <NuevoPartida />;
+  const dataGruposDePartidas = await obtenerGruposDePartidas();
+  const dataUnidadesDeMedida = await obtenerUnidadesDeMedida();
+  return (
+    <NuevoPartida
+      dataGruposDePartidas={dataGruposDePartidas}
+      dataUnidadesDeMedida={dataUnidadesDeMedida}
+    />
+  );
 }

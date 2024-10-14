@@ -90,7 +90,7 @@ export const crearPartidaSchema = z.object({
 });
 
 export const editarPartidaSchema = z.object({
-  idPartida: z.number().min(1, "El campo 'Id de partida' es requerido"),
+  idPartida: z.string().min(1, "El campo 'Id de partida' es requerido"),
   nombrePartida: z.string().min(1, "El campo 'Nombre de partida' es requerido"),
   rendimientoManoDeObra: z
     .number()

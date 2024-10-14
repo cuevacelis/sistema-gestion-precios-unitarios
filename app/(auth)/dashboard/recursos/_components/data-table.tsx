@@ -92,7 +92,10 @@ export default function TableComponent({ dataRecursos }: IProps) {
     // if (!rowSelected) return;
     // setStatusRespDeleteRecurso("pending");
     // try {
-    //   await actionsDeleteRecurso(rowSelected.rec_id);
+    //   const respDelete = await actionsDeleteRecurso(rowSelected.rec_id);
+    // if (respDelete?.isError) {
+    //   throw respDelete.message;
+    // }
     //   setStatusRespDeleteRecurso("success");
     //   toast.success("Proyecto eliminado", {
     //     action: {

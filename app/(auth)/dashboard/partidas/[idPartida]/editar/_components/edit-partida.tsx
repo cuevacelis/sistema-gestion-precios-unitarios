@@ -11,27 +11,31 @@ import { actionsEditarPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { useSearchParams } from "next/navigation";
 import { IDataDBObtenerPartidasPaginados } from "@/lib/types/types";
+import {
+  obtenerGruposDePartidas,
+  obtenerUnidadesDeMedida,
+} from "@/lib/services/sql-queries";
+import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
+import { cn } from "@/lib/utils";
 
 interface IEditarPartida {
-  data: IDataDBObtenerPartidasPaginados;
+  dataPartida: IDataDBObtenerPartidasPaginados;
+  dataGruposDePartidas: Awaited<ReturnType<typeof obtenerGruposDePartidas>>;
+  dataUnidadesDeMedida: Awaited<ReturnType<typeof obtenerUnidadesDeMedida>>;
 }
 
-export default function EditarPartida({ data }: IEditarPartida) {
-  const searchParams = useSearchParams();
-  const grupoPartidaId = searchParams.get("grupoPartidaId");
-  const actionsEditarPartidaWithId = actionsEditarPartida.bind(
-    null,
-    data.par_id
-  );
-  const [stateForm, formActionNewPartida] = useFormState(
-    actionsEditarPartidaWithId,
-    {
-      isError: false,
-      message: "",
-    }
-  );
+export default function EditarPartida({
+  dataPartida,
+  dataGruposDePartidas,
+  dataUnidadesDeMedida,
+}: IEditarPartida) {
+  const [stateForm, formActionNewPartida] = useFormState(actionsEditarPartida, {
+    isError: false,
+    message: "",
+  });
   const [formDataExtra, setFormDataExtra] = useState({
-    idGrupoPartida: grupoPartidaId,
+    idPartida: dataPartida.par_id,
+    unidadMedida: String(dataPartida.unimed_id),
   });
 
   const handleSubmit = (formData: FormData) => {
@@ -40,6 +44,13 @@ export default function EditarPartida({ data }: IEditarPartida) {
     });
 
     formActionNewPartida(formData);
+  };
+
+  const handleSelectChange = (
+    value: string | null,
+    type: keyof typeof formDataExtra
+  ) => {
+    setFormDataExtra((prev) => ({ ...prev, [type]: value }));
   };
 
   return (
@@ -53,7 +64,7 @@ export default function EditarPartida({ data }: IEditarPartida) {
           type="text"
           name="nombrePartida"
           required
-          defaultValue={data.par_nombre}
+          defaultValue={dataPartida.par_nombre}
         />
       </div>
       <div className="sm:col-span-3">
@@ -64,7 +75,7 @@ export default function EditarPartida({ data }: IEditarPartida) {
           type="number"
           name="rendimientoManoDeObra"
           required
-          defaultValue={data.par_renmanobra}
+          defaultValue={dataPartida.par_renmanobra}
         />
       </div>
       <div className="sm:col-span-3">
@@ -73,16 +84,19 @@ export default function EditarPartida({ data }: IEditarPartida) {
           type="number"
           name="rendimientoEquipo"
           required
-          defaultValue={data.par_renequipo}
+          defaultValue={dataPartida.par_renequipo}
         />
       </div>
-      <div className="sm:col-span-3">
+      <div className={cn("sm:col-span-3", {})}>
         <Label className="text-sm w-20 truncate">Unidad de medida</Label>
-        <Input
-          type="text"
-          name="unidadMedida"
-          required
-          defaultValue={data.unimed_nombre}
+        <ComboboxSingleSelection
+          options={dataUnidadesDeMedida.map((item) => ({
+            value: String(item.unimed_id),
+            label: item.unimed_nombre,
+          }))}
+          onSelect={(value) => handleSelectChange(value, "unidadMedida")}
+          disabled={false}
+          value={formDataExtra["unidadMedida"]}
         />
       </div>
       <div className="col-span-full">

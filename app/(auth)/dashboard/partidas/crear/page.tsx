@@ -1,5 +1,9 @@
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  obtenerGruposDePartidas,
+  obtenerUnidadesDeMedida,
+} from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
@@ -24,5 +28,12 @@ export default function NuevoPartidaPage() {
 }
 
 async function GetDataNuevoPartida() {
-  return <NuevoPartida />;
+  const dataGruposDePartidas = await obtenerGruposDePartidas();
+  const dataUnidadesDeMedida = await obtenerUnidadesDeMedida();
+  return (
+    <NuevoPartida
+      dataGruposDePartidas={dataGruposDePartidas}
+      dataUnidadesDeMedida={dataUnidadesDeMedida}
+    />
+  );
 }
