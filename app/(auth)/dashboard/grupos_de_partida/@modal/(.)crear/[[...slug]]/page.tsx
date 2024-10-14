@@ -2,7 +2,10 @@ import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { ISearchParams } from "@/lib/types/types";
-import { obtenerProyectos } from "@/lib/services/sql-queries";
+import {
+  obtenerNombreGruposDePartidasById,
+  obtenerProyectos,
+} from "@/lib/services/sql-queries";
 import { Skeleton } from "@/components/ui/skeleton";
 import { convertToStringOrNull } from "@/lib/utils";
 
@@ -27,12 +30,17 @@ export default async function NuevoProyectoModalPage({
   const { proyectoId } = searchParams;
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);
-  const uniqueKey = `grupos-de-partida-crear-modal-${proyectoId}-${lastSlug}`;
+  const isSubGroup = slug.length > 0;
+  const uniqueKey = `grupos-de-partida-crear-modal-${proyectoId}-${lastSlug}-${isSubGroup}`;
 
   return (
     <Modal title="Crear nuevo grupo de partida">
       <Suspense key={uniqueKey} fallback={<Skeleton className="h-10 w-full" />}>
-        <GetDataNuevoGrupoPartida idProyecto={proyectoId} lastSlug={lastSlug} />
+        <GetDataNuevoGrupoPartida
+          idProyecto={proyectoId}
+          lastSlug={lastSlug}
+          isSubGroup={isSubGroup}
+        />
       </Suspense>
     </Modal>
   );
@@ -41,15 +49,35 @@ export default async function NuevoProyectoModalPage({
 interface IParams {
   idProyecto?: string | string[] | undefined;
   lastSlug?: string;
+  isSubGroup: boolean;
 }
 
-async function GetDataNuevoGrupoPartida({ idProyecto, lastSlug }: IParams) {
+async function GetDataNuevoGrupoPartida({
+  idProyecto,
+  lastSlug,
+  isSubGroup,
+}: IParams) {
   const dataProyectos = await obtenerProyectos();
+  let idProyectoFinal: string | null;
+  let dataGrupoPartida: Awaited<
+    ReturnType<typeof obtenerNombreGruposDePartidasById>
+  >;
+  if (isSubGroup) {
+    dataGrupoPartida = await obtenerNombreGruposDePartidasById(
+      String(lastSlug)
+    );
+    idProyectoFinal = String(dataGrupoPartida?.pre_id);
+  } else {
+    idProyectoFinal = convertToStringOrNull(idProyecto);
+  }
+
   return (
     <NuevoGrupoPartida
-      idProyecto={convertToStringOrNull(idProyecto)}
+      idProyecto={idProyectoFinal}
       lastSlug={convertToStringOrNull(lastSlug)}
       dataProyectos={dataProyectos}
+      isSubGroup={isSubGroup}
+      dataGrupoPartidaParent={dataGrupoPartida}
     />
   );
 }

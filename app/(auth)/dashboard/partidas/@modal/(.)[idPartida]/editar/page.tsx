@@ -1,13 +1,9 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import ModalLoading from "@/components/ui/modal-loading";
-import {
-  obtenerClientes,
-  obtenerPartidaById,
-} from "@/lib/services/sql-queries";
+import { obtenerPartidaById } from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
-import { auth } from "@/auth";
 import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarPartida = dynamic(
   () => import("../../../[idPartida]/editar/_components/edit-partida"),
@@ -28,7 +24,7 @@ export default function EditarPartidaModalPage(
 ) {
   return (
     <Modal title="Editar partida" classNameDialogContent="h-[500px]">
-      <Suspense fallback={<ModalLoading />}>
+      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataEditarPartida id={props.params.idPartida} />
       </Suspense>
     </Modal>

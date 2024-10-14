@@ -389,43 +389,6 @@ export const obtenerGruposDePartidasIdRecursive = async (
   }
 };
 
-export const crearGrupoPartida = async (
-  nombreGrupoPartida: string,
-  idProyecto: string,
-  idLastGroupPartida: string | null
-) => {
-  try {
-    return getDbPostgres()
-      .selectFrom(
-        sql<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida || null},${nombreGrupoPartida || null})`.as(
-          "result"
-        )
-      )
-      .selectAll()
-      .execute();
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const editarGrupoPartida = async (
-  idGrupoPartida: number,
-  nombreGrupoPartida: string
-) => {
-  try {
-    return getDbPostgres()
-      .selectFrom(
-        sql<any>`sp_grupo_partida_actualiza(${idGrupoPartida},${nombreGrupoPartida})`.as(
-          "result"
-        )
-      )
-      .selectAll()
-      .execute();
-  } catch (error) {
-    throw error;
-  }
-};
-
 export const obtenerGruposDePartidasPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
     try {
@@ -452,6 +415,62 @@ export const obtenerNombreGruposDePartidasById = cache(
   },
   ["gruposDePartidasNombre"],
   { tags: ["gruposDePartidasNombre"], revalidate: 60 * 60 * 24 }
+);
+
+export const crearGrupoPartida = async (
+  idProyecto: string,
+  idLastGroupPartida: string | null,
+  nombreGrupoPartida: string
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sql<any>`sp_grupo_partida_crea_v2(${idProyecto},${idLastGroupPartida || null},${nombreGrupoPartida || null})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editarGrupoPartida = async (
+  idGrupoPartida: string,
+  nombreGrupoPartida: string
+) => {
+  try {
+    return getDbPostgres()
+      .selectFrom(
+        sql<any>`sp_grupo_partida_actualiza(${idGrupoPartida},${nombreGrupoPartida})`.as(
+          "result"
+        )
+      )
+      .selectAll()
+      .execute();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cambioEstadoGrupoPartida = cache(
+  async (idGrupoPartida: number, newState: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_grupo_partida_actualiza_estado(${idGrupoPartida}, ${newState})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["gruposDePartidasId"],
+  { tags: ["gruposDePartidasId"], revalidate: 60 * 60 * 24 }
 );
 
 export const obtenerIsPartidasDeGrupoPartidaId = cache(
@@ -484,11 +503,11 @@ export const obtenerIsPartidasDeGrupoPartidaId = cache(
 
 // #region PARTIDAS
 export const obtenerPartidasByGrupoPartidaId = cache(
-  async (idGrupoPartida: string) => {
+  async (idGrupoPartida: string | null) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_grupo(${idGrupoPartida})`.as(
+          sql<IDataDBObtenerPartidasPaginados>`sp_partida_obten_x_grupo(${idGrupoPartida || null})`.as(
             "result"
           )
         )

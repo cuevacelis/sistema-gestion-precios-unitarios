@@ -130,7 +130,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
     const formDataToSubmit = new FormData();
 
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, String(value));
+      formDataToSubmit.append(key, value || "");
     });
 
     formActionNewPresupuesto(formDataToSubmit);

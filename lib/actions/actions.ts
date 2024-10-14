@@ -6,6 +6,7 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import {
+  cambioEstadoGrupoPartida,
   cambioEstadoPresupuesto,
   cambioEstadoPresupuestoRecursivo,
   crearGrupoPartida,
@@ -21,6 +22,7 @@ import {
   crearGrupoPartidaSchema,
   crearPartidaSchema,
   creatPresupuestoSchema,
+  deleteGrupoPartidaSchema,
   deletePartidaSchema,
   deletePresupuestoSchema,
   editarGrupoPartidaSchema,
@@ -471,14 +473,14 @@ export async function actionsCrearGrupoPartida(
     const headersList = headers();
     const referer =
       headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
-    const { nombreGrupoPartida, idProyecto, idLastGroupPartida } =
+    const { idProyecto, idLastGroupPartida, nombreGrupoPartida } =
       await crearGrupoPartidaSchema.parseAsync({
-        nombreGrupoPartida: formData.get("nombreGrupoPartida"),
         idProyecto: formData.get("idProyecto"),
         idLastGroupPartida: formData.get("idLastGroupPartida"),
+        nombreGrupoPartida: formData.get("nombreGrupoPartida"),
       });
 
-    await crearGrupoPartida(nombreGrupoPartida, idProyecto, idLastGroupPartida);
+    await crearGrupoPartida(idProyecto, idLastGroupPartida, nombreGrupoPartida);
 
     const url = new URL(referer);
     let newUrl = replaceSegmentInPath(
@@ -514,7 +516,6 @@ export async function actionsCrearGrupoPartida(
 }
 
 export async function actionsEditarGrupoPartida(
-  idGrupoPartida: number,
   _prevState: any,
   formData: FormData
 ) {
@@ -522,10 +523,11 @@ export async function actionsEditarGrupoPartida(
     const headersList = headers();
     const referer =
       headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
-    const { nombreGrupoPartida } = await editarGrupoPartidaSchema.parseAsync({
-      idGrupoPartida: idGrupoPartida,
-      nombreGrupoPartida: formData.get("nombreGrupoPartida"),
-    });
+    const { idGrupoPartida, nombreGrupoPartida } =
+      await editarGrupoPartidaSchema.parseAsync({
+        idGrupoPartida: formData.get("idGrupoPartida"),
+        nombreGrupoPartida: formData.get("nombreGrupoPartida"),
+      });
 
     await editarGrupoPartida(idGrupoPartida, nombreGrupoPartida);
 
@@ -553,6 +555,48 @@ export async function actionsEditarGrupoPartida(
 
     revalidatePath(newUrl);
     return redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsDeleteGrupoPartida(
+  idGrupoPartida: number,
+  newState?: number
+) {
+  try {
+    const headersList = headers();
+    const referer =
+      headersList.get("referer") || "/dashboard/grupos_de_partida";
+    const { id } = await deleteGrupoPartidaSchema.parseAsync({
+      id: idGrupoPartida,
+    });
+
+    await cambioEstadoGrupoPartida(id, newState || 0);
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/grupos_de_partida" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
   } catch (error) {
     if (isRedirectError(error)) {
       throw error;

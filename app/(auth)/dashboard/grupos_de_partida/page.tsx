@@ -5,7 +5,7 @@ interface ISubgruposDePartidaPageProps {
   searchParams: ISearchParams;
 }
 
-export default async function SubgruposDePartidaPage({
+export default function SubgruposDePartidaPage({
   searchParams,
 }: ISubgruposDePartidaPageProps) {
   const currentParams = new URLSearchParams(

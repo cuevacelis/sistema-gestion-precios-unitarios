@@ -6,9 +6,7 @@ import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
 import ModalConfirmacionComponent from "@/components/modals/modalConfirmacion/modalConfirmacion";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -29,12 +27,14 @@ import {
   TStatusResponseActions,
 } from "@/lib/types/types";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Trash2, FileEdit, FolderOpen, Layers } from "lucide-react";
+import { Layers } from "lucide-react";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { replaceSegmentInPath } from "@/lib/utils";
 import { useWindowSize } from "usehooks-ts";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { toast } from "sonner";
+import { actionsDeleteGrupoPartida } from "@/lib/actions/actions";
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
@@ -117,9 +117,27 @@ export default function TableComponent({
   const handleDeleteConfirm = async () => {
     if (!rowSelected) return;
     setStatusRespDeleteGrupoPartida("pending");
-    // await actionsDeleteGrupoPartida(rowSelected.grupar_id);
-    setStatusRespDeleteGrupoPartida("success");
-    setIsShowDeleteModal(false);
+    try {
+      await actionsDeleteGrupoPartida(rowSelected.grupar_id);
+      setStatusRespDeleteGrupoPartida("success");
+      toast.success("Grupo de partida eliminado", {
+        action: {
+          label: "Deshacer cambios",
+          onClick: async () => {
+            setStatusRespDeleteGrupoPartida("pending");
+            await actionsDeleteGrupoPartida(rowSelected.grupar_id, 1);
+            setStatusRespDeleteGrupoPartida("success");
+          },
+        },
+      });
+    } catch (error) {
+      setStatusRespDeleteGrupoPartida("error");
+      toast.error(
+        "No se pudo eliminar el grupo de partida, por favor intente nuevamente."
+      );
+    } finally {
+      setIsShowDeleteModal(false);
+    }
   };
 
   const handleNavigateToSubgroup = (grupoPartidaId: number) => {

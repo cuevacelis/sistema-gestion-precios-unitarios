@@ -149,7 +149,7 @@ export default function EditarProyectosPage({
     const formDataToSubmit = new FormData();
 
     Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, String(value));
+      formDataToSubmit.append(key, value || "");
     });
 
     formActionEditPresupuesto(formDataToSubmit);

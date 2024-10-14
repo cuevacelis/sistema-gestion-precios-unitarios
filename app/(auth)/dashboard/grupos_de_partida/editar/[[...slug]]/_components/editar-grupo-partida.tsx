@@ -7,6 +7,7 @@ import ErrorMessage from "@/components/validation/message/error-message";
 import { actionsEditarGrupoPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
+import { useState } from "react";
 
 interface IEditarGrupoPartida {
   idGrupoPartida: string | null;
@@ -19,17 +20,19 @@ export default function EditarGrupoPartida({
   idGrupoPartida,
   dataGrupoPartida,
 }: IEditarGrupoPartida) {
-  const actionsEditarGrupoPartidaWithId = actionsEditarGrupoPartida.bind(
-    null,
-    Number(idGrupoPartida)
-  );
-
   const [stateForm, formActionEditGrupoPartida] = useFormState(
-    actionsEditarGrupoPartidaWithId,
+    actionsEditarGrupoPartida,
     { isError: false, message: "" }
   );
 
+  const [formDataExtra, setFormDataExtra] = useState({
+    idGrupoPartida: idGrupoPartida,
+  });
+
   const handleSubmit = (formData: FormData) => {
+    Object.entries(formDataExtra).forEach(([key, value]) => {
+      formData.append(key, value || "");
+    });
     formActionEditGrupoPartida(formData);
   };
 

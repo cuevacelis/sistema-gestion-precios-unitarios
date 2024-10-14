@@ -1,9 +1,9 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import ModalLoading from "@/components/ui/modal-loading";
 import { obtenerClientes } from "@/lib/services/sql-queries";
 import { auth } from "@/auth";
 import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const NuevoProyecto = dynamic(
   () => import("../../crear/_components/nuevo-proyecto"),
@@ -16,7 +16,7 @@ const NuevoProyecto = dynamic(
 export default async function NuevoProyectoModalPage() {
   return (
     <Modal title="Crear nuevo proyecto" classNameDialogContent="h-[500px]">
-      <Suspense fallback={<ModalLoading />}>
+      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataNuevoProyecto />
       </Suspense>
     </Modal>

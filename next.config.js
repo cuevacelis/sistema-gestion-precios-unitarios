@@ -19,6 +19,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/dashboard/grupos_de_partida",
+        destination: "/dashboard/grupos_de_partida/subgrupos",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")();

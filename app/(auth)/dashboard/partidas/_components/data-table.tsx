@@ -55,13 +55,35 @@ export default function TableComponent({ dataPartidas }: IProps) {
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
     useState<IDataDBObtenerPartidasPaginados | null>(null);
+  const searchParamsShowColumns = searchParams.getAll("fshow");
 
   const columns: ColumnDef<IDataDBObtenerPartidasPaginados>[] = useMemo(
     () => [
       {
+        accessorKey: "par_id",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id" />
+        ),
+      },
+      {
+        accessorKey: "grupar_id",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id grupo de partida" />
+        ),
+      },
+      {
+        accessorKey: "grupar_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title="Nombre grupo de partida"
+          />
+        ),
+      },
+      {
         accessorKey: "par_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre" />
+          <DataTableColumnHeader column={column} title="Nombre partida" />
         ),
       },
       {
@@ -102,10 +124,27 @@ export default function TableComponent({ dataPartidas }: IProps) {
     identifierField: "par_id",
     initialState: {
       columnVisibility: {
-        usu_nomapellidos: false,
-        pai_nombre: false,
-        prov_nombre: false,
-        dist_nombre: false,
+        par_id:
+          searchParamsShowColumns.includes("par_id") ||
+          searchParamsShowColumns.length === 0,
+        grupar_id: searchParamsShowColumns.includes("grupar_id") || false,
+        grupar_nombre:
+          searchParamsShowColumns.includes("grupar_nombre") || false,
+        par_nombre:
+          searchParamsShowColumns.includes("par_nombre") ||
+          searchParamsShowColumns.length === 0,
+        par_renmanobra:
+          searchParamsShowColumns.includes("par_renmanobra") ||
+          searchParamsShowColumns.length === 0,
+        par_renequipo:
+          searchParamsShowColumns.includes("par_renequipo") ||
+          searchParamsShowColumns.length === 0,
+        unimed_nombre:
+          searchParamsShowColumns.includes("unimed_nombre") ||
+          searchParamsShowColumns.length === 0,
+        par_preunitario:
+          searchParamsShowColumns.includes("par_preunitario") ||
+          searchParamsShowColumns.length === 0,
       },
     },
   });

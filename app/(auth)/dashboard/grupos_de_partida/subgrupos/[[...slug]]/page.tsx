@@ -15,8 +15,6 @@ import {
   IDataDBObtenerGruposDePartidasId,
   ISearchParams,
 } from "@/lib/types/types";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertCircle } from "lucide-react";
 import { convertToStringOrNull } from "@/lib/utils";
 
 const BackButtonHistory = dynamic(

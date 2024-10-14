@@ -1,9 +1,9 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import ModalLoading from "@/components/ui/modal-loading";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { convertToStringOrNull } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarGrupoPartida = dynamic(
   () => import("../../../editar/[[...slug]]/_components/editar-grupo-partida"),
@@ -25,7 +25,7 @@ export default function EditarGruposDePartidaModalPage({
   const lastSlug = slug.at(-1);
   return (
     <Modal title="Editar grupo de partida">
-      <Suspense fallback={<ModalLoading />}>
+      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataEditarGrupoPartida idGrupoPartida={lastSlug} />
       </Suspense>
     </Modal>

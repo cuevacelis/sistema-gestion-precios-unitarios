@@ -7,6 +7,7 @@ import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { obtenerPartidasByGrupoPartidaId } from "@/lib/services/sql-queries";
+import { convertToStringOrNull } from "@/lib/utils";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -37,13 +38,8 @@ interface IProjectPage {
 
 export default async function ProyectPage({ searchParams }: IProjectPage) {
   const session = await auth();
-  const query = String(searchParams.query || "");
-  const grupoPartidaId = String(searchParams.grupoPartidaId || "1");
-  const currentPage = Number(searchParams.page) || 1;
-  const rowsPerPage =
-    Number(searchParams.rowsPerPage) ||
-    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
-  const uniqueKey = `table-partida-${grupoPartidaId}-${query}-${currentPage}-${rowsPerPage}`;
+  const { page, rowsPerPage, query, grupoPartidaId } = searchParams;
+  const uniqueKey = `table-partida-${grupoPartidaId}-${page}-${rowsPerPage}-${query}`;
 
   return (
     <div className="space-y-6">
@@ -83,12 +79,7 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
       <Card>
         <CardContent className="p-6">
           <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
-            <GetDataTable
-              query={query}
-              currentPage={currentPage}
-              rowsPerPage={rowsPerPage}
-              grupoPartidaId={grupoPartidaId}
-            />
+            <GetDataTable searchParams={searchParams} />
           </Suspense>
         </CardContent>
       </Card>
@@ -96,18 +87,11 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
   );
 }
 
-async function GetDataTable({
-  grupoPartidaId,
-  query,
-  currentPage,
-  rowsPerPage,
-}: {
-  query: string;
-  currentPage: number;
-  rowsPerPage: number;
-  grupoPartidaId: string;
-}) {
-  const dataPartidas = await obtenerPartidasByGrupoPartidaId(grupoPartidaId);
+async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
+  const { grupoPartidaId } = searchParams;
+  const dataPartidas = await obtenerPartidasByGrupoPartidaId(
+    convertToStringOrNull(grupoPartidaId)
+  );
 
   return <TableComponent dataPartidas={dataPartidas} />;
 }

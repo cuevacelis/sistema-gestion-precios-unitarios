@@ -63,11 +63,15 @@ export const crearGrupoPartidaSchema = z.object({
 
 export const editarGrupoPartidaSchema = z.object({
   idGrupoPartida: z
-    .number()
+    .string()
     .min(1, "El campo 'Id de grupo de partida' es requerido"),
   nombreGrupoPartida: z
     .string()
     .min(1, "El campo 'Nombre del grupo de partida' es requerido"),
+});
+
+export const deleteGrupoPartidaSchema = z.object({
+  id: z.number().min(1, "El campo 'idGrupoPartida' es requerido"),
 });
 
 // #region PARTIDAS

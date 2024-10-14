@@ -1,6 +1,5 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import ModalLoading from "@/components/ui/modal-loading";
 import {
   obtenerClientes,
   obtenerProyectosId,
@@ -8,6 +7,7 @@ import {
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarProyecto = dynamic(
   () => import("../../../[idProyecto]/editar/_components/edit-proyecto"),
@@ -28,7 +28,7 @@ export default function EditarProyectoModalPage(
 ) {
   return (
     <Modal title="Editar proyecto" classNameDialogContent="h-[500px]">
-      <Suspense fallback={<ModalLoading />}>
+      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataEditarProyecto id={props.params.idProyecto} />
       </Suspense>
     </Modal>
