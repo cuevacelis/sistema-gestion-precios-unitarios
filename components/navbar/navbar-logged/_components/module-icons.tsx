@@ -1,5 +1,6 @@
 import {
   BracesIcon,
+  Clock,
   Download,
   EyeIcon,
   FileBox,
@@ -8,6 +9,7 @@ import {
   Folders,
   Hourglass,
   LayoutDashboardIcon,
+  MapPinIcon,
   PencilLine,
   PlusCircle,
   Trash,
@@ -46,7 +48,9 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
   } else if (modNombre.toLowerCase().includes("ver detalle")) {
     return <EyeIcon className={className} />;
   } else if (modNombre.toLowerCase().includes("jornal")) {
-    return <Hourglass className={className} />;
+    return <Clock className={className} />;
+  } else if (modNombre.toLowerCase().includes("ubicacion")) {
+    return <MapPinIcon className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

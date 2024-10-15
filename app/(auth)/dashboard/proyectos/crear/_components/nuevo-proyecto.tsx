@@ -24,6 +24,7 @@ import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
 import useProvinceQuery from "@/hooks/tanstack-query/useProvinceQuery";
 import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
 import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
+import ContainerInput from "@/components/ui/container-input";
 
 interface INuevoProyecto {
   session: Session | null;
@@ -41,15 +42,13 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
     actionsCrearPresupuesto,
     { isError: false, message: "" }
   );
-  const [formData, setFormData] = useState({
+  const [formDataExtra, setFormDataExtra] = useState({
     country: "",
     department: "",
     province: "",
     district: "",
     client: "",
     "name-user": session?.user?.name || "",
-    "name-presupuesto": "",
-    jornal: "",
   });
 
   const { data: countries, isLoading: isLoadingCountries } = useCountryQuery({
@@ -58,22 +57,24 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
 
   const { data: departments, isLoading: isLoadingDepartments } =
     useDepartmentQuery({
-      idCountry: formData.country,
-      isEnabled: !!formData.country,
+      idCountry: formDataExtra.country,
+      isEnabled: !!formDataExtra.country,
     });
 
   const { data: provinces, isLoading: isLoadingProvinces } = useProvinceQuery({
-    idCountry: formData.country,
-    idDepartment: formData.department,
-    isEnabled: !!formData.country && !!formData.department,
+    idCountry: formDataExtra.country,
+    idDepartment: formDataExtra.department,
+    isEnabled: !!formDataExtra.country && !!formDataExtra.department,
   });
 
   const { data: districts, isLoading: isLoadingDistricts } = useDistrictQuery({
-    idCountry: formData.country,
-    idDepartment: formData.department,
-    idProvince: formData.province,
+    idCountry: formDataExtra.country,
+    idDepartment: formDataExtra.department,
+    idProvince: formDataExtra.province,
     isEnabled:
-      !!formData.country && !!formData.department && !!formData.province,
+      !!formDataExtra.country &&
+      !!formDataExtra.department &&
+      !!formDataExtra.province,
   });
 
   const { data: clients, isLoading: isLoadingClients } = useClientQuery({
@@ -81,23 +82,23 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
   });
 
   const handleInputChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormDataExtra((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (type: LoadingKeys, value: string | null) => {
     handleInputChange(type, value || "");
 
     if (type === "country") {
-      setFormData((prev) => ({
+      setFormDataExtra((prev) => ({
         ...prev,
         department: "",
         province: "",
         district: "",
       }));
     } else if (type === "department") {
-      setFormData((prev) => ({ ...prev, province: "", district: "" }));
+      setFormDataExtra((prev) => ({ ...prev, province: "", district: "" }));
     } else if (type === "province") {
-      setFormData((prev) => ({ ...prev, district: "" }));
+      setFormDataExtra((prev) => ({ ...prev, district: "" }));
     }
   };
 
@@ -106,34 +107,40 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
     options: { value: string; label: string }[],
     placeholder: string,
     label: string,
-    isLoading: boolean
+    isLoading: boolean,
+    icon?: string
   ) => (
-    <div className="sm:col-span-3">
-      <Label className="text-sm w-20 truncate">{label}</Label>
-      <ComboboxSingleSelection
-        options={options}
-        onSelect={(value) => handleSelectChange(type, value)}
-        placeholder={placeholder}
-        disabled={!options.length || isLoading}
-        value={formData[type]}
-      />
-      {isLoading && (
-        <div className="mt-2 flex items-center text-sm text-muted-foreground">
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          {`Cargando ${label.toLowerCase()}...`}
-        </div>
-      )}
-    </div>
+    <ContainerInput
+      nameLabel={label}
+      htmlFor=""
+      icon={icon}
+      className="col-span-3"
+    >
+      <div className="flex flex-col w-full">
+        <ComboboxSingleSelection
+          className="bg-secondary"
+          options={options}
+          onSelect={(value) => handleSelectChange(type, value)}
+          placeholder={placeholder}
+          disabled={!options.length || isLoading}
+          value={formDataExtra[type]}
+        />
+        {isLoading && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {`Cargando ${label.toLowerCase()}...`}
+          </div>
+        )}
+      </div>
+    </ContainerInput>
   );
 
-  const handleSubmit = () => {
-    const formDataToSubmit = new FormData();
-
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, value || "");
+  const handleSubmit = (formData: FormData) => {
+    Object.entries(formDataExtra).forEach(([key, value]) => {
+      formData.append(key, String(value));
     });
 
-    formActionNewPresupuesto(formDataToSubmit);
+    formActionNewPresupuesto(formData);
   };
 
   return (
@@ -141,27 +148,46 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre usuario</Label>
+      <ContainerInput
+        nameLabel="Nombre usuario:"
+        htmlFor="name-user"
+        icon="usuario"
+        className="col-span-3"
+      >
         <Input
           type="text"
-          name="name-user"
-          required
+          id="name-user"
+          className="bg-secondary"
           readOnly
-          value={formData["name-user"]}
+          disabled
+          value={formDataExtra["name-user"]}
         />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre del proyecto</Label>
+      </ContainerInput>
+      {renderCombobox(
+        "client",
+        clients?.map((item: ISpObtenerClientes) => ({
+          value: item.cli_nomaperazsocial,
+          label: item.cli_nomaperazsocial,
+        })) || [],
+        "Seleccione un cliente",
+        "Cliente",
+        isLoadingClients,
+        "cliente"
+      )}
+      <ContainerInput
+        nameLabel="Nombre del proyecto:"
+        htmlFor="name-presupuesto"
+        icon="proyecto"
+        className="col-span-full"
+      >
         <Input
           type="text"
+          id="name-presupuesto"
           name="name-presupuesto"
+          className="bg-secondary"
           required
-          onChange={(e) =>
-            handleInputChange("name-presupuesto", e.target.value)
-          }
         />
-      </div>
+      </ContainerInput>
       {renderCombobox(
         "country",
         countries?.map((country: ISpPaisObten) => ({
@@ -170,7 +196,8 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         })) || [],
         "Seleccione un país",
         "País",
-        isLoadingCountries
+        isLoadingCountries,
+        "ubicacion"
       )}
       {renderCombobox(
         "department",
@@ -180,7 +207,8 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         })) || [],
         "Seleccione un departamento",
         "Departamento",
-        isLoadingDepartments
+        isLoadingDepartments,
+        "ubicacion"
       )}
       {renderCombobox(
         "province",
@@ -190,7 +218,8 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         })) || [],
         "Seleccione una provincia",
         "Provincia",
-        isLoadingProvinces
+        isLoadingProvinces,
+        "ubicacion"
       )}
       {renderCombobox(
         "district",
@@ -200,27 +229,23 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         })) || [],
         "Seleccione un distrito",
         "Distrito",
-        isLoadingDistricts
+        isLoadingDistricts,
+        "ubicacion"
       )}
-      {renderCombobox(
-        "client",
-        clients?.map((item: ISpObtenerClientes) => ({
-          value: item.cli_nomaperazsocial,
-          label: item.cli_nomaperazsocial,
-        })) || [],
-        "Seleccione un cliente",
-        "Cliente",
-        isLoadingClients
-      )}
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Jornal</Label>
+      <ContainerInput
+        nameLabel="Jornal:"
+        htmlFor="jornal"
+        icon="jornal"
+        className="col-span-3"
+      >
         <Input
           type="number"
+          id="jornal"
           name="jornal"
+          className="bg-secondary"
           required
-          onChange={(e) => handleInputChange("jornal", e.target.value)}
         />
-      </div>
+      </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
           name="Guardar"

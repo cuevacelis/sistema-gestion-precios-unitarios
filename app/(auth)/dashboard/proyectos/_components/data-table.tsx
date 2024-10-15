@@ -376,7 +376,15 @@ export default function TableComponent({ dataProyectos }: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el presupuesto?"
+          title={
+            <>
+              ¿Está seguro de eliminar el presupuesto{" "}
+              <span className="font-bold underline">
+                {rowSelected?.pre_nombre}
+              </span>
+              ?
+            </>
+          }
           message={
             <section className="flex flex-col gap-2">
               Esta acción se puede revertir, aun asi tener precaución.
@@ -392,7 +400,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                   htmlFor="delete-recursive"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Eliminar tambien grupos de partidas y partidas.
+                  Eliminar grupos de partidas y partidas asociados al proyecto.
                 </label>
               </div>
             </section>

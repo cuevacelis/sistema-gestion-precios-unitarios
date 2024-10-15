@@ -226,6 +226,82 @@ export const obtenerProyectosPaginados = cache(
   { tags: ["proyectosPaginados"] }
 );
 
+export const obtenerProyectoDetalle = cache(
+  async (Pre_Id: number) => {
+    try {
+      return (
+        getDbPostgres()
+          .selectFrom("presupuesto")
+          .innerJoin("cliente", "presupuesto.cli_id", "cliente.cli_id")
+          .innerJoin("usuario", "presupuesto.usu_id", "usuario.usu_id")
+          .innerJoin(
+            "ubicacion_presupuesto",
+            "presupuesto.ubipre_id",
+            "ubicacion_presupuesto.ubipre_id"
+          )
+          .innerJoin("pais", "ubicacion_presupuesto.pai_id", "pais.pai_id")
+          .innerJoin(
+            "departamento",
+            "ubicacion_presupuesto.dep_id",
+            "departamento.dep_id"
+          )
+          .innerJoin(
+            "provincia",
+            "ubicacion_presupuesto.prov_id",
+            "provincia.prov_id"
+          )
+          .innerJoin(
+            "distrito",
+            "ubicacion_presupuesto.dist_id",
+            "distrito.dist_id"
+          )
+          .leftJoin(
+            "precio_recurso_presupuesto",
+            "presupuesto.pre_id",
+            "precio_recurso_presupuesto.pre_id"
+          )
+          .select(({ fn, val, ref }) => [
+            "presupuesto.pre_id",
+            "presupuesto.pre_codigo",
+            "presupuesto.pre_nombre",
+            "cliente.cli_id",
+            "cliente.cli_nomaperazsocial",
+            "usuario.usu_nomapellidos",
+            "pais.pai_nombre",
+            "departamento.dep_nombre",
+            "provincia.prov_nombre",
+            "distrito.dist_nombre",
+            sql<string>`TO_CHAR(presupuesto.pre_fechorregistro, 'YYYY-MM-DD"T"HH24:MI:SS.MS')`.as(
+              "pre_fechorregistro"
+            ),
+            "presupuesto.pre_jornal",
+            "presupuesto.pre_estado",
+            fn
+              .sum("precio_recurso_presupuesto.rec_precio")
+              .as("total_precio_recurso"),
+          ])
+          .where("presupuesto.pre_id", "=", Pre_Id)
+          .groupBy([
+            "presupuesto.pre_id",
+            "cliente.cli_id",
+            "usuario.usu_id",
+            "pais.pai_id",
+            "departamento.dep_id",
+            "provincia.prov_id",
+            "distrito.dist_id",
+          ])
+          .limit(1)
+          // .execute();
+          .executeTakeFirst()
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["detalleProyecto"],
+  { tags: ["detalleProyecto"], revalidate: 60 * 60 * 24 }
+);
+
 export const obtenerProyectosId = async (Pre_Id: number) => {
   try {
     return getDbPostgres()
@@ -243,7 +319,11 @@ export const obtenerProyectosId = async (Pre_Id: number) => {
 
 export const obtenerProyectos = async () => {
   try {
-    return getDbPostgres().selectFrom("presupuesto").selectAll().execute();
+    return getDbPostgres()
+      .selectFrom("presupuesto")
+      .where("pre_estado", "=", 1)
+      .selectAll()
+      .execute();
   } catch (error) {
     throw error;
   }
@@ -342,7 +422,7 @@ export const obtenerNombrePresupuestosById = cache(
     try {
       return getDbPostgres()
         .selectFrom("presupuesto")
-        .select("pre_nombre")
+        .selectAll()
         .where("pre_id", "=", Number(id))
         .executeTakeFirst();
     } catch (error) {
@@ -392,7 +472,11 @@ export const obtenerGruposDePartidasIdRecursive = async (
 export const obtenerGruposDePartidas = cache(
   async () => {
     try {
-      return getDbPostgres().selectFrom("grupo_partida").selectAll().execute();
+      return getDbPostgres()
+        .selectFrom("grupo_partida")
+        .selectAll()
+        .where("grupar_estado", "=", 1)
+        .execute();
     } catch (error) {
       throw error;
     }
@@ -632,7 +716,11 @@ export const cambioEstadoPartida = cache(
 export const obtenerUnidadesDeMedida = cache(
   async () => {
     try {
-      return getDbPostgres().selectFrom("unidad_medida").selectAll().execute();
+      return getDbPostgres()
+        .selectFrom("unidad_medida")
+        .selectAll()
+        .where("unimed_estado", "=", 1)
+        .execute();
     } catch (error) {
       throw error;
     }
@@ -664,8 +752,8 @@ export const obtenerRecursos = cache(
     try {
       return getDbPostgres()
         .selectFrom("recurso")
-        .where("rec_estado", "=", 1)
         .selectAll()
+        .where("rec_estado", "=", 1)
         .execute();
     } catch (error) {
       throw error;

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
 interface IProps {
@@ -22,6 +23,7 @@ export default function SubmitFormButtonComponent({
       aria-disabled={pending || disabled}
       disabled={pending || disabled}
     >
+      {pending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
       {pending ? nameLoading : name}
     </Button>
   );

@@ -56,37 +56,17 @@ export default async function GruposDePartidaSubgruposPage({
     <div className="space-y-6">
       <Card className="p-6">
         <CardHeader className="px-0 pt-0">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-4">
-              <BackButtonHistory />
-              <CardTitle className="text-2xl font-bold flex items-center">
-                <ModuleIconsComponent
-                  className="mr-2 h-8 w-8 flex-shrink-0"
-                  modNombre="Grupos de Partida"
-                />
-                <p className="">
-                  Grupos de Partida{" "}
-                  {isSubGroup ? (
-                    <Suspense
-                      key={uniqueKey}
-                      fallback={<span>Loading...</span>}
-                    >
-                      <GrupoPartidaNameById
-                        idGrupoPartida={lastGrupoPartidaId}
-                      />
-                    </Suspense>
-                  ) : (
-                    <Suspense
-                      key={uniqueKey}
-                      fallback={<span>Loading...</span>}
-                    >
-                      <PresupuestoNameById idPresupuesto={proyectoId} />
-                    </Suspense>
-                  )}
-                </p>
-              </CardTitle>
-            </div>
-          </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"></div>
+          <Suspense
+            key={uniqueKey}
+            fallback={<Skeleton className="h-10 w-full" />}
+          >
+            <Title
+              idPresupuesto={proyectoId}
+              idGrupoPartida={lastGrupoPartidaId}
+              isSubGroup={isSubGroup}
+            />
+          </Suspense>
         </CardHeader>
       </Card>
 
@@ -120,47 +100,65 @@ export default async function GruposDePartidaSubgruposPage({
   );
 }
 
-async function GrupoPartidaNameById({
-  idGrupoPartida,
-}: {
-  idGrupoPartida: string | string[] | undefined;
-}) {
-  if (!idGrupoPartida) return null;
-  const data = await obtenerNombreGruposDePartidasById(String(idGrupoPartida));
-
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <>
-      del <span className="underline">grupo</span>{" "}
-      <span className="text-muted-foreground">
-        &quot;{data.grupar_nombre}&quot;
-      </span>
-    </>
-  );
-}
-
-async function PresupuestoNameById({
+async function Title({
   idPresupuesto,
+  idGrupoPartida,
+  isSubGroup,
 }: {
   idPresupuesto: string | string[] | undefined;
+  idGrupoPartida: string | string[] | undefined;
+  isSubGroup: boolean;
 }) {
-  if (!idPresupuesto) return null;
-  const data = await obtenerNombrePresupuestosById(String(idPresupuesto));
+  let dataPresupuesto: Awaited<
+    ReturnType<typeof obtenerNombrePresupuestosById>
+  >;
+  let dataGrupoPartida: Awaited<
+    ReturnType<typeof obtenerNombreGruposDePartidasById>
+  >;
 
-  if (!data) {
-    return null;
+  if (idPresupuesto) {
+    dataPresupuesto = await obtenerNombrePresupuestosById(
+      String(idPresupuesto)
+    );
+  }
+
+  if (idGrupoPartida) {
+    dataGrupoPartida = await obtenerNombreGruposDePartidasById(
+      String(idGrupoPartida)
+    );
+    dataPresupuesto = await obtenerNombrePresupuestosById(
+      String(dataGrupoPartida?.pre_id)
+    );
   }
 
   return (
-    <>
-      del <span className="underline">proyecto</span>{" "}
-      <span className="text-muted-foreground">
-        &quot;{data.pre_nombre}&quot;
-      </span>
-    </>
+    <div className="flex items-center gap-4">
+      <BackButtonHistory />
+      <CardTitle className="text-2xl font-bold flex flex-col">
+        <div className="flex items-center">
+          <ModuleIconsComponent
+            className="mr-2 h-8 w-8 flex-shrink-0"
+            modNombre="Grupos de Partida"
+          />
+          {isSubGroup ? (
+            <p>
+              Grupos de Partida del subgrupo {dataGrupoPartida?.grupar_nombre}
+            </p>
+          ) : (
+            <p>Grupos de partidas</p>
+          )}
+        </div>
+        {dataPresupuesto && (
+          <div className="flex items-center">
+            <ModuleIconsComponent
+              className="mr-2 h-8 w-8 flex-shrink-0"
+              modNombre="proyectos"
+            />
+            <p className="">Proyecto: {dataPresupuesto?.pre_nombre}</p>
+          </div>
+        )}
+      </CardTitle>
+    </div>
   );
 }
 

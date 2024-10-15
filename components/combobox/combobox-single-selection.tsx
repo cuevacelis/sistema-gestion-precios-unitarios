@@ -31,6 +31,7 @@ export interface ComboboxSingleSelectionProps {
   placeholder?: string;
   disabled?: boolean;
   value: string | null;
+  className?: string;
 }
 
 const normalizeText = (text: string): string => {
@@ -46,6 +47,7 @@ export default function ComboboxSingleSelection({
   placeholder = "Selecciona una opción...",
   disabled = false,
   value,
+  className,
 }: ComboboxSingleSelectionProps) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -107,7 +109,9 @@ export default function ComboboxSingleSelection({
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+        <PopoverTrigger asChild className={cn(className)}>
+          {trigger}
+        </PopoverTrigger>
         <PopoverContent
           className="w-full p-0"
           style={{ width: "var(--radix-popover-trigger-width)" }}

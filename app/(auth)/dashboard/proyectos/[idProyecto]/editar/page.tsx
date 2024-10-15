@@ -19,28 +19,24 @@ interface IPropsEditProyecto {
   };
 }
 
-export default function EditarProyectoPage(props: IPropsEditProyecto) {
+export default function EditarProyectoPage({ params }: IPropsEditProyecto) {
+  const { idProyecto } = params;
   return (
-    <>
-      <div className="block p-4 lg:p-6">
-        <h1 className="text-lg font-semibold mb-6">Editar</h1>
-        <Card x-chunk="overflow-auto" className="mb-6">
-          <CardContent>
-            <Suspense
-              key={props.params?.idProyecto}
-              fallback={<p>Cargando...</p>}
-            >
-              <GetDataEditarProyecto id={props.params.idProyecto} />
-            </Suspense>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+    <div className="block p-4 lg:p-6">
+      <h1 className="text-lg font-semibold mb-6">Editar proyecto</h1>
+      <Card x-chunk="overflow-auto" className="mb-6">
+        <CardContent>
+          <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+            <GetDataEditarProyecto idProyecto={idProyecto} />
+          </Suspense>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
 
-async function GetDataEditarProyecto(props: { id: string }) {
-  const dataEditPresupuesto = await obtenerProyectosId(Number(props.id));
+async function GetDataEditarProyecto({ idProyecto }: { idProyecto: string }) {
+  const dataEditPresupuesto = await obtenerProyectosId(Number(idProyecto));
   if (dataEditPresupuesto.length === 0) {
     return notFound();
   }
@@ -51,7 +47,7 @@ async function GetDataEditarProyecto(props: { id: string }) {
       {...{
         dataClientes,
         session,
-        presupuestoId: props.id,
+        presupuestoId: idProyecto,
         initialData: {
           nameUser: dataEditPresupuesto[0].usu_nomapellidos,
           namePresupuesto: dataEditPresupuesto[0].pre_nombre,

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useFormState } from "react-dom";
 import { Session } from "next-auth";
-import { Loader2 } from "lucide-react";
+import { BuildingIcon, Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,6 +25,8 @@ import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
 import useProvinceQuery from "@/hooks/tanstack-query/useProvinceQuery";
 import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
 import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import ContainerInput from "@/components/ui/container-input";
 
 interface IEditarPresupuesto {
   session: Session | null;
@@ -58,15 +60,13 @@ export default function EditarProyectosPage({
       actionsEditarPresupuesto(presupuestoId, prevState, formData),
     { isError: false, message: "" }
   );
-  const [formData, setFormData] = useState({
+  const [formDataExtra, setFormDataExtra] = useState({
     country: initialData.country,
     department: initialData.department,
     province: initialData.province,
     district: initialData.district,
     client: initialData.client,
     "name-user": initialData.nameUser,
-    "name-presupuesto": initialData.namePresupuesto,
-    jornal: initialData.jornal,
   });
 
   const userId = Number(session?.user?.id);
@@ -77,22 +77,24 @@ export default function EditarProyectosPage({
 
   const { data: departments, isLoading: isLoadingDepartments } =
     useDepartmentQuery({
-      idCountry: formData.country,
-      isEnabled: !!formData.country,
+      idCountry: formDataExtra.country,
+      isEnabled: !!formDataExtra.country,
     });
 
   const { data: provinces, isLoading: isLoadingProvinces } = useProvinceQuery({
-    idCountry: formData.country,
-    idDepartment: formData.department,
-    isEnabled: !!formData.country && !!formData.department,
+    idCountry: formDataExtra.country,
+    idDepartment: formDataExtra.department,
+    isEnabled: !!formDataExtra.country && !!formDataExtra.department,
   });
 
   const { data: districts, isLoading: isLoadingDistricts } = useDistrictQuery({
-    idCountry: formData.country,
-    idDepartment: formData.department,
-    idProvince: formData.province,
+    idCountry: formDataExtra.country,
+    idDepartment: formDataExtra.department,
+    idProvince: formDataExtra.province,
     isEnabled:
-      !!formData.country && !!formData.department && !!formData.province,
+      !!formDataExtra.country &&
+      !!formDataExtra.department &&
+      !!formDataExtra.province,
   });
 
   const { data: clients, isLoading: isLoadingClients } = useClientQuery({
@@ -100,23 +102,23 @@ export default function EditarProyectosPage({
   });
 
   const handleInputChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormDataExtra((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSelectChange = (type: LoadingKeys, value: string | null) => {
     handleInputChange(type, value || "");
 
     if (type === "country") {
-      setFormData((prev) => ({
+      setFormDataExtra((prev) => ({
         ...prev,
         department: "",
         province: "",
         district: "",
       }));
     } else if (type === "department") {
-      setFormData((prev) => ({ ...prev, province: "", district: "" }));
+      setFormDataExtra((prev) => ({ ...prev, province: "", district: "" }));
     } else if (type === "province") {
-      setFormData((prev) => ({ ...prev, district: "" }));
+      setFormDataExtra((prev) => ({ ...prev, district: "" }));
     }
   };
 
@@ -125,34 +127,40 @@ export default function EditarProyectosPage({
     options: { value: string; label: string }[],
     placeholder: string,
     label: string,
-    isLoading: boolean
+    isLoading: boolean,
+    icon?: string
   ) => (
-    <div className="sm:col-span-3">
-      <Label className="text-sm w-20 truncate">{label}</Label>
-      <ComboboxSingleSelection
-        options={options}
-        onSelect={(value) => handleSelectChange(type, value)}
-        placeholder={placeholder}
-        disabled={!options.length || isLoading}
-        value={formData[type]}
-      />
-      {isLoading && (
-        <div className="mt-2 flex items-center text-sm text-muted-foreground">
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          {`Cargando ${label.toLowerCase()}...`}
-        </div>
-      )}
-    </div>
+    <ContainerInput
+      nameLabel={label}
+      htmlFor=""
+      icon={icon}
+      className="col-span-3"
+    >
+      <div className="flex flex-col w-full">
+        <ComboboxSingleSelection
+          className="bg-secondary"
+          options={options}
+          onSelect={(value) => handleSelectChange(type, value)}
+          placeholder={placeholder}
+          disabled={!options.length || isLoading}
+          value={formDataExtra[type]}
+        />
+        {isLoading && (
+          <div className="mt-2 flex items-center text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {`Cargando ${label.toLowerCase()}...`}
+          </div>
+        )}
+      </div>
+    </ContainerInput>
   );
 
-  const handleSubmit = () => {
-    const formDataToSubmit = new FormData();
-
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSubmit.append(key, value || "");
+  const handleSubmit = (formData: FormData) => {
+    Object.entries(formDataExtra).forEach(([key, value]) => {
+      formData.append(key, String(value));
     });
 
-    formActionEditPresupuesto(formDataToSubmit);
+    formActionEditPresupuesto(formData);
   };
 
   return (
@@ -160,68 +168,21 @@ export default function EditarProyectosPage({
       action={handleSubmit}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre usuario</Label>
+      <ContainerInput
+        nameLabel="Nombre usuario:"
+        htmlFor="name-user"
+        icon="usuario"
+        className="col-span-3"
+      >
         <Input
           type="text"
-          name="name-user"
-          required
+          id="name-user"
+          className="bg-secondary"
           readOnly
-          value={formData["name-user"]}
+          disabled
+          value={formDataExtra["name-user"]}
         />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre del proyecto</Label>
-        <Input
-          type="text"
-          name="name-presupuesto"
-          required
-          value={formData["name-presupuesto"]}
-          onChange={(e) =>
-            handleInputChange("name-presupuesto", e.target.value)
-          }
-        />
-      </div>
-      {renderCombobox(
-        "country",
-        countries?.map((country: ISpPaisObten) => ({
-          value: String(country.pai_id),
-          label: country.pai_nombre,
-        })) || [],
-        "Seleccione un país",
-        "País",
-        isLoadingCountries
-      )}
-      {renderCombobox(
-        "department",
-        departments?.map((department: ISpDepartamentoObten) => ({
-          value: String(department.dep_id),
-          label: department.dep_nombre,
-        })) || [],
-        "Seleccione un departamento",
-        "Departamento",
-        isLoadingDepartments
-      )}
-      {renderCombobox(
-        "province",
-        provinces?.map((province: ISpProvinciaObten) => ({
-          value: String(province.prov_id),
-          label: province.prov_nombre,
-        })) || [],
-        "Seleccione una provincia",
-        "Provincia",
-        isLoadingProvinces
-      )}
-      {renderCombobox(
-        "district",
-        districts?.map((district: ISpDistritoObten) => ({
-          value: String(district.dist_id),
-          label: district.dist_nombre,
-        })) || [],
-        "Seleccione un distrito",
-        "Distrito",
-        isLoadingDistricts
-      )}
+      </ContainerInput>
       {renderCombobox(
         "client",
         clients?.map((item: ISpObtenerClientes) => ({
@@ -230,22 +191,87 @@ export default function EditarProyectosPage({
         })) || [],
         "Seleccione un cliente",
         "Cliente",
-        isLoadingClients
+        isLoadingClients,
+        "cliente"
       )}
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Jornal</Label>
+      <ContainerInput
+        nameLabel="Nombre del proyecto:"
+        htmlFor="name-presupuesto"
+        icon="proyecto"
+        className="col-span-full"
+      >
+        <Input
+          type="text"
+          id="name-presupuesto"
+          name="name-presupuesto"
+          className="bg-secondary"
+          required
+          defaultValue={initialData.namePresupuesto}
+        />
+      </ContainerInput>
+      {renderCombobox(
+        "country",
+        countries?.map((country: ISpPaisObten) => ({
+          value: String(country.pai_id),
+          label: country.pai_nombre,
+        })) || [],
+        "Seleccione un país",
+        "País:",
+        isLoadingCountries,
+        "ubicacion"
+      )}
+      {renderCombobox(
+        "department",
+        departments?.map((department: ISpDepartamentoObten) => ({
+          value: String(department.dep_id),
+          label: department.dep_nombre,
+        })) || [],
+        "Seleccione un departamento",
+        "Departamento:",
+        isLoadingDepartments,
+        "ubicacion"
+      )}
+      {renderCombobox(
+        "province",
+        provinces?.map((province: ISpProvinciaObten) => ({
+          value: String(province.prov_id),
+          label: province.prov_nombre,
+        })) || [],
+        "Seleccione una provincia",
+        "Provincia:",
+        isLoadingProvinces,
+        "ubicacion"
+      )}
+      {renderCombobox(
+        "district",
+        districts?.map((district: ISpDistritoObten) => ({
+          value: String(district.dist_id),
+          label: district.dist_nombre,
+        })) || [],
+        "Seleccione un distrito",
+        "Distrito:",
+        isLoadingDistricts,
+        "ubicacion"
+      )}
+      <ContainerInput
+        nameLabel="Jornal:"
+        htmlFor="jornal"
+        icon="jornal"
+        className="col-span-3"
+      >
         <Input
           type="number"
+          id="jornal"
           name="jornal"
+          className="bg-secondary"
           required
-          value={formData.jornal}
-          onChange={(e) => handleInputChange("jornal", e.target.value)}
+          defaultValue={initialData.jornal}
         />
-      </div>
+      </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
           disabled={!districts || districts.length === 0}
-          name="Editar"
+          name="Editar proyecto"
           nameLoading="Editando..."
         />
       </div>
