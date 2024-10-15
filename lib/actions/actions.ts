@@ -10,6 +10,7 @@ import {
   cambioEstadoPartida,
   cambioEstadoPresupuesto,
   cambioEstadoPresupuestoRecursivo,
+  crearAsignacionRecursoToPartida,
   crearGrupoPartida,
   crearPartida,
   crearPresupuesto,
@@ -21,6 +22,7 @@ import {
   obtenerProyectosPaginados,
 } from "../services/sql-queries";
 import {
+  asignarRecursoToPartidaSchema,
   crearGrupoPartidaSchema,
   crearPartidaSchema,
   crearRecursoSchema,
@@ -797,6 +799,58 @@ export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
 
     const url = new URL(referer);
     let newUrl = "/dashboard/recursos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsAsignarRecursoToPartida(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/partidas";
+    const { idPartida, idRecurso, cantidad, cuadrilla, precio } =
+      await asignarRecursoToPartidaSchema.parseAsync({
+        idPartida: formData.get("idPartida"),
+        idRecurso: formData.get("idRecurso"),
+        cantidad: Number(formData.get("cantidad")),
+        cuadrilla: Number(formData.get("cuadrilla")),
+        precio: Number(formData.get("precio")),
+      });
+
+    await crearAsignacionRecursoToPartida(
+      Number(idPartida),
+      Number(idRecurso),
+      cantidad,
+      cuadrilla,
+      precio
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
     redirect(newUrl);

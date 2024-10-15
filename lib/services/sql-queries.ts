@@ -647,9 +647,7 @@ export const obtenerRecursosPaginados = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten_nombre()`.as(
-            "result"
-          )
+          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten()`.as("result")
         )
         .selectAll()
         .execute();
@@ -661,11 +659,26 @@ export const obtenerRecursosPaginados = cache(
   { tags: ["recursosPaginados"] }
 );
 
+export const obtenerRecursos = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom("recurso")
+        .where("rec_estado", "=", 1)
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recursos"],
+  { tags: ["recursos"], revalidate: 60 * 60 * 24 }
+);
+
 export const crearAsignacionRecursoToPartida = cache(
   async (
     p_par_id: number,
     p_rec_id: number,
-    p_pre_id: number,
     p_rec_cantidad: number,
     p_rec_cuadrilla: number,
     p_rec_precio: number
@@ -673,7 +686,7 @@ export const crearAsignacionRecursoToPartida = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_recurso_crea_x_partida_x_presupuesto(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+          sql<any>`sp_calculo_precio_unitario_crea_v2(${p_par_id}, ${p_rec_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
             "result"
           )
         )

@@ -328,6 +328,18 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
+                        href={`/dashboard/grupos_de_partida/crear?proyectoId=${row.original.pre_id}`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="Grupos de Partida"
+                        />
+                        <span>Agregar grupo de partida</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
                         href={`proyectos/${row.original.pre_id}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"

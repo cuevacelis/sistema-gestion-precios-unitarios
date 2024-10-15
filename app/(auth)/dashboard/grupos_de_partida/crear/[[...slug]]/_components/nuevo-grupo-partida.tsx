@@ -93,7 +93,7 @@ export default function NuevoGrupoPartida({
             label: item.pre_nombre,
           }))}
           onSelect={(value) => handleSelectChange(value)}
-          disabled={isSubGroup}
+          disabled={isSubGroup || Boolean(idProyecto)}
           value={formDataExtra["idProyecto"]}
         />
       </div>

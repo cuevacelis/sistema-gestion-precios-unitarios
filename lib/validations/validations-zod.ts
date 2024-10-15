@@ -62,9 +62,7 @@ export const crearGrupoPartidaSchema = z.object({
 });
 
 export const editarGrupoPartidaSchema = z.object({
-  idGrupoPartida: z
-    .string()
-    .min(1, "El campo 'Id de grupo de partida' es requerido"),
+  idGrupoPartida: z.string().min(1, "El campo 'Grupo de partida' es requerido"),
   nombreGrupoPartida: z
     .string()
     .min(1, "El campo 'Nombre del grupo de partida' es requerido"),
@@ -76,9 +74,7 @@ export const deleteGrupoPartidaSchema = z.object({
 
 // #region PARTIDAS
 export const crearPartidaSchema = z.object({
-  idGrupoPartida: z
-    .string()
-    .min(1, "El campo 'Id de grupo de partida' es requerido"),
+  idGrupoPartida: z.string().min(1, "El campo 'Grupo de partida' es requerido"),
   nombrePartida: z.string().min(1, "El campo 'Nombre de partida' es requerido"),
   rendimientoManoDeObra: z
     .number()
@@ -111,4 +107,12 @@ export const crearRecursoSchema = z.object({
   tipoRecurso: z.string().min(1, "El campo 'Tipo de recurso' es requerido"),
   unidadMedida: z.string().min(1, "El campo 'Unidad de medida' es requerido"),
   indunificado: z.string().min(1, "El campo 'Indunificado' es requerido"),
+});
+
+export const asignarRecursoToPartidaSchema = z.object({
+  idPartida: z.string().min(1, "El campo 'Id de partida' es requerido"),
+  idRecurso: z.string().min(1, "El campo 'Id de recurso' es requerido"),
+  cantidad: z.number().min(1, "El campo 'Cantidad' es requerido"),
+  cuadrilla: z.number().min(1, "El campo 'Cuadrilla' es requerido"),
+  precio: z.number().min(1, "El campo 'Precio' es requerido"),
 });

@@ -58,14 +58,14 @@ export default function NuevoPartida({
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Grupos de partida</Label>
+        <Label className="text-sm w-20 truncate">Grupo de partida</Label>
         <ComboboxSingleSelection
           options={dataGruposDePartidas.map((item) => ({
             value: String(item.grupar_id),
-            label: `id: ${item.grupar_id} - ${item.grupar_nombre}`,
+            label: `id: ${item.grupar_id} - nombre: ${item.grupar_nombre}`,
           }))}
           onSelect={(value) => handleSelectChange(value, "idGrupoPartida")}
-          disabled={false}
+          disabled={Boolean(grupoPartidaId)}
           value={formDataExtra["idGrupoPartida"]}
         />
       </div>

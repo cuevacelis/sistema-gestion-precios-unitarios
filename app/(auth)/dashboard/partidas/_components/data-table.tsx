@@ -291,7 +291,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
+                        href={`/dashboard/partidas/${row.original.par_id}/asignar-recurso?${searchParams.toString()}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
@@ -301,7 +301,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
                         <span>Asignar recurso</span>
                       </Link>
                     </ContextMenuItem>
-                    <ContextMenuItem asChild>
+                    {/* <ContextMenuItem asChild>
                       <Link
                         href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
                         className="flex items-center"
@@ -312,7 +312,7 @@ export default function TableComponent({ dataPartidas }: IProps) {
                         />
                         <span>Editar recurso asignado</span>
                       </Link>
-                    </ContextMenuItem>
+                    </ContextMenuItem> */}
                     <ContextMenuItem asChild>
                       <Link
                         href={`partidas/${row.original.par_id}/editar?${searchParams.toString()}`}
