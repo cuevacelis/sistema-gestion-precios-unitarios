@@ -16,6 +16,8 @@ import {
 } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 interface INuevoPartida {
   dataGruposDePartidas: Awaited<ReturnType<typeof obtenerGruposDePartidas>>;
@@ -57,18 +59,61 @@ export default function NuevoPartida({
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Grupo de partida</Label>
-        <ComboboxSingleSelection
-          options={dataGruposDePartidas.map((item) => ({
-            value: String(item.grupar_id),
-            label: `id: ${item.grupar_id} - nombre: ${item.grupar_nombre}`,
-          }))}
-          onSelect={(value) => handleSelectChange(value, "idGrupoPartida")}
-          disabled={Boolean(grupoPartidaId)}
-          value={formDataExtra["idGrupoPartida"]}
-        />
+      <div className="col-span-6">
+        <Alert>
+          <InfoIcon className="h-4 w-4" />
+          <AlertTitle>Nota</AlertTitle>
+          <AlertDescription>
+            {Boolean(grupoPartidaId) ? (
+              <>
+                Esta sera la nueva partida del grupo de partida &quot;
+                <span>
+                  {
+                    dataGruposDePartidas.find(
+                      (e) => String(e.grupar_id) === grupoPartidaId
+                    )?.grupar_nombre
+                  }
+                </span>
+                &quot;
+              </>
+            ) : (
+              <>
+                Esta sera la nueva partida del grupo de partida{" "}
+                {formDataExtra.idGrupoPartida ? (
+                  <span>
+                    &quot;
+                    {
+                      dataGruposDePartidas.find(
+                        (e) =>
+                          String(e.grupar_id) === formDataExtra.idGrupoPartida
+                      )?.grupar_nombre
+                    }
+                    &quot;
+                  </span>
+                ) : (
+                  "que selecciones"
+                )}
+                .
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
       </div>
+      {!Boolean(grupoPartidaId) && (
+        <div className={cn("sm:col-span-3", {})}>
+          <Label className="text-sm w-20 truncate">Grupo de partida</Label>
+          <ComboboxSingleSelection
+            placeholder="Seleccione un grupo de partida..."
+            options={dataGruposDePartidas.map((item) => ({
+              value: String(item.grupar_id),
+              label: `Id: ${item.grupar_id} - Nombre: ${item.grupar_nombre}`,
+            }))}
+            onSelect={(value) => handleSelectChange(value, "idGrupoPartida")}
+            disabled={Boolean(grupoPartidaId)}
+            value={formDataExtra["idGrupoPartida"]}
+          />
+        </div>
+      )}
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Nombre de partida</Label>
         <Input type="text" name="nombrePartida" required />
@@ -86,6 +131,7 @@ export default function NuevoPartida({
       <div className={cn("sm:col-span-3", {})}>
         <Label className="text-sm w-20 truncate">Unidad de medida</Label>
         <ComboboxSingleSelection
+          placeholder="Seleccione una unidad de medida..."
           options={dataUnidadesDeMedida.map((item) => ({
             value: String(item.unimed_id),
             label: item.unimed_nombre,
@@ -97,8 +143,8 @@ export default function NuevoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name="Crear partida"
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

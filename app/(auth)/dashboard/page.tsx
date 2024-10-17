@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,7 +11,13 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
-import { ArrowRight, FolderTree, Package, Users } from "lucide-react";
+import {
+  ArrowRight,
+  FolderTree,
+  Package,
+  RocketIcon,
+  Users,
+} from "lucide-react";
 import { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
@@ -32,24 +39,39 @@ export default async function DashboardPage() {
   return (
     <section className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Panel de Control</h1>
-      <Suspense fallback={<Skeleton className="h-32 w-full" />}>
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Proyectos Recientes</CardTitle>
-            <CardDescription>
-              Los últimos 5 proyectos añadidos al sistema
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+      <Alert>
+        <RocketIcon className="h-4 w-4" />
+        <AlertTitle>Indices de precios unificados</AlertTitle>
+        <AlertDescription>
+          Te recomendamos que uses el índice de precios unificados, para la
+          creación de precios unitarios.{" "}
+          <Link
+            href="https://busquedas.elperuano.pe/dispositivo/NL/2299081-1"
+            target="_blank"
+            className="underline"
+          >
+            Más información
+          </Link>
+        </AlertDescription>
+      </Alert>
+      <Card className="my-6">
+        <CardHeader>
+          <CardTitle>Proyectos Recientes</CardTitle>
+          <CardDescription>
+            Los últimos 5 proyectos añadidos al sistema
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Suspense fallback={<Skeleton className="h-32 w-full" />}>
             <GetDataTable />
-          </CardContent>
-          <CardFooter>
-            <Button asChild variant="outline">
-              <Link href="/dashboard/proyectos">Mostrar todos</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </Suspense>
+          </Suspense>
+        </CardContent>
+        <CardFooter>
+          <Button asChild variant="default">
+            <Link href="/dashboard/proyectos">Mostrar todos</Link>
+          </Button>
+        </CardFooter>
+      </Card>
 
       <Card>
         <CardHeader>

@@ -351,7 +351,15 @@ export default function TableComponent({ dataPartidas }: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar la partida?"
+          title={
+            <>
+              ¿Está seguro de eliminar la partida{" "}
+              <span className="font-bold underline">
+                {rowSelected?.par_nombre}
+              </span>
+              ?
+            </>
+          }
           message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}

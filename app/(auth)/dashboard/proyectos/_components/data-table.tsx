@@ -73,7 +73,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
       {
         accessorKey: "pre_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre" />
+          <DataTableColumnHeader column={column} title="Nombre del proyecto" />
         ),
       },
       {
@@ -98,7 +98,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
       {
         accessorKey: "pre_fechorregistro",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Fecha" />
+          <DataTableColumnHeader column={column} title="Fecha de creación" />
         ),
         cell: ({ row }) =>
           formatDateToDateTimeWith12HourFormat(row.original.pre_fechorregistro),

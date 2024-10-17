@@ -88,8 +88,8 @@ export default function NuevoRecurso({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name="Crear recurso"
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

@@ -54,8 +54,8 @@ export default function EditarGrupoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Editar"
-          nameLoading="Editando, por favor espere..."
+          name="Editar grupo de partida"
+          nameLoading="Editando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

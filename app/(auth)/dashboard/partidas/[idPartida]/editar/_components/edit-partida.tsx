@@ -101,8 +101,8 @@ export default function EditarPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name="Editar partida"
+          nameLoading="Editando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

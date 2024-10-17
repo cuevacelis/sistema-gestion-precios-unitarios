@@ -27,7 +27,6 @@ import {
   TStatusResponseActions,
 } from "@/lib/types/types";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Layers } from "lucide-react";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 import { replaceSegmentInPath } from "@/lib/utils";
@@ -35,6 +34,7 @@ import { useWindowSize } from "usehooks-ts";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { toast } from "sonner";
 import { actionsDeleteGrupoPartida } from "@/lib/actions/actions";
+import { Button } from "@/components/ui/button";
 
 interface IProps {
   dataGruposDePartidas: IDataDBObtenerGruposDePartidasId[];
@@ -183,24 +183,28 @@ export default function TableComponent({
           className="w-16 h-16 text-muted-foreground mb-4"
           modNombre="grupos de partida"
         />
-        <h2 className="text-xl font-semibold text-foreground mb-2">
-          Este grupo de partida ya tiene partidas asignada, por lo cual no se
-          puede crear grupos de partidas.
+        <h2 className="text-xl font-semibold text-foreground mb-2 text-center">
+          Este grupo de partida ya tiene partidas asignadas, por lo cual no se
+          pueden crear más grupos de partidas.
         </h2>
         <p className="text-center text-muted-foreground max-w-md">
           De click abajo para ver las partidas asignadas.
         </p>
-        <Link
-          href={
-            "/dashboard/partidas?grupoPartidaId=" +
-            lastGrupoPartidaId?.toString()
-          }
-          scroll={false}
-          className="flex items-center"
-        >
-          <ModuleIconsComponent className="mr-2 h-4 w-4" modNombre="partida" />
-          <span>Ver partidas</span>
-        </Link>
+        <Button asChild variant="default" className="mt-2">
+          <Link
+            href={
+              "/dashboard/partidas?grupoPartidaId=" +
+              lastGrupoPartidaId?.toString()
+            }
+            scroll={false}
+          >
+            <ModuleIconsComponent
+              className="mr-2 h-4 w-4"
+              modNombre="partida"
+            />
+            <span>Ver partidas</span>
+          </Link>
+        </Button>
       </section>
     );
   }
@@ -208,16 +212,15 @@ export default function TableComponent({
   if (dataGruposDePartidas.length === 0 && !isPartidasAssigned) {
     return (
       <section className="flex flex-col items-center justify-center min-h-[400px]">
-        <Layers
+        <ModuleIconsComponent
           className="w-16 h-16 text-muted-foreground mb-4"
-          aria-hidden="true"
+          modNombre="grupos de partida"
         />
         <h2 className="text-xl font-semibold text-foreground mb-2">
           No hay grupos de partidas
         </h2>
         <p className="text-center text-muted-foreground max-w-md">
-          Aún no se han creado grupos de partidas. Cuando se agreguen,
-          aparecerán aquí.
+          Aún no se han creado grupos de partidas asociados a este proyecto.
         </p>
       </section>
     );
@@ -325,38 +328,107 @@ export default function TableComponent({
                       </>
                     ) : (
                       <>
-                        <ContextMenuItem>
-                          <Link
-                            href={
-                              "/dashboard/partidas?grupoPartidaId=" +
-                              row.original.grupar_id.toString()
-                            }
-                            scroll={false}
-                            className="flex items-center"
-                          >
-                            <ModuleIconsComponent
-                              className="mr-2 h-4 w-4"
-                              modNombre="partida"
-                            />
-                            <span>Ver partidas</span>
-                          </Link>
-                        </ContextMenuItem>
-                        <ContextMenuItem>
-                          <Link
-                            href={
-                              "/dashboard/partidas/crear?grupoPartidaId=" +
-                              row.original.grupar_id.toString()
-                            }
-                            scroll={false}
-                            className="flex items-center"
-                          >
-                            <ModuleIconsComponent
-                              className="mr-2 h-4 w-4"
-                              modNombre="partida"
-                            />
-                            <span>Agregar partidas</span>
-                          </Link>
-                        </ContextMenuItem>
+                        {row.original.tiene_partidas ? (
+                          <>
+                            <ContextMenuItem>
+                              <Link
+                                href={
+                                  "/dashboard/partidas?grupoPartidaId=" +
+                                  row.original.grupar_id.toString()
+                                }
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="partida"
+                                />
+                                <span>Ver partidas</span>
+                              </Link>
+                            </ContextMenuItem>
+                            <ContextMenuItem>
+                              <Link
+                                href={
+                                  "/dashboard/partidas/crear?grupoPartidaId=" +
+                                  row.original.grupar_id.toString()
+                                }
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="partida"
+                                />
+                                <span>Agregar partidas</span>
+                              </Link>
+                            </ContextMenuItem>
+                          </>
+                        ) : (
+                          <>
+                            <ContextMenuItem>
+                              <Link
+                                href={`${pathname}/${row.original.grupar_id}?${searchParams.toString()}`}
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="Grupos de Partida"
+                                />
+                                <span>Ver grupos de partida</span>
+                              </Link>
+                            </ContextMenuItem>
+                            <ContextMenuItem>
+                              <Link
+                                href={`${replaceSegmentInPath(
+                                  pathname,
+                                  "subgrupos",
+                                  "crear"
+                                )}/${row.original.grupar_id}?${searchParams.toString()}`}
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="Grupos de Partida"
+                                />
+                                <span>Agregar grupo de partida</span>
+                              </Link>
+                            </ContextMenuItem>
+                            <ContextMenuItem>
+                              <Link
+                                href={
+                                  "/dashboard/partidas?grupoPartidaId=" +
+                                  row.original.grupar_id.toString()
+                                }
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="partida"
+                                />
+                                <span>Ver partidas</span>
+                              </Link>
+                            </ContextMenuItem>
+                            <ContextMenuItem>
+                              <Link
+                                href={
+                                  "/dashboard/partidas/crear?grupoPartidaId=" +
+                                  row.original.grupar_id.toString()
+                                }
+                                scroll={false}
+                                className="flex items-center"
+                              >
+                                <ModuleIconsComponent
+                                  className="mr-2 h-4 w-4"
+                                  modNombre="partida"
+                                />
+                                <span>Agregar partidas</span>
+                              </Link>
+                            </ContextMenuItem>
+                          </>
+                        )}
                       </>
                     )}
                     <ContextMenuItem asChild>
@@ -406,7 +478,15 @@ export default function TableComponent({
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el grupo de partida?"
+          title={
+            <>
+              ¿Está seguro de eliminar el grupo de partida{" "}
+              <span className="font-bold underline">
+                {rowSelected?.grupar_nombre}
+              </span>
+              ?
+            </>
+          }
           message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}

@@ -63,9 +63,9 @@ export default function ComboboxSingleSelection({
   };
 
   const content = (
-    <Command className="w-full">
-      <CommandInput placeholder="Buscar opción..." className="w-full" />
-      <CommandList className="w-full max-h-[300px] overflow-y-auto">
+    <Command>
+      <CommandInput placeholder="Buscar opción..." />
+      <CommandList>
         <CommandEmpty>No se encontró ninguna opción.</CommandEmpty>
         <CommandGroup>
           {safeOptions.map((option) => (

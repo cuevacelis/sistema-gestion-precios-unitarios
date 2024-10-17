@@ -3,10 +3,9 @@
 import { useState } from "react";
 import { useFormState } from "react-dom";
 import { Session } from "next-auth";
-import { BuildingIcon, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 
@@ -68,8 +67,6 @@ export default function EditarProyectosPage({
     client: initialData.client,
     "name-user": initialData.nameUser,
   });
-
-  const userId = Number(session?.user?.id);
 
   const { data: countries, isLoading: isLoadingCountries } = useCountryQuery({
     isEnabled: true,

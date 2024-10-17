@@ -233,7 +233,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "ubicacion"
       )}
       <ContainerInput
-        nameLabel="Jornal:"
+        nameLabel="Jornal en horas:"
         htmlFor="jornal"
         icon="jornal"
         className="col-span-3"
@@ -243,13 +243,14 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           id="jornal"
           name="jornal"
           className="bg-secondary"
+          defaultValue={8}
           required
         />
       </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name="Crear proyecto"
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

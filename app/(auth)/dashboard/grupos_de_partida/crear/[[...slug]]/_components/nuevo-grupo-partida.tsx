@@ -64,47 +64,60 @@ export default function NuevoGrupoPartida({
       <div className="col-span-6">
         <Alert>
           <InfoIcon className="h-4 w-4" />
-          <AlertTitle>¡Grupo de partida padre!</AlertTitle>
+          <AlertTitle>Nota</AlertTitle>
           <AlertDescription>
             {dataGrupoPartidaParent?.grupar_nombre ? (
               <>
-                El grupo de partida padre es:{" "}
-                <span className="font-bold underline">
-                  {dataGrupoPartidaParent.grupar_nombre}
-                </span>
+                Este sera el nuevo subgrupo de partida, del proyecto &quot;
+                <span>{dataProyectos[0].pre_nombre}</span>&quot;, y sera hijo
+                del grupo de partida &quot;
+                <span>{dataGrupoPartidaParent.grupar_nombre}</span>&quot;
               </>
             ) : (
               <>
-                Este sera el{" "}
-                <span className="font-bold underline">
-                  grupo de partida de primer nivel
-                </span>
-                , del proyecto que selecciones.
+                Este sera el nuevo grupo de partida, del proyecto{" "}
+                {formDataExtra.idProyecto ? (
+                  <span>
+                    &quot;
+                    {
+                      dataProyectos.find(
+                        (e) => String(e.pre_id) === formDataExtra.idProyecto
+                      )?.pre_nombre
+                    }
+                    &quot;
+                  </span>
+                ) : (
+                  "que selecciones"
+                )}
+                .
               </>
             )}
           </AlertDescription>
         </Alert>
       </div>
-      <div className={cn("col-span-full sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Seleccione un proyecto</Label>
-        <ComboboxSingleSelection
-          options={dataProyectos.map((item) => ({
-            value: String(item.pre_id),
-            label: item.pre_nombre,
-          }))}
-          onSelect={(value) => handleSelectChange(value)}
-          disabled={isSubGroup || Boolean(idProyecto)}
-          value={formDataExtra["idProyecto"]}
-        />
-      </div>
+      {!(isSubGroup || Boolean(idProyecto)) && (
+        <div className={cn("col-span-full sm:col-span-3", {})}>
+          <Label className="text-sm w-20 truncate">Proyectos</Label>
+          <ComboboxSingleSelection
+            placeholder="Selecciona un proyecto..."
+            options={dataProyectos.map((item) => ({
+              value: String(item.pre_id),
+              label: item.pre_nombre,
+            }))}
+            onSelect={(value) => handleSelectChange(value)}
+            disabled={isSubGroup || Boolean(idProyecto)}
+            value={formDataExtra["idProyecto"]}
+          />
+        </div>
+      )}
       <div className="sm:col-span-3">
         <Label className="text-sm">Nombre del grupo de partida</Label>
         <Input type="text" name="nombreGrupoPartida" required />
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name="Crear grupo de partida"
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
