@@ -97,6 +97,22 @@ export const obtenerUsuariosPaginados = cache(
   { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
 );
 
+export const obtenerUsuarios = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom("usuario")
+        .where("usu_id", "=", 1)
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuarios"],
+  { tags: ["usuarios"], revalidate: 60 * 60 * 24 }
+);
+
 // #region CLIENTES
 export const obtenerClientesPaginados = cache(
   async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
@@ -115,10 +131,9 @@ export const obtenerClientes = cache(
   async () => {
     try {
       return getDbPostgres()
-        .selectFrom(
-          sql<ISpObtenerClientes>`sp_cliente_obten_nombre()`.as("result")
-        )
+        .selectFrom("cliente")
         .selectAll()
+        .where("cli_id", "=", 1)
         .execute();
     } catch (error) {
       throw error;

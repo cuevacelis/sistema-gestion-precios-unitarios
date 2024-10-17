@@ -1,6 +1,9 @@
 import Modal from "@/components/modal/modal";
 import { Suspense } from "react";
-import { obtenerProyectoDetalle } from "@/lib/services/sql-queries";
+import {
+  obtenerGruposDePartidasIdProyecto,
+  obtenerProyectoDetalle,
+} from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,5 +44,12 @@ async function GetDataVerDetalleProyecto({
   if (!dataDetalleProyecto) {
     return notFound();
   }
-  return <VerDetalleProyecto dataDetalleProyecto={dataDetalleProyecto} />;
+  const dataGruposDePartidas =
+    await obtenerGruposDePartidasIdProyecto(idProyecto);
+  return (
+    <VerDetalleProyecto
+      dataDetalleProyecto={dataDetalleProyecto}
+      dataGruposDePartidas={dataGruposDePartidas}
+    />
+  );
 }

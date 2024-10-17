@@ -1,5 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { obtenerProyectoDetalle } from "@/lib/services/sql-queries";
+import {
+  obtenerGruposDePartidasIdProyecto,
+  obtenerProyectoDetalle,
+} from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -45,5 +48,12 @@ async function GetDataVerDetalleProyecto({
   if (!dataDetalleProyecto) {
     return notFound();
   }
-  return <VerDetalleProyecto dataDetalleProyecto={dataDetalleProyecto} />;
+  const dataGruposDePartidas =
+    await obtenerGruposDePartidasIdProyecto(idProyecto);
+  return (
+    <VerDetalleProyecto
+      dataDetalleProyecto={dataDetalleProyecto}
+      dataGruposDePartidas={dataGruposDePartidas}
+    />
+  );
 }

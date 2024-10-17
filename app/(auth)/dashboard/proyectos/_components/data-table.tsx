@@ -138,7 +138,9 @@ export default function TableComponent({ dataProyectos }: IProps) {
     identifierField: "pre_id",
     initialState: {
       columnVisibility: {
-        pre_codigo: searchParamsShowColumns.includes("pre_codigo") || false,
+        pre_codigo:
+          searchParamsShowColumns.includes("pre_codigo") ||
+          searchParamsShowColumns.length === 0,
         pre_nombre:
           searchParamsShowColumns.includes("pre_nombre") ||
           searchParamsShowColumns.length === 0,
@@ -323,7 +325,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
                           className="mr-2 h-4 w-4"
                           modNombre="Grupos de Partida"
                         />
-                        <span>Grupos de Partida</span>
+                        <span>Ver Grupos de Partida</span>
                       </Link>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
