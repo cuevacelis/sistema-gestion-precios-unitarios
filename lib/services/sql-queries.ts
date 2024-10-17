@@ -102,7 +102,7 @@ export const obtenerUsuarios = cache(
     try {
       return getDbPostgres()
         .selectFrom("usuario")
-        .where("usu_id", "=", 1)
+        .where("usu_estado", "=", 1)
         .selectAll()
         .execute();
     } catch (error) {
@@ -133,7 +133,7 @@ export const obtenerClientes = cache(
       return getDbPostgres()
         .selectFrom("cliente")
         .selectAll()
-        .where("cli_id", "=", 1)
+        .where("cli_estado", "=", 1)
         .execute();
     } catch (error) {
       throw error;

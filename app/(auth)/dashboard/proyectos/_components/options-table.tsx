@@ -54,26 +54,24 @@ export default function OptionsTable({ session }: { session: Session | null }) {
         <AlertDialogTrigger asChild>
           <Button size="default" variant="secondary" className="h-9 gap-1">
             <Download className="w-4" />
-            <span>Exportar</span>
+            <span>Exportar a Excel</span>
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirmar exportación</AlertDialogTitle>
+            <AlertDialogTitle>
+              Confirmar exportación a Microsoft Excel
+            </AlertDialogTitle>
             <AlertDialogDescription>
               Cuando la exportación haya terminado, se le enviará una
-              notificación con el enlace de descarga.
-              <br />
-              <span className="font-bold text-red-500">
-                El enlace tiene una expiración de 7 días desde la fecha de
-                generación, por lo que debe ser descargado antes de esa fecha.
-              </span>
+              notificación y un correo electrónico con el enlace de descarga que
+              tiene una expiración de 7 días.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction onClick={handleExport}>
-              Confirmar
+              Iniciar exportación
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
