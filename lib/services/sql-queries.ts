@@ -8,6 +8,7 @@ import {
   IDataDBObtenerRecursosPaginados,
   ISpDepartamentoObten,
   ISpDistritoObten,
+  ISpHojaDePresupuesto,
   ISpModuloObtenerModulosXPusuario,
   ISpObtenerClientes,
   ISpPaisObten,
@@ -920,4 +921,43 @@ export const cambioEstadoRecurso = cache(
   },
   ["recurso"],
   { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+// #region HOJA_DE_PRESUPUESTO
+export const obtenerHojaDePresupuesto = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpHojaDePresupuesto>`sp_presupuesto_obten_exportar_json_todo()`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["hojaPresupuesto"],
+  { tags: ["hojaPresupuesto"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerHojaDePresupuestoByProyectoId = cache(
+  async (proyectoId: string) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpHojaDePresupuesto>`sp_presupuesto_obten_exportar_json(${proyectoId})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["hojaPresupuesto"],
+  { tags: ["hojaPresupuesto"], revalidate: 60 * 60 * 24 }
 );

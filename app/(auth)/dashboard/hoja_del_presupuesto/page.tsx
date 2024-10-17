@@ -2,11 +2,11 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { obtenerProyectosPaginados } from "@/lib/services/sql-queries";
 import { ISearchParams } from "@/lib/types/types";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { obtenerHojaDePresupuesto } from "@/lib/services/sql-queries";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -35,9 +35,11 @@ interface IProjectPage {
   searchParams: ISearchParams;
 }
 
-export default async function ProyectPage({ searchParams }: IProjectPage) {
+export default async function HojaDelPresupuestoPage({
+  searchParams,
+}: IProjectPage) {
   const { page, rowsPerPage, query } = searchParams;
-  const uniqueKey = `table-proyecto-${page}-${rowsPerPage}-${query}`;
+  const uniqueKey = `table-hojaDelPresupuestoo-${page}-${rowsPerPage}-${query}`;
 
   return (
     <div className="space-y-6">
@@ -49,13 +51,13 @@ export default async function ProyectPage({ searchParams }: IProjectPage) {
               <CardTitle className="text-2xl font-bold flex items-center">
                 <ModuleIconsComponent
                   className="mr-2 h-8 w-8 flex-shrink-0"
-                  modNombre="Proyecto"
+                  modNombre="HojaDelPresupuestoo"
                 />
-                Proyectos
+                HojaDelPresupuesto
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar proyectos..."
+              placeholder="Buscar hojaDelPresupuestoos..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>
@@ -91,18 +93,11 @@ async function GetDataOptions() {
 
 async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const session = await auth();
-  const query = String(searchParams.query || "");
-  const currentPage = Number(searchParams.page) || 1;
-  const rowsPerPage =
-    Number(searchParams.rowsPerPage) ||
-    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+  // const dataHojaDelPresupuesto = await obtenerHojaDePresupuesto("4");
+  const dataHojaDelPresupuesto = await obtenerHojaDePresupuesto();
 
-  const dataProyectos = await obtenerProyectosPaginados(
-    String(session?.user?.id),
-    rowsPerPage,
-    currentPage,
-    query
+  return (
+    <TableComponent dataPresupuesto={dataHojaDelPresupuesto[0].result.data} />
   );
-
-  return <TableComponent dataProyectos={dataProyectos} />;
+  return null;
 }

@@ -200,3 +200,33 @@ export interface IDataDBObtenerRecursosPaginados {
   rec_cuadrilla: number;
   detrec_precio: number;
 }
+
+// #region HOJA_DEL_PRESUPUESTO
+export interface ISpHojaDePresupuesto {
+  result: {
+    data: Array<{
+      pre_id: number;
+      pre_codigo: string;
+      usu_nomapellidos: string;
+      pre_nombre: string;
+      cli_nomaperazsocial: string;
+      pai_nombre: string;
+      dep_nombre: string;
+      prov_nombre: string;
+      dist_nombre: string;
+      pre_jornal: number;
+      pre_fechorregistro: string;
+      pre_estado: number;
+      grupos_partida: Array<{
+        grupar_id: number;
+        grupar_nombre: string;
+        grupar_total: any;
+        grupos_hijos?: Array<{
+          grupar_id: number;
+          grupar_nombre: string;
+          grupar_total: any;
+        }>;
+      }>;
+    }>;
+  };
+}

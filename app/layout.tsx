@@ -13,8 +13,8 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | CALPU",
-    default: "CALPU",
+    template: "%s | CALCPU",
+    default: "CALCPU",
   },
 };
 

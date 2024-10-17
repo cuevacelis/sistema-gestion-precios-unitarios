@@ -39,7 +39,7 @@ export default function SidebarComponent(props: SidebarProps) {
           <SidebarClose className="h-5 w-5" />
         </Button>
         <Link href="/" className="flex items-center gap-2 ml-auto">
-          <span className="">CALPU</span>
+          <span className="">CALCPU</span>
         </Link>
       </div>
       <div className="flex-1">
