@@ -123,7 +123,7 @@ export default function TopBarComponent(props: IProps) {
             <nav className="grid gap-2 text-lg font-light">
               <SheetClose asChild>
                 <Link href="/" className="flex items-center gap-2">
-                  <span className="mb-2">SGPU</span>
+                  <span className="mb-2">CALPU</span>
                 </Link>
               </SheetClose>
               {props.modulesByUser.map((module) => {

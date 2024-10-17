@@ -20,8 +20,7 @@ const LoginComponent = dynamic(() => import("@/components/form-login/login"), {
 
 export const metadata: Metadata = {
   title: "Inicio de sesión",
-  description:
-    "Ingrese sus credenciales para acceder a su cuenta en el Sistema de Gestión de Precios Unitarios.",
+  description: "Ingrese sus credenciales para acceder a su cuenta.",
 };
 
 export default function LoginPage() {

@@ -27,8 +27,8 @@ export async function POST(request: Request) {
 
     await queueEmail({
       to: res[0]?.usu_correo,
-      subject: "Iniciaste sesión en SGPU",
-      text: `Hola, te has iniciado sesión en SGPU desde una nueva ubicación.
+      subject: "Iniciaste sesión en CALPU",
+      text: `Hola, te has iniciado sesión en CALPU desde una nueva ubicación.
              Navegador: ${userAgent}
              Hora UTC: ${nowUTC}
              Hora Perú: ${nowPeru}
@@ -37,9 +37,9 @@ export async function POST(request: Request) {
              Sistema Operativo: ${os}`,
       html: `
              <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
-               <h2 style="color: #0056b3;">Nuevo inicio de sesión detectado en SGPU</h2>
+               <h2 style="color: #0056b3;">Nuevo inicio de sesión detectado en CALPU</h2>
                <p>Hola,</p>
-               <p>Te has iniciado sesión en SGPU desde una nueva ubicación.</p>
+               <p>Te has iniciado sesión en CALPU desde una nueva ubicación.</p>
                <p><strong>Detalles de la sesión:</strong></p>
                <ul style="list-style-type: none; padding-left: 0;">
                  <li><strong>Hora UTC:</strong> ${nowUTC}</li>
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
                </ul>
                <p>Si no fuiste tú, por favor contacta con el soporte inmediatamente.</p>
                <p style="margin-top: 20px;">Gracias,</p>
-               <p>El equipo de SGPU</p>
+               <p>El equipo de CALPU</p>
                <hr style="border: 0; border-top: 1px solid #ccc;" />
                <p style="font-size: 12px; color: #999;">Este es un correo electrónico automático, por favor no respondas a este mensaje.</p>
              </div>

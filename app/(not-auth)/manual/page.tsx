@@ -19,7 +19,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Manual de Usuario",
   description:
-    "Guía detallada para utilizar el Sistema de Gestión de Precios Unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
+    "Guía detallada para utilizar el Cálculo de Precios Unitarios en línea con análisis y rendimiento de costos para obra pública y privada.",
 };
 
 export default function ManualPage() {
@@ -30,9 +30,7 @@ export default function ManualPage() {
           <CardTitle className="text-3xl font-bold">
             Manual de Usuario
           </CardTitle>
-          <CardDescription>
-            Sistema de Gestión de Precios Unitarios
-          </CardDescription>
+          <CardDescription>Cálculo de Precios Unitarios</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
@@ -53,8 +51,6 @@ export default function ManualPage() {
           </AccordionTrigger>
           <AccordionContent>
             <p>
-              El Sistema de Gestión de Precios Unitarios es una herramienta
-              poderosa para la gestión de costos en proyectos de construcción.
               Este manual le guiará a través de las principales funcionalidades
               del sistema, asegurando que pueda aprovechar al máximo todas sus
               características.

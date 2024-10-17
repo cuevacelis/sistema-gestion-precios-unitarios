@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Session } from "next-auth";
 import { toast } from "sonner";
+import { formatDateTimeForFilename } from "@/lib/utils";
 
 export default function OptionsTable({ session }: { session: Session | null }) {
   const pathname = usePathname();
@@ -33,7 +34,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
       });
       await actionsQueueExportS3Presupuestos({
         userId: String(session?.user?.id),
-        prefixNameFile: "presupuestos",
+        prefixNameFile: `Proyectos-${formatDateTimeForFilename()}`,
         email: String(session?.user?.email),
       });
     } catch (error) {
