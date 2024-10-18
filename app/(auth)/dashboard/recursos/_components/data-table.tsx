@@ -36,6 +36,7 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
+import { actionsDeleteRecurso } from "@/lib/actions/actions";
 
 interface IProps {
   dataRecursos: IDataDBObtenerRecursosPaginados[];
@@ -152,32 +153,32 @@ export default function TableComponent({ dataRecursos }: IProps) {
   });
 
   const handleDeleteConfirm = async () => {
-    // if (!rowSelected) return;
-    // setStatusRespDeleteRecurso("pending");
-    // try {
-    //   const respDelete = await actionsDeleteRecurso(rowSelected.rec_id);
-    // if (respDelete?.isError) {
-    //   throw respDelete.message;
-    // }
-    //   setStatusRespDeleteRecurso("success");
-    //   toast.success("Proyecto eliminado", {
-    //     action: {
-    //       label: "Deshacer cambios",
-    //       onClick: async () => {
-    //         setStatusRespDeleteRecurso("pending");
-    //         await actionsDeleteRecurso(rowSelected.rec_id, 1);
-    //         setStatusRespDeleteRecurso("success");
-    //       },
-    //     },
-    //   });
-    // } catch (error) {
-    //   setStatusRespDeleteRecurso("error");
-    //   toast.error(
-    //     "No se pudo eliminar el proyecto, por favor intente nuevamente."
-    //   );
-    // } finally {
-    //   setIsShowDeleteModal(false);
-    // }
+    if (!rowSelected) return;
+    setStatusRespDeleteRecurso("pending");
+    try {
+      const respDelete = await actionsDeleteRecurso(String(rowSelected.rec_id));
+      if (respDelete?.isError) {
+        throw respDelete.message;
+      }
+      setStatusRespDeleteRecurso("success");
+      toast.success("Recurso eliminado", {
+        action: {
+          label: "Deshacer cambios",
+          onClick: async () => {
+            setStatusRespDeleteRecurso("pending");
+            await actionsDeleteRecurso(String(rowSelected.rec_id), 1);
+            setStatusRespDeleteRecurso("success");
+          },
+        },
+      });
+    } catch (error) {
+      setStatusRespDeleteRecurso("error");
+      toast.error(
+        "No se pudo eliminar el recurso, por favor intente nuevamente."
+      );
+    } finally {
+      setIsShowDeleteModal(false);
+    }
   };
 
   const handleRowClick = (row: IDataDBObtenerRecursosPaginados) => {
@@ -324,7 +325,15 @@ export default function TableComponent({ dataRecursos }: IProps) {
       </Card>
       {isShowDeleteModal && (
         <ModalConfirmacionComponent
-          title="¿Está seguro de eliminar el recurso?"
+          title={
+            <>
+              ¿Está seguro de eliminar el recurso{" "}
+              <span className="font-bold underline">
+                {rowSelected?.rec_nombre}
+              </span>
+              ?
+            </>
+          }
           message="Esta acción se puede revertir, aun asi tener precaución."
           show={isShowDeleteModal}
           onClose={() => setIsShowDeleteModal(false)}

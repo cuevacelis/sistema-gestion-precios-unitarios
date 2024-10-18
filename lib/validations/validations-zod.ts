@@ -116,3 +116,7 @@ export const asignarRecursoToPartidaSchema = z.object({
   cuadrilla: z.number().min(1, "El campo 'Cuadrilla' es requerido"),
   precio: z.number().min(1, "El campo 'Precio' es requerido"),
 });
+
+export const deleteRecursoSchema = z.object({
+  idRecurso: z.string().min(1, "El campo 'Id de recurso' es requerido"),
+});

@@ -10,6 +10,7 @@ import {
   cambioEstadoPartida,
   cambioEstadoPresupuesto,
   cambioEstadoPresupuestoRecursivo,
+  cambioEstadoRecurso,
   crearAsignacionRecursoToPartida,
   crearGrupoPartida,
   crearPartida,
@@ -30,6 +31,7 @@ import {
   deleteGrupoPartidaSchema,
   deletePartidaSchema,
   deletePresupuestoSchema,
+  deleteRecursoSchema,
   editarGrupoPartidaSchema,
   editarPartidaSchema,
   editPresupuestoSchema,
@@ -831,7 +833,7 @@ export async function actionsAsignarRecursoToPartida(
 ) {
   try {
     const headersList = headers();
-    const referer = headersList.get("referer") || "/dashboard/partidas";
+    const referer = headersList.get("referer") || "/dashboard/recursos";
     const { idPartida, idRecurso, cantidad, cuadrilla, precio } =
       await asignarRecursoToPartidaSchema.parseAsync({
         idPartida: formData.get("idPartida"),
@@ -851,6 +853,47 @@ export async function actionsAsignarRecursoToPartida(
 
     const url = new URL(referer);
     let newUrl = "/dashboard/partidas" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsDeleteRecurso(
+  p_rec_id: string,
+  newState?: number
+) {
+  try {
+    const headersList = headers();
+    const referer = headersList.get("referer") || "/dashboard/recursos";
+    const { idRecurso } = await deleteRecursoSchema.parseAsync({
+      idRecurso: p_rec_id,
+    });
+
+    await cambioEstadoRecurso(Number(idRecurso), newState || 0);
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/recursos" + url.search;
 
     revalidatePath(newUrl);
     redirect(newUrl);

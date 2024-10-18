@@ -49,7 +49,7 @@
 		"@vercel/postgres": "^0.10.0",
 		"@vercel/postgres-kysely": "^0.10.0",
 		"ably": "^2.4.1",
-		"ai": "^3.4.15",
+		"ai": "^3.4.16",
 		"autoprefixer": "10.4.20",
 		"bcrypt": "^5.1.1",
 		"class-variance-authority": "^0.7.0",
