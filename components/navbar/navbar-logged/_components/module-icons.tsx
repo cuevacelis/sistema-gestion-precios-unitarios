@@ -1,13 +1,13 @@
 import {
+  Box,
   BracesIcon,
   Clock,
   Download,
   EyeIcon,
-  FileBox,
-  Files,
-  FileSpreadsheet,
-  Folders,
-  Hourglass,
+  File,
+  FileStack,
+  FileText,
+  FolderTree,
   LayoutDashboardIcon,
   MapPinIcon,
   PencilLine,
@@ -28,13 +28,13 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
   } else if (modNombre.toLowerCase().includes("usuario")) {
     return <UserRoundCogIcon className={className} />;
   } else if (modNombre.toLowerCase().includes("proyecto")) {
-    return <Folders className={className} />;
+    return <FolderTree className={className} />;
   } else if (modNombre.toLowerCase().includes("grupos de partida")) {
-    return <Files className={className} />;
+    return <FileStack className={className} />;
   } else if (modNombre.toLowerCase().includes("partida")) {
-    return <FileSpreadsheet className={className} />;
+    return <File className={className} />;
   } else if (modNombre.toLowerCase().includes("recurso")) {
-    return <FileBox className={className} />;
+    return <Box className={className} />;
   } else if (modNombre.toLowerCase().includes("dashboard")) {
     return <LayoutDashboardIcon className={className} />;
   } else if (modNombre.toLowerCase().includes("editar")) {
@@ -51,6 +51,10 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <Clock className={className} />;
   } else if (modNombre.toLowerCase().includes("ubicacion")) {
     return <MapPinIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("hoja del presupuesto")) {
+    return <FileText className={className} />;
+  } else if (modNombre.toLowerCase().includes("hoja de presupuesto")) {
+    return <FileText className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

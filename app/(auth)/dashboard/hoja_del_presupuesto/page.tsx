@@ -51,14 +51,15 @@ export default async function HojaDelPresupuestoPage({
               <CardTitle className="text-2xl font-bold flex items-center">
                 <ModuleIconsComponent
                   className="mr-2 h-8 w-8 flex-shrink-0"
-                  modNombre="HojaDelPresupuestoo"
+                  modNombre="hoja de presupuesto"
                 />
-                HojaDelPresupuesto
+                Hoja de Presupuesto
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar hojaDelPresupuestoos..."
+              placeholder="Buscar en hojas de presupuesto..."
               className="w-full sm:w-64 lg:w-96"
+              disabled
             />
           </div>
         </CardHeader>

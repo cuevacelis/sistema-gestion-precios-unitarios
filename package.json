@@ -10,7 +10,7 @@
 		"generate": "npx kysely-codegen --url='env(POSTGRES_URL)' --out-file './lib/types/typesDB.ts'"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "^0.0.67",
+		"@ai-sdk/openai": "^0.0.68",
 		"@aws-sdk/client-lambda": "^3.670.0",
 		"@aws-sdk/client-sqs": "^3.670.0",
 		"@heroicons/react": "^2.1.5",
@@ -49,7 +49,7 @@
 		"@vercel/postgres": "^0.10.0",
 		"@vercel/postgres-kysely": "^0.10.0",
 		"ably": "^2.4.1",
-		"ai": "^3.4.10",
+		"ai": "^3.4.15",
 		"autoprefixer": "10.4.20",
 		"bcrypt": "^5.1.1",
 		"class-variance-authority": "^0.7.0",
@@ -64,7 +64,7 @@
 		"next": "^14.2.15",
 		"next-auth": "^5.0.0-beta.22",
 		"next-themes": "^0.3.0",
-		"openai": "^4.67.3",
+		"openai": "^4.68.0",
 		"pg": "^8.13.0",
 		"postcss": "8.4.47",
 		"react": "18.3.1",
@@ -99,7 +99,7 @@
 		"dotenv": "^16.4.5",
 		"eslint": "8.57.1",
 		"eslint-config-next": "14.2.15",
-		"kysely-codegen": "^0.16.8",
+		"kysely-codegen": "^0.17.0",
 		"prettier": "^3.3.3"
 	}
 }
