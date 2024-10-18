@@ -69,9 +69,7 @@ export default function ManualPage() {
             <p>Para acceder al sistema, siga estos pasos:</p>
             <ol className="list-decimal list-inside mt-2">
               <li>Visite la página de inicio de sesión</li>
-              <li>
-                Ingrese sus credenciales proporcionadas por la administración
-              </li>
+              <li>Ingrese sus credenciales</li>
               <li>Haga clic en &apos;Iniciar Sesión&apos;</li>
             </ol>
             <Button asChild className="mt-4">
@@ -89,15 +87,16 @@ export default function ManualPage() {
           </AccordionTrigger>
           <AccordionContent>
             <p>
-              Dentro del sistema, podrá gestionar los precios unitarios de
-              diferentes servicios y productos. Las principales funciones
-              incluyen:
+              Dentro del sistema, podrá gestionar proyectos de obra y precios
+              unitarios. Las principales funciones incluyen:
             </p>
             <ul className="list-disc list-inside mt-2">
-              <li>Añadir nuevos precios unitarios</li>
-              <li>Actualizar precios existentes</li>
-              <li>Generar análisis de costos</li>
-              <li>Comparar precios entre diferentes proyectos</li>
+              <li>Gestionar nuevos proyectos de obra</li>
+              <li>Gestionar nuevos grupos de partidas</li>
+              <li>Gestionar nuevos partidas</li>
+              <li>Gestionar nuevos recursos</li>
+              <li>Ver hojas de presupuesto</li>
+              {/* <li>Comparar precios entre diferentes proyectos</li> */}
             </ul>
           </AccordionContent>
         </AccordionItem>
@@ -117,41 +116,12 @@ export default function ManualPage() {
               <li>Análisis de precios unitarios</li>
               <li>Comparativas de costos entre proyectos</li>
               <li>Evolución de precios a lo largo del tiempo</li>
-              <li>Resúmenes de presupuestos</li>
+              <li>Exportacion de proyectos de obra</li>
             </ul>
-            <p className="mt-2">
+            {/* <p className="mt-2">
               Para generar un reporte, vaya a la sección Reportes y seleccione
               el tipo de informe que desea crear.
-            </p>
-          </AccordionContent>
-        </AccordionItem>
-
-        <AccordionItem value="support">
-          <AccordionTrigger>
-            <div className="flex items-center">
-              <HelpCircle className="mr-2 h-5 w-5" />
-              Soporte
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <p>Aun no disponible.</p>
-            {/* <p>
-              Si necesita asistencia o tiene alguna duda, puede contactar al
-              equipo de soporte técnico de las siguientes maneras:
-            </p>
-            <ul className="list-disc list-inside mt-2">
-              <li>A través de la sección de contacto en el sistema</li>
-              <li>Enviando un correo electrónico a soporte@sgpu.com</li>
-              <li>
-                Llamando al número de atención al cliente: +1 (123) 456-7890
-              </li>
-            </ul>
-            <Button asChild className="mt-4">
-              <Link href="/contact">
-                <Mail className="mr-2 h-4 w-4" />
-                Contactar Soporte
-              </Link>
-            </Button> */}
+            </p> */}
           </AccordionContent>
         </AccordionItem>
       </Accordion>
