@@ -6,20 +6,19 @@ import { Suspense } from "react";
 
 const EditarGrupoPartida = dynamic(
   () => import("./_components/editar-grupo-partida"),
-  {
-    ssr: false,
-  }
+  {}
 );
 
 interface IPropsEditarGrupoPartida {
-  params: {
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 }
 
-export default function EditarGrupoPartidaPage({
-  params,
-}: IPropsEditarGrupoPartida) {
+export default async function EditarGrupoPartidaPage(
+  props: IPropsEditarGrupoPartida
+) {
+  const params = await props.params;
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);
 

@@ -376,46 +376,44 @@ export default function TableComponent({ dataProyectos }: IProps) {
           <DataTablePagination table={table} rowSelection={rowSelection} />
         </CardFooter>
       </Card>
-      {isShowDeleteModal && (
-        <ModalConfirmacionComponent
-          title={
-            <>
-              ¿Está seguro de eliminar el presupuesto{" "}
-              <span className="font-bold underline">
-                {rowSelected?.pre_nombre}
-              </span>
-              ?
-            </>
-          }
-          message={
-            <section className="flex flex-col gap-2">
-              Esta acción se puede revertir, aun asi tener precaución.
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="delete-recursive"
-                  checked={isDeleteRecursive}
-                  onCheckedChange={(checked) =>
-                    setIsDeleteRecursive(checked as boolean)
-                  }
-                />
-                <label
-                  htmlFor="delete-recursive"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Eliminar grupos de partidas y partidas asociados al proyecto.
-                </label>
-              </div>
-            </section>
-          }
-          show={isShowDeleteModal}
-          onClose={() => setIsShowDeleteModal(false)}
-          onConfirm={handleDeleteConfirm}
-          classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
-          isLoading={statusRespDeletePresupuesto === "pending"}
-          messageActionButton="Eliminar"
-          messageActionButtonLoading="Eliminando"
-        />
-      )}
+      <ModalConfirmacionComponent
+        title={
+          <>
+            ¿Está seguro de eliminar el presupuesto{" "}
+            <span className="font-bold underline">
+              {rowSelected?.pre_nombre}
+            </span>
+            ?
+          </>
+        }
+        message={
+          <span className="flex flex-col gap-2">
+            Esta acción se puede revertir, aun asi tener precaución.
+            <span className="flex items-center space-x-2">
+              <Checkbox
+                id="delete-recursive"
+                checked={isDeleteRecursive}
+                onCheckedChange={(checked) =>
+                  setIsDeleteRecursive(checked as boolean)
+                }
+              />
+              <label
+                htmlFor="delete-recursive"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Eliminar grupos de partidas y partidas asociados al proyecto.
+              </label>
+            </span>
+          </span>
+        }
+        show={isShowDeleteModal}
+        onClose={() => setIsShowDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+        classNameButtonAction="bg-destructive text-white hover:bg-destructive/80"
+        isLoading={statusRespDeletePresupuesto === "pending"}
+        messageActionButton="Eliminar"
+        messageActionButtonLoading="Eliminando"
+      />
     </ValidateMutation>
   );
 }

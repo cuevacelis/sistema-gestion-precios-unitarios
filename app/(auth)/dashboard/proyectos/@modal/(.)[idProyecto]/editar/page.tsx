@@ -12,24 +12,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 const EditarProyecto = dynamic(
   () => import("../../../[idProyecto]/editar/_components/edit-proyecto"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsEditProyectoModalPage {
-  params: {
+  params: Promise<{
     idProyecto: string;
-  };
+  }>;
 }
 
-export default function EditarProyectoModalPage(
+export default async function EditarProyectoModalPage(
   props: IPropsEditProyectoModalPage
 ) {
   return (
     <Modal title="Editar proyecto" classNameDialogContent="h-[500px]">
       <Suspense fallback={<Skeleton className="h-10 w-full" />}>
-        <GetDataEditarProyecto id={props.params.idProyecto} />
+        <GetDataEditarProyecto id={(await props.params).idProyecto} />
       </Suspense>
     </Modal>
   );

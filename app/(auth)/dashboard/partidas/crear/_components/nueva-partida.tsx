@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
-
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
@@ -30,10 +28,13 @@ export default function NuevoPartida({
 }: INuevoPartida) {
   const searchParams = useSearchParams();
   const grupoPartidaId = searchParams.get("grupoPartidaId");
-  const [stateForm, formActionNewPartida] = useFormState(actionsCrearPartida, {
-    isError: false,
-    message: "",
-  });
+  const [stateForm, formActionNewPartida, isPending] = useActionState(
+    actionsCrearPartida,
+    {
+      isError: false,
+      message: "",
+    }
+  );
   const [formDataExtra, setFormDataExtra] = useState({
     idGrupoPartida: grupoPartidaId,
     unidadMedida: null as string | null,
@@ -143,6 +144,7 @@ export default function NuevoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Crear partida"
           nameLoading="Creando..."
         />

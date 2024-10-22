@@ -11,17 +11,17 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 const EditarPartida = dynamic(() => import("./_components/edit-partida"), {
-  ssr: false,
   loading: () => <p>Cargando...</p>,
 });
 
 interface IPropsEditPartida {
-  params: {
+  params: Promise<{
     idPartida: string;
-  };
+  }>;
 }
 
-export default function EditarPartidaPage({ params }: IPropsEditPartida) {
+export default async function EditarPartidaPage(props: IPropsEditPartida) {
+  const params = await props.params;
   return (
     <>
       <div className="block p-4 lg:p-6">

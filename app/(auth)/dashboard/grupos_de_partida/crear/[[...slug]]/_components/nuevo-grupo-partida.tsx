@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
-
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
@@ -35,7 +33,7 @@ export default function NuevoGrupoPartida({
   isSubGroup,
   dataGrupoPartidaParent,
 }: INuevoGrupoPartida) {
-  const [stateForm, formActionNewGrupoPartida] = useFormState(
+  const [stateForm, formActionNewGrupoPartida, isPending] = useActionState(
     actionsCrearGrupoPartida,
     { isError: false, message: "" }
   );
@@ -116,6 +114,7 @@ export default function NuevoGrupoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Crear grupo de partida"
           nameLoading="Creando..."
         />

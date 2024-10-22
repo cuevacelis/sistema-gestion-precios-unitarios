@@ -1,6 +1,11 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Portal from "../portal/portal";
 
 interface IPropsLoadingModal {
@@ -16,6 +21,9 @@ export default function LoadingModal({ message }: IPropsLoadingModal) {
           onPointerDownOutside={(e) => e.preventDefault()}
           hidden={true}
         >
+          <DialogHeader>
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
           <div className="flex flex-col items-center justify-center p-6">
             <div className="h-32 w-32 animate-spin rounded-full border-4 border-blue-300 border-t-4 border-t-blue-500"></div>
             <p className="mt-4 text-lg font-semibold">

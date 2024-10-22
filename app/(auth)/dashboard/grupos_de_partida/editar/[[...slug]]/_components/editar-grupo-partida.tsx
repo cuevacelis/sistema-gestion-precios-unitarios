@@ -1,13 +1,12 @@
 "use client";
 
-import { useFormState } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 import { actionsEditarGrupoPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 
 interface IEditarGrupoPartida {
   idGrupoPartida: string | null;
@@ -20,7 +19,7 @@ export default function EditarGrupoPartida({
   idGrupoPartida,
   dataGrupoPartida,
 }: IEditarGrupoPartida) {
-  const [stateForm, formActionEditGrupoPartida] = useFormState(
+  const [stateForm, formActionEditGrupoPartida, isPending] = useActionState(
     actionsEditarGrupoPartida,
     { isError: false, message: "" }
   );
@@ -54,6 +53,7 @@ export default function EditarGrupoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Editar grupo de partida"
           nameLoading="Editando..."
         />

@@ -1,13 +1,13 @@
 "use client";
 
 import { actionsSignInCredentials } from "@/lib/actions/actions";
-import { useFormState, useFormStatus } from "react-dom";
 import InputPassComponent from "./input-pass";
 import InputUserComponent from "./input-user";
 import { useUserAgent } from "@/hooks/useUserAgent";
 import ErrorMessage from "../validation/message/error-message";
 import SubmitFormButtonComponent from "../submit-button/submit-form-button";
 import LoadingProgressModal from "./login-progress-modal";
+import { useActionState } from "react";
 
 export default function LoginComponent() {
   const userAgent = useUserAgent();
@@ -17,7 +17,7 @@ export default function LoginComponent() {
     String(userAgent)
   );
 
-  const [stateForm, formActionSignInCredentials] = useFormState(
+  const [stateForm, formActionSignInCredentials, isPending] = useActionState(
     actionsSignInCredentialsWithUserAgent,
     { isError: false, message: "" }
   );
@@ -28,6 +28,7 @@ export default function LoginComponent() {
         <InputUserComponent />
         <InputPassComponent />
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Iniciar sesión"
           nameLoading="Iniciando sesión..."
         />
@@ -38,7 +39,7 @@ export default function LoginComponent() {
         >
           {stateForm?.isError && <ErrorMessage message={stateForm?.message} />}
         </div>
-        <LoadingProgressModal />
+        <LoadingProgressModal isPending={isPending} />
       </form>
     </>
   );

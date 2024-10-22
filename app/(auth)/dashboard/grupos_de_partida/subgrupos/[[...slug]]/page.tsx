@@ -20,32 +20,30 @@ import { convertToStringOrNull } from "@/lib/utils";
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
   {
-    ssr: false,
     loading: () => <Skeleton className="h-9 w-9" />,
   }
 );
 
 const OptionsTable = dynamic(() => import("../../_components/options-table"), {
-  ssr: false,
   loading: () => <Skeleton className="h-10 w-full" />,
 });
 
 const TableComponent = dynamic(() => import("../../_components/data-table"), {
-  ssr: false,
   loading: () => <TableSkeleton />,
 });
 
 interface IGruposDePartidaPage {
-  searchParams: ISearchParams;
-  params: {
+  searchParams: Promise<ISearchParams>;
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 }
 
-export default async function GruposDePartidaSubgruposPage({
-  searchParams,
-  params,
-}: IGruposDePartidaPage) {
+export default async function GruposDePartidaSubgruposPage(
+  props: IGruposDePartidaPage
+) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const { slug = [] } = params;
   const isSubGroup = slug.length > 0;
   const lastGrupoPartidaId = slug[slug.length - 1];

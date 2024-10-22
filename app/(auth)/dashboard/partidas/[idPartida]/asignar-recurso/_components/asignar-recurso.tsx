@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
-
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 
 import { actionsAsignarRecursoToPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
-import { useSearchParams } from "next/navigation";
 import { IDataDBObtenerPartidasPaginados } from "@/lib/types/types";
 import { obtenerRecursos } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
@@ -24,13 +21,11 @@ export default function AsignarRecursoPartida({
   dataPartida,
   dataRecursos,
 }: IAsignarRecursoPartida) {
-  const [stateForm, formActionAsignarRecursoPartida] = useFormState(
-    actionsAsignarRecursoToPartida,
-    {
+  const [stateForm, formActionAsignarRecursoPartida, isPending] =
+    useActionState(actionsAsignarRecursoToPartida, {
       isError: false,
       message: "",
-    }
-  );
+    });
   const [formDataExtra, setFormDataExtra] = useState({
     idPartida: String(dataPartida.par_id),
     idRecurso: null as string | null,
@@ -86,6 +81,7 @@ export default function AsignarRecursoPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Guardar"
           nameLoading="Guardando, por favor espere..."
         />

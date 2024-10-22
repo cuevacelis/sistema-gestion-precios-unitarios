@@ -9,17 +9,17 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 const EditarProyecto = dynamic(() => import("./_components/edit-proyecto"), {
-  ssr: false,
   loading: () => <p>Cargando...</p>,
 });
 
 interface IPropsEditProyecto {
-  params: {
+  params: Promise<{
     idProyecto: string;
-  };
+  }>;
 }
 
-export default function EditarProyectoPage({ params }: IPropsEditProyecto) {
+export default async function EditarProyectoPage(props: IPropsEditProyecto) {
+  const params = await props.params;
   const { idProyecto } = params;
   return (
     <div className="block p-4 lg:p-6">

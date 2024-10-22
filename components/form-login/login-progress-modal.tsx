@@ -1,15 +1,24 @@
-import { useFormStatus } from "react-dom";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function LoadingProgressModal() {
-  const { pending } = useFormStatus();
+interface IProps {
+  isPending: boolean;
+}
 
+export default function LoadingProgressModal({ isPending }: IProps) {
   return (
-    <Dialog open={pending}>
+    <Dialog open={isPending}>
       <DialogContent className="sm:max-w-[425px]">
-        <div className="flex flex-col items-center justify-center p-6">
+        <DialogHeader>
+          <DialogTitle></DialogTitle>
+        </DialogHeader>
+        <section className="flex flex-col items-center justify-center p-6">
           <div className="relative">
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
             <Lock className="h-8 w-8 text-primary absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -23,7 +32,7 @@ export default function LoadingProgressModal() {
           <div className="mt-6 w-full max-w-[200px] h-2 bg-secondary rounded-full overflow-hidden">
             <div className={cn("h-full bg-primary", "animate-progress")} />
           </div>
-        </div>
+        </section>
       </DialogContent>
     </Dialog>
   );

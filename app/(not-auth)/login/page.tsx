@@ -14,7 +14,6 @@ import img_login_light from "@/resources/images/img-login-light.webp";
 import img_login_dark from "@/resources/images/img-login-dark2.webp";
 
 const LoginComponent = dynamic(() => import("@/components/form-login/login"), {
-  ssr: false,
   loading: () => <LoginFormSkeleton />,
 });
 

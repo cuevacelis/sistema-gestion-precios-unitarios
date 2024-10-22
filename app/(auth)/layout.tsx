@@ -8,20 +8,17 @@ import { Suspense } from "react";
 const TanstackQueryProvider = dynamic(
   () => import("@/context/tanstack-query"),
   {
-    ssr: false,
     loading: () => <NavbarLoggedSkeleton />,
   }
 );
 
 const AblyPimary = dynamic(() => import("@/context/ably"), {
-  ssr: false,
   loading: () => <NavbarLoggedSkeleton />,
 });
 
 const AblySuscriptionProvider = dynamic(
   () => import("@/context/context-ably-suscription"),
   {
-    ssr: false,
     loading: () => <NavbarLoggedSkeleton />,
   }
 );

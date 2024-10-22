@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
-
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
@@ -25,10 +23,13 @@ export default function NuevoRecurso({
   dataUnidadesDeMedida,
   dataTipoRecurso,
 }: INuevoRecurso) {
-  const [stateForm, formActionNewPartida] = useFormState(actionsCrearRecurso, {
-    isError: false,
-    message: "",
-  });
+  const [stateForm, formActionNewPartida, isPending] = useActionState(
+    actionsCrearRecurso,
+    {
+      isError: false,
+      message: "",
+    }
+  );
   const [formDataExtra, setFormDataExtra] = useState({
     tipoRecurso: null as string | null,
     unidadMedida: null as string | null,
@@ -88,6 +89,7 @@ export default function NuevoRecurso({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Crear recurso"
           nameLoading="Creando..."
         />

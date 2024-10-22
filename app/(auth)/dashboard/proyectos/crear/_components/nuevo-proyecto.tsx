@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useState } from "react";
 import { Session } from "next-auth";
 import { Loader2 } from "lucide-react";
 
@@ -38,7 +37,7 @@ type LoadingKeys =
   | "client";
 
 export default function NuevoProyecto({ session }: INuevoProyecto) {
-  const [stateForm, formActionNewPresupuesto] = useFormState(
+  const [stateForm, formActionNewPresupuesto, isPending] = useActionState(
     actionsCrearPresupuesto,
     { isError: false, message: "" }
   );
@@ -249,6 +248,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
       </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Crear proyecto"
           nameLoading="Creando..."
         />

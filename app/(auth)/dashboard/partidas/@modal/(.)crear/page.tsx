@@ -10,7 +10,6 @@ import {
 const NuevoPartida = dynamic(
   () => import("../../crear/_components/nueva-partida"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );

@@ -8,7 +8,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 const NuevoProyecto = dynamic(
   () => import("../../crear/_components/nuevo-proyecto"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );

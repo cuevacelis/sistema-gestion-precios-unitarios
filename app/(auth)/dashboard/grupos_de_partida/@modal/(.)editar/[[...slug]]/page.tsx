@@ -7,20 +7,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarGrupoPartida = dynamic(
   () => import("../../../editar/[[...slug]]/_components/editar-grupo-partida"),
-  {
-    ssr: false,
-  }
+  {}
 );
 
 interface IPropsEditarGruposDePartidaModalPage {
-  params: {
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 }
 
-export default function EditarGruposDePartidaModalPage({
-  params,
-}: IPropsEditarGruposDePartidaModalPage) {
+export default async function EditarGruposDePartidaModalPage(
+  props: IPropsEditarGruposDePartidaModalPage
+) {
+  const params = await props.params;
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);
   return (

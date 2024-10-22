@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import { cn } from "@/lib/utils";
 import type { Metadata, Viewport } from "next";
-import { Inter as FontSans } from "next/font/google";
+import { Inter } from "next/font/google";
 import ThemeProvider from "@/components/theme-provider";
 
 export const viewport: Viewport = {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-const fontSans = FontSans({
+const fontSans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 });

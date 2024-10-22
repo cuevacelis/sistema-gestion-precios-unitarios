@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, Fragment } from "react";
 import { Cell, ColumnDef, flexRender } from "@tanstack/react-table";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -60,7 +60,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
       );
 
       return (
-        <>
+        <Fragment key={`partida-${partida.grupar_id}-${partidaIndex}`}>
           {/* Grupos de partida con color dependiendo del nivel */}
           <TableRow
             key={partida.grupar_id}
@@ -112,7 +112,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
               );
             }
           )}
-        </>
+        </Fragment>
       );
     });
   };
@@ -220,7 +220,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
                 const itemNumber = generateItemNumber(rowIndex, 0);
                 const visibilityRows = row.getVisibleCells();
                 return (
-                  <>
+                  <Fragment key={`filas-${row.id}-${rowIndex}`}>
                     {/* Fila principal del proyecto en rojo */}
                     <TableRow key={row.id} className={colorStyles.level1}>
                       {row.getVisibleCells().map((cell) => (
@@ -239,7 +239,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
                       1,
                       visibilityRows
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </TableBody>

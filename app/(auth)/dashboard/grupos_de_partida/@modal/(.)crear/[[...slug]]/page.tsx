@@ -11,22 +11,21 @@ import { convertToStringOrNull } from "@/lib/utils";
 
 const NuevoGrupoPartida = dynamic(
   () => import("../../../crear/[[...slug]]/_components/nuevo-grupo-partida"),
-  {
-    ssr: false,
-  }
+  {}
 );
 
 interface IPropsNuevoGrupoPartida {
-  searchParams: ISearchParams;
-  params: {
+  searchParams: Promise<ISearchParams>;
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 }
 
-export default async function NuevoProyectoModalPage({
-  searchParams,
-  params,
-}: IPropsNuevoGrupoPartida) {
+export default async function NuevoProyectoModalPage(
+  props: IPropsNuevoGrupoPartida
+) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const { proyectoId } = searchParams;
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);

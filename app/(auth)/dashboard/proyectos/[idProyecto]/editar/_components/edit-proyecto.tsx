@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
+import { useActionState, useState } from "react";
 import { Session } from "next-auth";
 import { Loader2 } from "lucide-react";
 
@@ -54,7 +53,7 @@ export default function EditarProyectosPage({
   presupuestoId,
   initialData,
 }: IEditarPresupuesto) {
-  const [stateForm, formActionEditPresupuesto] = useFormState(
+  const [stateForm, formActionEditPresupuesto, isPending] = useActionState(
     (prevState: any, formData: FormData) =>
       actionsEditarPresupuesto(presupuestoId, prevState, formData),
     { isError: false, message: "" }
@@ -267,6 +266,7 @@ export default function EditarProyectosPage({
       </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           disabled={!districts || districts.length === 0}
           name="Editar proyecto"
           nameLoading="Editando..."

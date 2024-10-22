@@ -12,20 +12,20 @@ import { Suspense } from "react";
 const AsignarRecursoPartida = dynamic(
   () => import("./_components/asignar-recurso"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsAsignarRecursoPartida {
-  params: {
+  params: Promise<{
     idPartida: string;
-  };
+  }>;
 }
 
-export default function AsignarRecursoPartidaPage({
-  params,
-}: IPropsAsignarRecursoPartida) {
+export default async function AsignarRecursoPartidaPage(
+  props: IPropsAsignarRecursoPartida
+) {
+  const params = await props.params;
   return (
     <div className="p-4 lg:p-6">
       <h1 className="text-2xl font-semibold mb-4">Asignar recurso a partida</h1>

@@ -20,28 +20,34 @@ import { Separator } from "@/components/ui/separator";
 const VerDetalleProyecto = dynamic(
   () => import("../../[idProyecto]/_components/detalle-proyecto"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsEditProyectoModalPage {
-  params: {
+  params: Promise<{
     idProyecto: string;
-  };
+  }>;
 }
 
-export default function VerDetalleProyectoModalPage({
-  params,
-}: IPropsEditProyectoModalPage) {
+export default async function VerDetalleProyectoModalPage(
+  props: IPropsEditProyectoModalPage
+) {
+  const params = await props.params;
   const { idProyecto } = params;
   return (
     <Modal title="Ver detalle proyecto" classNameDialogContent="h-[500px]">
-      <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+      <Suspense
+        key={`ver-detalle-proyecto-${idProyecto}`}
+        fallback={<p>Cargando...</p>}
+      >
         <GetDataVerDetalleProyecto idProyecto={idProyecto} />
       </Suspense>
       <Separator className="col-span-full my-4" />
-      <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+      <Suspense
+        key={`ver-partidas-${idProyecto}`}
+        fallback={<p>Cargando...</p>}
+      >
         <GetDataVerPartidas idProyecto={idProyecto} />
       </Suspense>
     </Modal>

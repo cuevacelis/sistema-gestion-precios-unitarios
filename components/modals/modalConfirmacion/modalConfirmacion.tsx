@@ -10,13 +10,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { ReactNode } from "react";
 
 interface IProps {
   show: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  title?: string | JSX.Element;
-  message?: string | JSX.Element;
+  title?: ReactNode;
+  message?: ReactNode;
   classNameButtonAction?: string;
   isLoading?: boolean;
   messageActionButton?: string;

@@ -4,10 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { useState } from "react";
-import { useFormStatus } from "react-dom";
 
 export default function InputPassComponent() {
-  const { pending } = useFormStatus();
   const [isVisiblePass, setIsVisiblePass] = useState<boolean>(false);
 
   return (
@@ -25,7 +23,6 @@ export default function InputPassComponent() {
         <Input
           id="password"
           name="password"
-          readOnly={pending}
           autoComplete="current-password"
           type={isVisiblePass ? "text" : "password"}
           className="pr-10"

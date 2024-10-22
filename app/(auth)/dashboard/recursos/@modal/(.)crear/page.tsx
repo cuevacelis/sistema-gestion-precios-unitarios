@@ -10,7 +10,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 const NuevoRecurso = dynamic(
   () => import("../../crear/_components/nuevo-recurso"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );

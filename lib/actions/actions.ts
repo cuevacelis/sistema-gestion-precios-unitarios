@@ -225,7 +225,7 @@ export async function actionsCrearPresupuesto(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/proyectos";
     const {
       nameUser,
@@ -292,7 +292,7 @@ export async function actionsEditarPresupuesto(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/proyectos";
     const {
       idPrespuesto,
@@ -362,7 +362,7 @@ export async function actionsDeletePresupuesto(
   newState?: number
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/proyectos";
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
@@ -403,7 +403,7 @@ export async function actionsDeleteEstadoPresupuestoRecursivo(
   newState?: number
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/proyectos";
     const { id } = await deletePresupuestoSchema.parseAsync({
       id: Pre_Id,
@@ -477,7 +477,7 @@ export async function actionsCrearGrupoPartida(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer =
       headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
     const { idProyecto, idLastGroupPartida, nombreGrupoPartida } =
@@ -527,7 +527,7 @@ export async function actionsEditarGrupoPartida(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer =
       headersList.get("referer") || "/dashboard/grupos_de_partida/subgrupos";
     const { idGrupoPartida, nombreGrupoPartida } =
@@ -590,7 +590,7 @@ export async function actionsDeleteGrupoPartida(
   newState?: number
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer =
       headersList.get("referer") || "/dashboard/grupos_de_partida";
     const { id } = await deleteGrupoPartidaSchema.parseAsync({
@@ -630,7 +630,7 @@ export async function actionsDeleteGrupoPartida(
 // #region PARTIDAS
 export async function actionsCrearPartida(_prevState: any, formData: FormData) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/partidas";
     const {
       idGrupoPartida,
@@ -687,7 +687,7 @@ export async function actionsEditarPartida(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/partidas";
     const {
       idPartida,
@@ -744,7 +744,7 @@ export async function actionsDeletePartida(
   newState?: number
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/partidas";
     const { idPartida } = await deletePartidaSchema.parseAsync({
       idPartida: p_par_id,
@@ -782,7 +782,7 @@ export async function actionsDeletePartida(
 // #region RECURSOS
 export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/recursos";
     const { nombreRecurso, tipoRecurso, unidadMedida, indunificado } =
       await crearRecursoSchema.parseAsync({
@@ -832,7 +832,7 @@ export async function actionsAsignarRecursoToPartida(
   formData: FormData
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/recursos";
     const { idPartida, idRecurso, cantidad, cuadrilla, precio } =
       await asignarRecursoToPartidaSchema.parseAsync({
@@ -884,7 +884,7 @@ export async function actionsDeleteRecurso(
   newState?: number
 ) {
   try {
-    const headersList = headers();
+    const headersList = await headers();
     const referer = headersList.get("referer") || "/dashboard/recursos";
     const { idRecurso } = await deleteRecursoSchema.parseAsync({
       idRecurso: p_rec_id,

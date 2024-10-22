@@ -11,33 +11,28 @@ import { obtenerHojaDePresupuesto } from "@/lib/services/sql-queries";
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
   {
-    ssr: false,
     loading: () => <Skeleton className="h-9 w-9" />,
   }
 );
 
 const Search = dynamic(() => import("@/components/search/search"), {
-  ssr: false,
   loading: () => <></>,
 });
 
 const OptionsTable = dynamic(() => import("./_components/options-table"), {
-  ssr: false,
   loading: () => <Skeleton className="h-10 w-full" />,
 });
 
 const TableComponent = dynamic(() => import("./_components/data-table"), {
-  ssr: false,
   loading: () => <TableSkeleton />,
 });
 
 interface IProjectPage {
-  searchParams: ISearchParams;
+  searchParams: Promise<ISearchParams>;
 }
 
-export default async function HojaDelPresupuestoPage({
-  searchParams,
-}: IProjectPage) {
+export default async function HojaDelPresupuestoPage(props: IProjectPage) {
+  const searchParams = await props.searchParams;
   const { page, rowsPerPage, query } = searchParams;
   const uniqueKey = `table-hojaDelPresupuestoo-${page}-${rowsPerPage}-${query}`;
 

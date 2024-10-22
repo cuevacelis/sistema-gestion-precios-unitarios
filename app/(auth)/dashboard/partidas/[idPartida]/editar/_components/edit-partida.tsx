@@ -1,8 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useFormState } from "react-dom";
-
+import { useActionState, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
@@ -29,10 +27,13 @@ export default function EditarPartida({
   dataGruposDePartidas,
   dataUnidadesDeMedida,
 }: IEditarPartida) {
-  const [stateForm, formActionNewPartida] = useFormState(actionsEditarPartida, {
-    isError: false,
-    message: "",
-  });
+  const [stateForm, formActionNewPartida, isPending] = useActionState(
+    actionsEditarPartida,
+    {
+      isError: false,
+      message: "",
+    }
+  );
   const [formDataExtra, setFormDataExtra] = useState({
     idPartida: dataPartida.par_id,
     unidadMedida: String(dataPartida.unimed_id),
@@ -101,6 +102,7 @@ export default function EditarPartida({
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
+          isPending={isPending}
           name="Editar partida"
           nameLoading="Editando..."
         />

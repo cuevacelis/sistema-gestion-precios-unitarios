@@ -45,7 +45,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
   return (
     <section className="flex flex-wrap items-center gap-4">
       <Link href={createPath} scroll={false}>
-        <Button size="default" variant="default" className="h-9 gap-1">
+        <Button size="default" variant="default" className="h-9 gap-1" disabled>
           <PlusCircle className="w-4" />
           <span>Nuevo</span>
         </Button>
@@ -53,7 +53,12 @@ export default function OptionsTable({ session }: { session: Session | null }) {
 
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button size="default" variant="secondary" className="h-9 gap-1">
+          <Button
+            size="default"
+            variant="secondary"
+            className="h-9 gap-1"
+            disabled
+          >
             <Download className="w-4" />
             <span>Exportar</span>
           </Button>

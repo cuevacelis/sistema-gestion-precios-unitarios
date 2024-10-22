@@ -8,18 +8,19 @@ import { Suspense } from "react";
 const VerDetallePartida = dynamic(
   () => import("./_components/detalle-partida"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsVerDetallePartida {
-  params: {
+  params: Promise<{
     idPartida: string;
-  };
+  }>;
 }
 
-export default function VerDetallePartidaPage(props: IPropsVerDetallePartida) {
+export default async function VerDetallePartidaPage(
+  props: IPropsVerDetallePartida
+) {
   return (
     <>
       <div className="block p-4 lg:p-6">
@@ -27,10 +28,10 @@ export default function VerDetallePartidaPage(props: IPropsVerDetallePartida) {
         <Card x-chunk="overflow-auto" className="mb-6">
           <CardContent>
             <Suspense
-              key={props.params?.idPartida}
+              key={(await props.params)?.idPartida}
               fallback={<p>Cargando...</p>}
             >
-              <GetDataVerDetallePartida id={props.params.idPartida} />
+              <GetDataVerDetallePartida id={(await props.params).idPartida} />
             </Suspense>
           </CardContent>
         </Card>

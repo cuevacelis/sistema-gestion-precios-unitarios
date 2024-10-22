@@ -12,20 +12,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 const EditarPartida = dynamic(
   () => import("../../../[idPartida]/editar/_components/edit-partida"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsEditPartidaModalPage {
-  params: {
+  params: Promise<{
     idPartida: string;
-  };
+  }>;
 }
 
-export default function EditarPartidaModalPage({
-  params,
-}: IPropsEditPartidaModalPage) {
+export default async function EditarPartidaModalPage(
+  props: IPropsEditPartidaModalPage
+) {
+  const params = await props.params;
   return (
     <Modal title="Editar partida" classNameDialogContent="h-[500px]">
       <Suspense

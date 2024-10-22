@@ -19,20 +19,20 @@ import { Suspense } from "react";
 const VerDetalleProyecto = dynamic(
   () => import("./_components/detalle-proyecto"),
   {
-    ssr: false,
     loading: () => <p>Cargando...</p>,
   }
 );
 
 interface IPropsVerDetalleProyecto {
-  params: {
+  params: Promise<{
     idProyecto: string;
-  };
+  }>;
 }
 
-export default function VerDetalleProyectoPage({
-  params,
-}: IPropsVerDetalleProyecto) {
+export default async function VerDetalleProyectoPage(
+  props: IPropsVerDetalleProyecto
+) {
+  const params = await props.params;
   const { idProyecto } = params;
   return (
     <div className="block p-4 lg:p-6">

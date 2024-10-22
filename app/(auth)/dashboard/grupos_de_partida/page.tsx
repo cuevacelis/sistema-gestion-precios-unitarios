@@ -2,12 +2,11 @@ import { ISearchParams } from "@/lib/types/types";
 import { redirect } from "next/navigation";
 
 interface ISubgruposDePartidaPageProps {
-  searchParams: ISearchParams;
+  searchParams: Promise<ISearchParams>;
 }
 
-export default function SubgruposDePartidaPage({
-  searchParams,
-}: ISubgruposDePartidaPageProps) {
+export default async function SubgruposDePartidaPage(props: ISubgruposDePartidaPageProps) {
+  const searchParams = await props.searchParams;
   const currentParams = new URLSearchParams(
     searchParams as Record<string, string>
   );

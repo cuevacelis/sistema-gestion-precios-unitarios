@@ -8,7 +8,6 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const NuevoPartida = dynamic(() => import("./_components/nueva-partida"), {
-  ssr: false,
   loading: () => <p>Cargando...</p>,
 });
 

@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const NuevoRecurso = dynamic(() => import("./_components/nuevo-recurso"), {
-  ssr: false,
   loading: () => <p>Cargando...</p>,
 });
 

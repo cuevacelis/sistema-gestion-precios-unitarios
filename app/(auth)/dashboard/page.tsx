@@ -30,7 +30,6 @@ export const metadata: Metadata = {
 const TableComponent = dynamic(
   () => import("./_components/data-table-proyectos"),
   {
-    ssr: false,
     loading: () => <Skeleton className="h-10 w-full" />,
   }
 );

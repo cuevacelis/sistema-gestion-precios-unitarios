@@ -11,22 +11,21 @@ import { Suspense } from "react";
 
 const NuevoGrupoPartida = dynamic(
   () => import("./_components/nuevo-grupo-partida"),
-  {
-    ssr: false,
-  }
+  {}
 );
 
 interface IPropsNuevoGrupoPartida {
-  searchParams: ISearchParams;
-  params: {
+  searchParams: Promise<ISearchParams>;
+  params: Promise<{
     slug?: string[];
-  };
+  }>;
 }
 
-export default function NuevoGrupoPartidaPage({
-  searchParams,
-  params,
-}: IPropsNuevoGrupoPartida) {
+export default async function NuevoGrupoPartidaPage(
+  props: IPropsNuevoGrupoPartida
+) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
   const { proyectoId } = searchParams;
   const { slug = [] } = params;
   const lastSlug = slug.at(-1);
