@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { obtenerProvinces } from "@/lib/services/sql-queries";
 import { auth } from "@/auth";
 
-export const POST = auth(async function POST(request) {
+export const POST: any = auth(async function POST(request) {
   try {
     if (!request.auth) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

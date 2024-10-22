@@ -3,7 +3,7 @@ import Ably from "ably";
 
 export const revalidate = 0;
 
-export const GET = auth(async function GET(request) {
+export const GET: any = auth(async function GET(request) {
   try {
     if (!request.auth) {
       return Response.json({ message: "Unauthorized" }, { status: 401 });

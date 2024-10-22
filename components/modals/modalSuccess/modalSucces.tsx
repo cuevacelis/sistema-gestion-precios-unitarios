@@ -7,10 +7,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ReactNode } from "react";
 
 interface IProps {
   title?: string;
-  message?: string | JSX.Element;
+  message?: ReactNode;
 }
 
 export default function ModalSuccessComponent(props: IProps) {
