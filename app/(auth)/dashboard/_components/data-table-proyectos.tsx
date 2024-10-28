@@ -10,7 +10,7 @@ interface IProps {
 export default function TableComponent({ dataProyectos }: IProps) {
   return (
     <ul>
-      {dataProyectos[0].result.data.map((project) => (
+      {dataProyectos[0].result?.data?.map((project) => (
         <li key={project.pre_id} className="mb-2 p-2 bg-secondary rounded-md">
           <div className="font-semibold">{project.pre_nombre}</div>
           <div className="text-sm text-muted-foreground">
