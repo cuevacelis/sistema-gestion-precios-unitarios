@@ -16,23 +16,12 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { actionsSignOut } from "@/lib/actions/actions";
 import {
   ISpModuloObtenerModulosXPusuario,
   TStatusResponseActions,
 } from "@/lib/types/types";
-import {
-  cn,
-  convertirEspaciosAGuionesBajos,
-  obtenerHoraRelativa,
-  obtenerSiglas,
-} from "@/lib/utils";
+import { obtenerHoraRelativa, obtenerSiglas } from "@/lib/utils";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import {
@@ -53,11 +42,10 @@ import { Session } from "next-auth";
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import ModuleIconsComponent from "./module-icons";
 import { useAblySuscription } from "@/context/context-ably-suscription";
 import { useState } from "react";
 import ValidateMutation from "@/components/validate/validateMutation";
+import { useSidebar } from "@/components/ui/sidebar";
 
 const BreadcrumbResponsive = dynamic(
   () => import("@/components/breadcrumbs/breadcrumbResponsive"),
@@ -67,12 +55,10 @@ const BreadcrumbResponsive = dynamic(
 interface IProps {
   modulesByUser: ISpModuloObtenerModulosXPusuario[];
   session: Session | null;
-  stateSidebar: boolean;
-  setStateSidebar: (state: boolean) => void;
 }
 
 export default function TopBarComponent(props: IProps) {
-  const pathname = usePathname();
+  const { state: stateSidebar, toggleSidebar, isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
   const { messagesNotification, setMessagesNotification } =
     useAblySuscription();
@@ -108,59 +94,27 @@ export default function TopBarComponent(props: IProps) {
   return (
     <ValidateMutation statusMutation={[statusRespLogout]}>
       <header className="sticky top-0 z-20 w-full flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 border-l bg-background">
-        <Sheet>
-          <SheetTrigger asChild>
+        <div className="flex flex-row flex-1 items-center gap-x-4">
+          {isMobile && (
             <Button
               variant="outline"
               size="icon"
-              className="shrink-0 md:hidden"
+              className="h-8 w-8 flex"
+              onClick={toggleSidebar}
             >
               <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle navigation menu</span>
             </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="flex flex-col">
-            <nav className="grid gap-2 text-lg font-light">
-              <SheetClose asChild>
-                <Link href="/" className="flex items-center gap-2">
-                  <span className="mb-2">CALCPU</span>
-                </Link>
-              </SheetClose>
-              {props.modulesByUser.map((module) => {
-                return (
-                  <SheetClose asChild key={module.mod_nombre}>
-                    <Link
-                      href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
-                      key={module.mod_nombre}
-                      className={cn(
-                        "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
-                        pathname.startsWith(
-                          `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
-                        ) && "bg-muted text-primary"
-                      )}
-                    >
-                      <ModuleIconsComponent modNombre={module.mod_nombre} />
-                      {module.mod_nombre}
-                    </Link>
-                  </SheetClose>
-                );
-              })}
-            </nav>
-          </SheetContent>
-        </Sheet>
-        <div className="flex flex-row flex-1 items-center gap-x-4">
-          {!props.stateSidebar && (
+          )}
+          {/* {stateSidebar === "collapsed" && !isMobile && (
             <Button
               variant="outline"
               size="icon"
-              className="h-8 w-8 hidden md:flex"
-              onClick={() => {
-                props.setStateSidebar(!props.stateSidebar);
-              }}
+              className="h-8 w-8 flex"
+              onClick={toggleSidebar}
             >
               <SidebarOpen className="h-5 w-5" />
             </Button>
-          )}
+          )} */}
           <BreadcrumbResponsive />
         </div>
 

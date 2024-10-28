@@ -22,7 +22,7 @@ interface IProps {
 }
 
 export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
-  const totalResults = dataPresupuesto.length;
+  const totalResults = dataPresupuesto?.length;
 
   const colorStyles = {
     level1: "text-red-600", // Primer nivel (proyectos)
@@ -124,7 +124,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
           accessorKey: "item",
           header: "Item",
           cell: ({ row, table }) =>
-            generateItemNumber(table.getRowModel().rows.indexOf(row), 0),
+            generateItemNumber(table?.getRowModel()?.rows.indexOf(row), 0),
         },
         {
           accessorKey: "pre_nombre",
@@ -190,7 +190,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
     },
   });
 
-  if (!table || !table.getRowModel().rows.length) {
+  if (!table || !table?.getRowModel()?.rows.length) {
     return <div>No hay datos disponibles.</div>;
   }
 
@@ -216,7 +216,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.map((row, rowIndex) => {
+              {table?.getRowModel()?.rows.map((row, rowIndex) => {
                 const itemNumber = generateItemNumber(rowIndex, 0);
                 const visibilityRows = row.getVisibleCells();
                 return (

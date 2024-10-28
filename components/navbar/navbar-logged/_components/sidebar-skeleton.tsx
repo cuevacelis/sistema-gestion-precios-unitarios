@@ -11,7 +11,7 @@ export default function SkeletonSidebarComponent() {
     <section
       className={cn(
         "transition-all duration-400 ease-in-out items-center gap-4 sm:py-4 overflow-hidden",
-        "w-60 px-4 lg:px-6 hidden md:block"
+        "w-64 px-4 lg:px-6 hidden md:block"
       )}
     >
       <div className="flex justify-between items-center text-muted-foreground mb-4 font-normal">

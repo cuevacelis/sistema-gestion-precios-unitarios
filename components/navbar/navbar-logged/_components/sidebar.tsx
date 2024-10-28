@@ -3,69 +3,94 @@
 import { Button } from "@/components/ui/button";
 import { ISpModuloObtenerModulosXPusuario } from "@/lib/types/types";
 import { cn, convertirEspaciosAGuionesBajos } from "@/lib/utils";
-import { SidebarClose } from "lucide-react";
+import { SidebarClose, SidebarOpen } from "lucide-react";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ModuleIconsComponent from "./module-icons";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from "@/components/ui/sidebar";
 
 interface SidebarProps {
   session: Session | null;
   modulesByUser: ISpModuloObtenerModulosXPusuario[];
-  stateSidebar: boolean;
-  setStateSidebar: (state: boolean) => void;
 }
 
 export default function SidebarComponent(props: SidebarProps) {
   const pathname = usePathname();
+  const { toggleSidebar, state: stateSidebar } = useSidebar();
 
   return (
-    <section
-      className={cn(
-        "transition-all duration-400 ease-in-out items-center gap-4 sm:py-4 overflow-hidden",
-        {
-          "w-0 p-0": !props.stateSidebar,
-          "w-60 px-4 lg:px-6 hidden md:block": props.stateSidebar,
-        }
-      )}
-    >
-      <div className="flex justify-between items-center text-muted-foreground mb-4 font-normal">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8"
-          onClick={() => props.setStateSidebar(!props.stateSidebar)}
-        >
-          <SidebarClose className="h-5 w-5" />
-        </Button>
-        <Link href="/" className="flex items-center gap-2 ml-auto">
-          <span className="">CALCPU</span>
-        </Link>
-      </div>
-      <div className="flex-1">
-        <nav className="grid items-start text-sm font-normal">
-          {props.modulesByUser.map((module) => {
-            return (
-              <Link
-                key={module.mod_nombre}
-                href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 mt-4 transition-all hover:text-primary",
-                  pathname.startsWith(
-                    `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
-                  ) && "bg-muted text-primary"
-                )}
-              >
-                <ModuleIconsComponent
-                  className="h-6 w-6"
-                  modNombre={module.mod_nombre}
-                />
-                {module.mod_nombre}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-    </section>
+    <Sidebar className={cn("font-normal px-4")} collapsible="icon">
+      <SidebarHeader>
+        {stateSidebar === "expanded" && (
+          <section className="flex justify-between items-center text-muted-foreground mt-2 font-normal">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 dark:text-white text-black"
+              onClick={toggleSidebar}
+            >
+              <SidebarClose />
+            </Button>
+            <Link href="/" className="flex items-center gap-2 ml-auto">
+              <span className="">CALCPU</span>
+            </Link>
+          </section>
+        )}
+        {stateSidebar === "collapsed" && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 flex mt-2"
+            onClick={toggleSidebar}
+          >
+            <SidebarOpen />
+          </Button>
+        )}
+      </SidebarHeader>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-2">
+              {props.modulesByUser.map((module) => (
+                <SidebarMenuItem key={module.mod_nombre}>
+                  <SidebarMenuButton asChild>
+                    <Link
+                      key={module.mod_nombre}
+                      href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
+                      className={cn(
+                        "h-auto",
+                        pathname.startsWith(
+                          `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
+                        ) && "bg-muted text-primary"
+                      )}
+                    >
+                      <ModuleIconsComponent
+                        className={cn("", {
+                          "!h-6 !w-6": stateSidebar === "expanded",
+                        })}
+                        modNombre={module.mod_nombre}
+                      />
+                      <span>{module.mod_nombre}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
 }

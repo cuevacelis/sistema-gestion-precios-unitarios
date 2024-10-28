@@ -89,11 +89,12 @@ async function GetDataOptions() {
 
 async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const session = await auth();
-  // const dataHojaDelPresupuesto = await obtenerHojaDePresupuesto("4");
   const dataHojaDelPresupuesto = await obtenerHojaDePresupuesto();
 
   return (
-    <TableComponent dataPresupuesto={dataHojaDelPresupuesto[0].result.data} />
+    <TableComponent
+      dataPresupuesto={dataHojaDelPresupuesto[0]?.result?.data || []}
+    />
   );
   return null;
 }

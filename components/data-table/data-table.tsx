@@ -42,8 +42,8 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
+        {table?.getRowModel()?.rows?.length ? (
+          table?.getRowModel()?.rows.map((row) => (
             <ContextMenu key={row.id}>
               <ContextMenuTrigger key={row.id} asChild>
                 <TableRow

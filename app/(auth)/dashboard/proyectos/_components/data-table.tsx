@@ -234,7 +234,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
     }
   };
 
-  if (!table || !table.getRowModel().rows.length) {
+  if (!table || !table?.getRowModel()?.rows.length) {
     return <div>No hay datos disponibles.</div>;
   }
 
@@ -267,7 +267,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table?.getRowModel()?.rows.map((row) => (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>
                     <TableRow

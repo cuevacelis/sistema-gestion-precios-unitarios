@@ -8,6 +8,7 @@ import ErrorMessage from "../validation/message/error-message";
 import SubmitFormButtonComponent from "../submit-button/submit-form-button";
 import LoadingProgressModal from "./login-progress-modal";
 import { useActionState } from "react";
+import Form from "next/form";
 
 export default function LoginComponent() {
   const userAgent = useUserAgent();
@@ -24,7 +25,7 @@ export default function LoginComponent() {
 
   return (
     <>
-      <form className="grid gap-4" action={formActionSignInCredentials}>
+      <Form className="grid gap-4" action={formActionSignInCredentials}>
         <InputUserComponent />
         <InputPassComponent />
         <SubmitFormButtonComponent
@@ -40,7 +41,7 @@ export default function LoginComponent() {
           {stateForm?.isError && <ErrorMessage message={stateForm?.message} />}
         </div>
         <LoadingProgressModal isPending={isPending} />
-      </form>
+      </Form>
     </>
   );
 }

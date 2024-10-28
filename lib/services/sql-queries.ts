@@ -961,3 +961,30 @@ export const obtenerHojaDePresupuestoByProyectoId = cache(
   ["hojaPresupuesto"],
   { tags: ["hojaPresupuesto"], revalidate: 60 * 60 * 24 }
 );
+
+// #region PRECIOS RECOMENDADOS
+export const obtenerPreciosRecomendadosByNombreAndDepartamento = cache(
+  async (nombreRecurso: string, dep_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("precio_recurso_recomendado")
+        .innerJoin(
+          "departamento",
+          "precio_recurso_recomendado.dep_id",
+          "departamento.dep_id"
+        )
+        .where(
+          sql`lower(precio_recurso_recomendado.nombre)`,
+          "like",
+          `%${nombreRecurso.toLowerCase()}%`
+        )
+        .where("precio_recurso_recomendado.dep_id", "=", dep_id)
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["preciosRecomendados"],
+  { tags: ["preciosRecomendados"], revalidate: 60 * 60 * 24 }
+);

@@ -9,9 +9,9 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Numeric = ColumnType<string, number | string>;
+export type Numeric = ColumnType<string, number | string, number | string>;
 
-export type Timestamp = ColumnType<Date, Date | string>;
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export interface Cliente {
   cli_abreviatura: string;
@@ -90,6 +90,15 @@ export interface PrecioRecursoPresupuesto {
   prp_id: Generated<number>;
   rec_id: number;
   rec_precio: Numeric | null;
+}
+
+export interface PrecioRecursoRecomendado {
+  codigo_area: string | null;
+  dep_id: number | null;
+  fecha_publicacion: Timestamp | null;
+  nombre: string | null;
+  precio: Numeric | null;
+  prr_id: Generated<number>;
 }
 
 export interface Presupuesto {
@@ -175,6 +184,7 @@ export interface DB {
   pais: Pais;
   partida: Partida;
   precio_recurso_presupuesto: PrecioRecursoPresupuesto;
+  precio_recurso_recomendado: PrecioRecursoRecomendado;
   presupuesto: Presupuesto;
   provincia: Provincia;
   recurso: Recurso;

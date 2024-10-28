@@ -23,8 +23,8 @@ import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
 import useProvinceQuery from "@/hooks/tanstack-query/useProvinceQuery";
 import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
 import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
-import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import ContainerInput from "@/components/ui/container-input";
+import Form from "next/form";
 
 interface IEditarPresupuesto {
   session: Session | null;
@@ -160,7 +160,7 @@ export default function EditarProyectosPage({
   };
 
   return (
-    <form
+    <Form
       action={handleSubmit}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
@@ -275,6 +275,6 @@ export default function EditarProyectosPage({
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
         {stateForm?.message && <ErrorMessage message={stateForm?.message} />}
       </div>
-    </form>
+    </Form>
   );
 }

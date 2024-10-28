@@ -16,6 +16,7 @@ import ComboboxSingleSelection from "@/components/combobox/combobox-single-selec
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import Form from "next/form";
 
 interface INuevoPartida {
   dataGruposDePartidas: Awaited<ReturnType<typeof obtenerGruposDePartidas>>;
@@ -56,7 +57,7 @@ export default function NuevoPartida({
   };
 
   return (
-    <form
+    <Form
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
@@ -152,6 +153,6 @@ export default function NuevoPartida({
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
         {stateForm?.message && <ErrorMessage message={stateForm?.message} />}
       </div>
-    </form>
+    </Form>
   );
 }

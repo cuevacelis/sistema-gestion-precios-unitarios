@@ -6,7 +6,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useState, useRef } from "react";
+import { useRef } from "react";
+import Form from "next/form";
 
 interface ISearchProps {
   placeholder?: string;
@@ -22,12 +23,9 @@ export default function Search({
   const searchParams = useSearchParams();
   const { replace } = useRouter();
   const pathname = usePathname();
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get("query")?.toString() || ""
-  );
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSearch = useDebouncedCallback((term) => {
+  const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", "1");
 
@@ -39,52 +37,36 @@ export default function Search({
     replace(`${pathname}?${params.toString()}`);
   }, 300);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSearch.flush();
-  };
-
-  const handleClear = () => {
-    setSearchTerm("");
-    handleSearch("");
+  const clearSearch = () => {
     if (inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.value = "";
     }
+    const params = new URLSearchParams(searchParams);
+    params.delete("query");
+    params.set("page", "1");
+    replace(`${pathname}?${params.toString()}`);
   };
 
   return (
-    <form onSubmit={handleSubmit} className={cn("relative", className)}>
-      <style jsx>{`
-        input[type="search"]::-webkit-search-cancel-button {
-          -webkit-appearance: none;
-          display: none;
-        }
-      `}</style>
+    <Form action="" className={cn("relative", className)}>
       <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+      <Input name="page" type="hidden" value="1" />
       <Input
         ref={inputRef}
-        type="text"
+        type="search"
+        name="query"
         disabled={disabled}
         placeholder={placeholder || "Buscar..."}
-        value={searchTerm}
+        defaultValue={searchParams.get("query")?.toString() || ""}
         onChange={(e) => {
-          setSearchTerm(e.target.value);
-          handleSearch(e.target.value);
+          if (e.target.value === "") {
+            clearSearch();
+          } else {
+            handleSearch(e.target.value);
+          }
         }}
         className="w-full rounded-full pl-10 pr-24 bg-muted/50 focus-visible:bg-background transition-colors"
       />
-      {searchTerm && (
-        <Button
-          type="button"
-          size="sm"
-          variant="ghost"
-          onClick={handleClear}
-          className="absolute right-20 top-1/2 -translate-y-1/2 px-2 py-1"
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Limpiar búsqueda</span>
-        </Button>
-      )}
       <Button
         type="submit"
         size="sm"
@@ -94,6 +76,6 @@ export default function Search({
       >
         Buscar
       </Button>
-    </form>
+    </Form>
   );
 }

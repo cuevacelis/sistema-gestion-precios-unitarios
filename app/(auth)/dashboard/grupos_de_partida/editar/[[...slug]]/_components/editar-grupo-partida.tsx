@@ -7,6 +7,7 @@ import { actionsEditarGrupoPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
 import { useActionState, useState } from "react";
+import Form from "next/form";
 
 interface IEditarGrupoPartida {
   idGrupoPartida: string | null;
@@ -36,7 +37,7 @@ export default function EditarGrupoPartida({
   };
 
   return (
-    <form
+    <Form
       action={handleSubmit}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
@@ -61,6 +62,6 @@ export default function EditarGrupoPartida({
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">
         {stateForm?.message && <ErrorMessage message={stateForm?.message} />}
       </div>
-    </form>
+    </Form>
   );
 }

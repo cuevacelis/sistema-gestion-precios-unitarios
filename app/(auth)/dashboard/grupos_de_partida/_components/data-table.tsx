@@ -255,7 +255,7 @@ export default function TableComponent({
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows.map((row) => (
+              {table?.getRowModel()?.rows.map((row) => (
                 <ContextMenu key={row.id}>
                   <ContextMenuTrigger asChild>
                     <TableRow
