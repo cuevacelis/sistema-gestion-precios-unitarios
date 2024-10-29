@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -65,13 +65,11 @@ export default function IndicesDePreciosUnificados({
   const [selectedDate2, setSelectedDate2] = useState(uniqueDates[1] || null);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
-  const filteredData = useMemo(() => {
-    return dataIndicesDePreciosUnificados.filter(
-      (item) => item.nombre === selectedRecurso
-    );
-  }, [selectedRecurso]);
+  const filteredData = dataIndicesDePreciosUnificados.filter(
+    (item) => item.nombre === selectedRecurso
+  );
 
-  const dateComparisonData = useMemo(() => {
+  const dateComparisonData = (() => {
     if (!selectedDate1 || !selectedDate2) return [];
 
     const date1Data = filteredData.filter(
@@ -97,7 +95,7 @@ export default function IndicesDePreciosUnificados({
         [date2Label]: date2Item ? parseFloat(String(date2Item?.precio)) : null,
       };
     });
-  }, [filteredData, selectedDate1, selectedDate2]);
+  })();
 
   const recursosOptions = uniqueRecursos.map((recurso) => ({
     value: String(recurso),
