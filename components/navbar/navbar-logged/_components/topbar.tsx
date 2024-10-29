@@ -229,10 +229,15 @@ export default function TopBarComponent(props: IProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Perfil</span>
-                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              <DropdownMenuItem asChild>
+                <Link
+                  href="/dashboard/configuracion/general"
+                  className="flex items-center w-full"
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Perfil</span>
+                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link

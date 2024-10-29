@@ -7,7 +7,7 @@ interface IProps {
   dataProyectos: ISpPresupuestoObtenPaginado[];
 }
 
-export default function TableComponent({ dataProyectos }: IProps) {
+export default function ProjectsRecents({ dataProyectos }: IProps) {
   return (
     <ul>
       {dataProyectos[0].result?.data?.map((project) => (

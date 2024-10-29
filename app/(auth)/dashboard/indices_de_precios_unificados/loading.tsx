@@ -1,30 +1,52 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <CardHeader className="px-0 pt-0">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-4">
-              <Skeleton className="h-10 w-10" />
-              <Skeleton className="h-8 w-48" />
-            </div>
-            <Skeleton className="h-10 w-full sm:w-64 lg:w-96" />
-          </div>
-        </CardHeader>
-      </Card>
+    <div className="container p-6 space-y-6">
+      {/* Title Skeleton */}
+      <Skeleton className="h-9 w-2/3 max-w-lg" />
 
-      <Card className="p-6">
-        <CardContent className="px-0 py-0">
-          <Skeleton className="h-10 w-full" />
-        </CardContent>
-      </Card>
+      {/* Alert Skeleton */}
+      <div className="border rounded-lg p-4 mb-6 space-y-2">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-4 w-4" />
+          <Skeleton className="h-5 w-24" />
+        </div>
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-3/4" />
+      </div>
 
+      {/* Main Content Skeleton */}
+      <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(6)].map((_, i) => (
+            <Card key={i} className="w-full">
+              <CardHeader>
+                <Skeleton className="h-5 w-3/4" />
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Info Card Skeleton */}
       <Card>
-        <CardContent className="p-6">
-          <Skeleton className="h-[400px] w-full" />
+        <CardHeader>
+          <Skeleton className="h-6 w-2/3" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-4 w-full" />
+          <div className="space-y-2 pl-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-4 w-5/6" />
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

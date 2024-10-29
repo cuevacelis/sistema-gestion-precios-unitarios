@@ -1,5 +1,4 @@
 import {
-  Box,
   BracesIcon,
   Clock,
   Download,
@@ -10,6 +9,7 @@ import {
   FolderTree,
   LayoutDashboardIcon,
   MapPinIcon,
+  Package,
   PencilLine,
   PlusCircle,
   Trash,
@@ -34,7 +34,7 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
   } else if (modNombre.toLowerCase().includes("partida")) {
     return <File className={className} />;
   } else if (modNombre.toLowerCase().includes("recurso")) {
-    return <Box className={className} />;
+    return <Package className={className} />;
   } else if (modNombre.toLowerCase().includes("dashboard")) {
     return <LayoutDashboardIcon className={className} />;
   } else if (modNombre.toLowerCase().includes("editar")) {

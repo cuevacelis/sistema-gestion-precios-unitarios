@@ -65,6 +65,23 @@ export const validateUserId = cache(
   { tags: ["credentials"] }
 );
 
+export const obtenerUsuarioLogeado = cache(
+  async (userId: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom("usuario")
+        .selectAll()
+        .where("usu_id", "=", userId)
+        .where("usu_estado", "=", 1)
+        .executeTakeFirst();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuarioLogeado"],
+  { tags: ["usuarioLogeado"] }
+);
+
 // #region SIDEBAR
 export const getModulosByUserId = cache(
   async (userId: number) => {
@@ -1186,7 +1203,7 @@ export const obtenerHojaDePresupuestoByProyectoId = cache(
   { tags: ["hojaPresupuesto"], revalidate: 60 * 60 * 24 }
 );
 
-// #region PRECIOS RECOMENDADOS
+// #region INDICES DE PRECIOS UNIFICADOS
 export const obtenerPreciosRecomendados = cache(
   async () => {
     try {
@@ -1206,6 +1223,7 @@ export const obtenerPreciosRecomendados = cache(
   ["preciosRecomendados"],
   { tags: ["preciosRecomendados"], revalidate: 60 * 60 * 24 }
 );
+
 export const obtenerPreciosRecomendadosByNombreAndDepartamento = cache(
   async (nombreRecurso: string, dep_id: number) => {
     try {
@@ -1230,4 +1248,25 @@ export const obtenerPreciosRecomendadosByNombreAndDepartamento = cache(
   },
   ["preciosRecomendados"],
   { tags: ["preciosRecomendados"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerUltimaFechaPreciosRecomendados = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom("precio_recurso_recomendado")
+        .select([
+          sql<string>`TO_CHAR(precio_recurso_recomendado.fecha_publicacion, 'YYYY-MM-DD"T"HH24:MI:SS.MS')`.as(
+            "fecha_publicacion"
+          ),
+        ])
+        .orderBy("precio_recurso_recomendado.fecha_publicacion", "desc")
+        .limit(1)
+        .executeTakeFirst();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["ultimaFechaPreciosRecomendados"],
+  { tags: ["ultimaFechaPreciosRecomendados"], revalidate: 60 * 60 * 24 }
 );

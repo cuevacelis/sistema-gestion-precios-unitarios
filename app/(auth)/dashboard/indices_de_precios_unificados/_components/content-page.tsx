@@ -9,13 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   ChartConfig,
   ChartContainer,
   ChartTooltipContent,
@@ -31,9 +24,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { obtenerPreciosRecomendados } from "@/lib/services/sql-queries";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { RocketIcon } from "lucide-react";
-import Link from "next/link";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import ContainerInput from "@/components/ui/container-input";
 import { useMediaQuery } from "usehooks-ts";
@@ -73,7 +63,7 @@ export default function IndicesDePreciosUnificados({
   );
   const [selectedDate1, setSelectedDate1] = useState(uniqueDates[0] || null);
   const [selectedDate2, setSelectedDate2] = useState(uniqueDates[1] || null);
-  const isMobile = useMediaQuery("(max-width: 640px)")
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   const filteredData = useMemo(() => {
     return dataIndicesDePreciosUnificados.filter(
@@ -120,31 +110,12 @@ export default function IndicesDePreciosUnificados({
   }));
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Índices de Precios Unificados</h1>
-
-      <Alert className="mb-6" variant={"default"}>
-        <RocketIcon className="h-4 w-4" />
-        <AlertTitle>Nota</AlertTitle>
-        <AlertDescription>
-          Los datos presentados en esta página provienen de una fuente oficial
-          que recopila y unifica los índices de precios de recursoes de
-          construcción en diferentes áreas y departamentos de Perú.
-          <Link
-            href="https://busquedas.elperuano.pe/dispositivo/NL/2335224-1"
-            target="_blank"
-            className="ml-2 underline underline-offset-4"
-          >
-            Ver fuente de datos
-          </Link>
-        </AlertDescription>
-      </Alert>
-
+    <>
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Seleccionar Recurso y Fechas</CardTitle>
+          <CardTitle>Recurso y Fechas</CardTitle>
           <CardDescription>
-            Elija un recurso y dos fechas para comparar los precios por área
+            Elija un recurso y dos fechas para visualizar los precios por área.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -253,63 +224,6 @@ export default function IndicesDePreciosUnificados({
           </ChartContainer>
         </CardContent>
       </Card>
-
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Leyenda de Áreas</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            <li>
-              <strong>Área 1:</strong> Tumbes, Piura, Lambayeque, La Libertad,
-              Cajamarca, Amazonas y San Martín.
-            </li>
-            <li>
-              <strong>Área 2:</strong> Ancash, Lima, Provincia Constitucional
-              del Callao e Ica.
-            </li>
-            <li>
-              <strong>Área 3:</strong> Huánuco, Pasco, Junín, Huancavelica,
-              Ayacucho y Ucayali.
-            </li>
-            <li>
-              <strong>Área 4:</strong> Arequipa, Moquegua y Tacna.
-            </li>
-            <li>
-              <strong>Área 5:</strong> Loreto.
-            </li>
-            <li>
-              <strong>Área 6:</strong> Cusco, Puno, Apurímac y Madre de Dios.
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>¿Qué son los Índices de Precios Unificados?</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>
-            Los Índices de Precios Unificados son indicadores que muestran la
-            variación de precios de los recursoes de construcción en diferentes
-            regiones del país. Estos índices son fundamentales para:
-          </p>
-          <ul className="list-disc pl-6 mt-2">
-            <li>
-              Comparar costos de recursoes entre diferentes áreas geográficas
-            </li>
-            <li>Analizar tendencias de precios a lo largo del tiempo</li>
-            <li>
-              Facilitar la toma de decisiones en proyectos de construcción
-            </li>
-            <li>
-              Proporcionar una base para ajustes de contratos y presupuestos en
-              el sector de la construcción
-            </li>
-          </ul>
-        </CardContent>
-      </Card>
-    </div>
+    </>
   );
 }

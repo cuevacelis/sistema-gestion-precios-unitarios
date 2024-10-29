@@ -27,6 +27,11 @@ const nextConfig: NextConfig = {
         destination: "/dashboard/grupos_de_partida/subgrupos",
         permanent: true,
       },
+      {
+        source: "/dashboard/configuracion",
+        destination: "/dashboard/configuracion/general",
+        permanent: true,
+      },
     ];
   },
 };
