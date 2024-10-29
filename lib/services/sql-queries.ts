@@ -2,10 +2,13 @@ import "server-only";
 import { unstable_noStore } from "next/cache";
 import { sql } from "kysely";
 import {
+  IDataDBObtenerClientesId,
   IDataDBObtenerGruposDePartidasId,
   IDataDBObtenerPartidasPaginados,
   IDataDBObtenerProyectosId,
   IDataDBObtenerRecursosPaginados,
+  IDataDBObtenerUsuariosId,
+  ISpClienteObtenPaginado,
   ISpDepartamentoObten,
   ISpDistritoObten,
   ISpHojaDePresupuesto,
@@ -15,6 +18,7 @@ import {
   ISpPresupuestoObtenPaginado,
   ISpProvinciaObten,
   ISpUsuarioObtenLoginV2,
+  ISpUsuarioObtenPaginado,
 } from "../types/types";
 import { getDbPostgres } from "@/db/db-postgres";
 import cache from "../utils";
@@ -89,13 +93,20 @@ export const obtenerUsuariosPaginados = cache(
     busqueda: string
   ) => {
     try {
-      return [];
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpUsuarioObtenPaginado>`sp_usuario_obten_paginadov2(${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
     } catch (error) {
       throw error;
     }
   },
-  ["usuariosPaginados"],
-  { tags: ["usuariosPaginados"], revalidate: 60 * 60 * 24 }
+  ["usuarios"],
+  { tags: ["usuarios"] }
 );
 
 export const obtenerUsuarios = cache(
@@ -114,18 +125,132 @@ export const obtenerUsuarios = cache(
   { tags: ["usuarios"], revalidate: 60 * 60 * 24 }
 );
 
-// #region CLIENTES
-export const obtenerClientesPaginados = cache(
-  async (elementosPorPagina: number, paginaActual: number, nombre: string) => {
+export const obtenerUsuariosById = cache(
+  async (id: number) => {
     try {
-      // return sql`SELECT sp_cliente_obten_paginadov2(${elementosPorPagina},${paginaActual},${nombre})`;
-      return [];
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerUsuariosId>`sp_usuario_obten_x_id(${id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
     } catch (error) {
       throw error;
     }
   },
-  ["clientesPaginados"],
-  { tags: ["clientesPaginados"] }
+  ["usuariosById"],
+  { tags: ["usuariosById"] }
+);
+
+export const crearUsuario = cache(
+  async (
+    p_usu_correo: string,
+    p_usu_clave: string,
+    p_usu_nomapellidos: string,
+    p_rol_id: number
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_usuario_crea(${p_usu_correo}, ${p_usu_clave}, ${p_usu_nomapellidos}, ${p_rol_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuarios"],
+  { tags: ["usuarios"] }
+);
+
+export const editarUsuario = cache(
+  async (
+    p_usu_id: number,
+    p_usu_correo: string,
+    p_usu_clave: string,
+    p_usu_nomapellidos: string,
+    p_rol_id: number,
+    p_usu_observacion: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_usuario_actualiza(${p_usu_id}, ${p_usu_correo}, ${p_usu_clave}, ${p_usu_nomapellidos}, ${p_rol_id}, ${p_usu_observacion})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuarios"],
+  { tags: ["usuarios"] }
+);
+
+export const cambioEstadoUsuario = cache(
+  async (p_usu_id: number, p_usu_estado: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_usuario_actualiza_estado(${p_usu_id}, ${p_usu_estado})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["usuarios"],
+  { tags: ["usuarios"] }
+);
+
+export const obtenerRoles = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom("rol")
+        .where("rol_estado", "=", 1)
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["roles"],
+  { tags: ["roles"] }
+);
+
+// #region CLIENTES
+export const obtenerClientesPaginados = cache(
+  async (
+    elementosPorPagina: number,
+    paginaActual: number,
+    busqueda: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<ISpClienteObtenPaginado>`sp_cliente_obten_paginadov2(${elementosPorPagina}, ${paginaActual}, ${busqueda === "" ? null : busqueda})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
 );
 
 export const obtenerClientes = cache(
@@ -142,6 +267,105 @@ export const obtenerClientes = cache(
   },
   ["clientes"],
   { tags: ["clientes"] }
+);
+
+export const obtenerClientesById = cache(
+  async (id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerClientesId>`sp_cliente_obten_x_id(${id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientesById"],
+  { tags: ["clientesById"] }
+);
+
+export const crearCliente = cache(
+  async (
+    p_cli_nomaperazsocial: string,
+    p_cli_abreviatura: string,
+    p_tipdoc_id: number,
+    p_cli_numdocumento: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_cliente_crea(${p_cli_nomaperazsocial}, ${p_cli_abreviatura}, ${p_tipdoc_id}, ${p_cli_numdocumento})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+export const editarCliente = cache(
+  async (
+    p_cli_id: number,
+    p_cli_nomaperazsocial: string,
+    p_cli_abreviatura: string,
+    p_tipdoc_id: number,
+    p_cli_numdocumento: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_cliente_actualiza(${p_cli_id}, ${p_cli_nomaperazsocial}, ${p_cli_abreviatura}, ${p_tipdoc_id}, ${p_cli_numdocumento})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+export const cambioEstadoCliente = cache(
+  async (p_cli_id: number, p_cli_estado: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_cliente_actualiza_estado(${p_cli_id}, ${p_cli_estado})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["clientes"],
+  { tags: ["clientes"] }
+);
+
+export const obtenerTipoDocumento = cache(
+  async () => {
+    try {
+      return getDbPostgres().selectFrom("tipo_documento").selectAll().execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["tipoDocumento"],
+  { tags: ["tipoDocumento"] }
 );
 
 // #region UBICACION
@@ -963,6 +1187,25 @@ export const obtenerHojaDePresupuestoByProyectoId = cache(
 );
 
 // #region PRECIOS RECOMENDADOS
+export const obtenerPreciosRecomendados = cache(
+  async () => {
+    try {
+      return getDbPostgres()
+        .selectFrom("precio_recurso_recomendado")
+        .innerJoin(
+          "departamento",
+          "precio_recurso_recomendado.dep_id",
+          "departamento.dep_id"
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["preciosRecomendados"],
+  { tags: ["preciosRecomendados"], revalidate: 60 * 60 * 24 }
+);
 export const obtenerPreciosRecomendadosByNombreAndDepartamento = cache(
   async (nombreRecurso: string, dep_id: number) => {
     try {

@@ -55,24 +55,71 @@ export interface ISpModuloObtenerModulosXPusuario {
 }
 
 // #region USUARIOS
-export interface IDataDBObtenerUsuariosPaginados {
-  Usu_Id: number;
-  Usu_Correo: string;
-  Usu_NomApellidos: string;
-  Rol_Nombre: string;
-  Pre_FecHorRegistro: string;
-  Usu_Observacion: string;
-  Pre_Estado: number;
+export interface ISpUsuarioObtenPaginado {
+  result: {
+    data: Array<{
+      usu_id: number;
+      usu_correo: string;
+      usu_nomapellidos: string;
+      rol_nombre: string;
+      usu_fechoraregistro: string;
+      usu_observacion?: string;
+      usu_estado: number;
+    }>;
+    meta: {
+      total_pagina: number;
+      total_registro: number;
+      tiene_pagina_anterior: boolean;
+      tiene_pagina_proximo: boolean;
+    };
+  };
+}
+
+export type TDataDBObtenerUsuariosPaginados =
+  ISpUsuarioObtenPaginado["result"]["data"][0];
+
+export interface IDataDBObtenerUsuariosId {
+  usu_id: number;
+  usu_correo: string;
+  usu_clave: string;
+  usu_nomapellidos: string;
+  rol_id: number;
+  rol_nombre: string;
+  usu_fechoraregistro: string;
+  usu_observacion: string;
+  usu_estado: number;
 }
 
 // #region CLIENTES
-export interface IDataDBObtenerClientesPaginados {
-  Cli_Id: number;
-  Cli_NomApeRazSocial: string;
-  Cli_Abreviatura: string;
-  TipDoc_Nombre: string;
-  Cli_NumDocumento: string;
-  Pre_Estado: number;
+export interface ISpClienteObtenPaginado {
+  result: {
+    data: Array<{
+      cli_id: number;
+      cli_nomaperazsocial: string;
+      cli_abreviatura: string;
+      tipdoc_nombre: string;
+      cli_numdocumento: string;
+      cli_estado: number;
+    }>;
+    meta: {
+      total_pagina: number;
+      total_registro: number;
+      tiene_pagina_anterior: boolean;
+      tiene_pagina_proximo: boolean;
+    };
+  };
+}
+
+export type TDataDBObtenerClientesPaginados =
+  ISpClienteObtenPaginado["result"]["data"][0];
+
+export interface IDataDBObtenerClientesId {
+  cli_id: number;
+  cli_nomaperazsocial: string;
+  cli_abreviatura: string;
+  tipdoc_nombre: string;
+  cli_numdocumento: string;
+  cli_estado: number;
 }
 
 // #region UBICACION
@@ -101,20 +148,6 @@ export interface ISpObtenerClientes {
 }
 
 // #region PROYECTOS
-export interface IDataDBObtenerProyectosPaginados {
-  pre_id: number;
-  pre_codigo?: string;
-  usu_nomapellidos: string;
-  pre_nombre: string;
-  cli_nomaperazsocial: string;
-  pai_nombre: string;
-  dep_nombre: string;
-  prov_nombre: string;
-  dist_nombre: string;
-  pre_jornal: number;
-  pre_fechorregistro: string;
-  pre_estado: number;
-}
 
 export interface ISpPresupuestoObtenPaginado {
   result: {
@@ -140,6 +173,9 @@ export interface ISpPresupuestoObtenPaginado {
     };
   };
 }
+
+export type TDataDBObtenerProyectosPaginados =
+  ISpPresupuestoObtenPaginado["result"]["data"][0];
 
 export interface ISpPresupuestoCrea {
   pg_catalog: number;

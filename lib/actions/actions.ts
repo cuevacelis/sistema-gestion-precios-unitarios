@@ -6,34 +6,46 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import {
+  cambioEstadoCliente,
   cambioEstadoGrupoPartida,
   cambioEstadoPartida,
   cambioEstadoPresupuesto,
   cambioEstadoPresupuestoRecursivo,
   cambioEstadoRecurso,
+  cambioEstadoUsuario,
   crearAsignacionRecursoToPartida,
+  crearCliente,
   crearGrupoPartida,
   crearPartida,
   crearPresupuesto,
   crearRecurso,
+  crearUsuario,
+  editarCliente,
   editarGrupoPartida,
   editarPartida,
   editarPresupuesto,
+  editarUsuario,
   findUserByUsernameAndPassword,
   obtenerProyectosPaginados,
 } from "../services/sql-queries";
 import {
   asignarRecursoToPartidaSchema,
+  cambioEstadoClienteSchema,
+  cambioEstadoUsuarioSchema,
+  crearClienteSchema,
   crearGrupoPartidaSchema,
   crearPartidaSchema,
   crearRecursoSchema,
+  crearUsuarioSchema,
   creatPresupuestoSchema,
   deleteGrupoPartidaSchema,
   deletePartidaSchema,
   deletePresupuestoSchema,
   deleteRecursoSchema,
+  editarClienteSchema,
   editarGrupoPartidaSchema,
   editarPartidaSchema,
+  editarUsuarioSchema,
   editPresupuestoSchema,
 } from "../validations/validations-zod";
 import { IBodyLogin, IBrowserInfo } from "../types/types";
@@ -164,6 +176,281 @@ export async function loginVerifyAction({
       data: null,
       status: 500,
       error: "Error interno del servidor",
+    };
+  }
+}
+
+// #region USUARIOS
+export async function actionsCrearUsuario(_prevState: any, formData: FormData) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/usuarios";
+    const { correo, clave, nombre, rol } = await crearUsuarioSchema.parseAsync({
+      correo: formData.get("correo"),
+      clave: formData.get("clave"),
+      nombre: formData.get("nombre"),
+      rol: formData.get("rol"),
+    });
+
+    await crearUsuario(correo, clave, nombre, Number(rol));
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/usuarios" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsEditarUsuario(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/usuarios";
+    const { idUsuario, correo, clave, nombre, rol, observacion } =
+      await editarUsuarioSchema.parseAsync({
+        idUsuario: formData.get("idUsuario"),
+        correo: formData.get("correo"),
+        clave: formData.get("clave"),
+        nombre: formData.get("nombre"),
+        rol: formData.get("rol"),
+        observacion: formData.get("observacion"),
+      });
+
+    await editarUsuario(
+      Number(idUsuario),
+      correo,
+      clave,
+      nombre,
+      Number(rol),
+      observacion
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/usuarios" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsDeleteUsuario(
+  p_usu_id: number,
+  newState?: number
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/usuarios";
+    const { idUsuario } = await cambioEstadoUsuarioSchema.parseAsync({
+      idUsuario: p_usu_id,
+      newState: newState || 0,
+    });
+
+    await cambioEstadoUsuario(Number(idUsuario), Number(newState || 0));
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/usuarios" + url.search;
+
+    revalidatePath(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+// #region CLIENTES
+export async function actionsCrearCliente(_prevState: any, formData: FormData) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/clientes";
+    const { nombre, abreviatura, tipoDoc, numeroDoc } =
+      await crearClienteSchema.parseAsync({
+        nombre: formData.get("nombre"),
+        abreviatura: formData.get("abreviatura"),
+        tipoDoc: formData.get("tipoDoc"),
+        numeroDoc: formData.get("numeroDoc"),
+      });
+
+    await crearCliente(nombre, abreviatura, Number(tipoDoc), numeroDoc);
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/clientes" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsEditarCliente(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/clientes";
+    const { idCliente, nombre, abreviatura, tipoDoc, numeroDoc } =
+      await editarClienteSchema.parseAsync({
+        idCliente: formData.get("idCliente"),
+        nombre: formData.get("nombre"),
+        abreviatura: formData.get("abreviatura"),
+        tipoDoc: formData.get("tipoDoc"),
+        numeroDoc: formData.get("numeroDoc"),
+      });
+
+    await editarCliente(
+      Number(idCliente),
+      nombre,
+      abreviatura,
+      Number(tipoDoc),
+      numeroDoc
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/clientes" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsDeleteCliente(
+  p_cli_id: number,
+  newState?: number
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/clientes";
+    const { idCliente } = await cambioEstadoClienteSchema.parseAsync({
+      idCliente: p_cli_id,
+      newState: newState || 0,
+    });
+
+    await cambioEstadoCliente(Number(idCliente), Number(newState || 0));
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/clientes" + url.search;
+
+    revalidatePath(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
     };
   }
 }
@@ -373,27 +660,26 @@ export async function actionsDeletePresupuesto(
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
-    redirect(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
   } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     if (error instanceof ZodError) {
-      const errorMessages = error.errors.map((err) => err.message).join(", ");
       return {
-        message: `Error de validación: ${errorMessages}`,
-        errors: error.errors,
+        message: error.errors.map((err) => err.message),
+        isError: true,
       };
     }
     if (error instanceof Error) {
       return {
         message: error?.message,
-        errors: {},
+        isError: true,
       };
     }
     return {
       message: "Algo salió mal.",
-      errors: {},
+      isError: true,
     };
   }
 }
@@ -415,11 +701,11 @@ export async function actionsDeleteEstadoPresupuestoRecursivo(
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
-    redirect(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
   } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     if (error instanceof ZodError) {
       return {
         message: error.errors.map((err) => err.message),
@@ -603,11 +889,11 @@ export async function actionsDeleteGrupoPartida(
     let newUrl = "/dashboard/grupos_de_partida" + url.search;
 
     revalidatePath(newUrl);
-    redirect(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
   } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     if (error instanceof ZodError) {
       return {
         message: error.errors.map((err) => err.message),
@@ -755,11 +1041,11 @@ export async function actionsDeletePartida(
     let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
-    redirect(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
   } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     if (error instanceof ZodError) {
       return {
         message: error.errors.map((err) => err.message),
@@ -896,11 +1182,11 @@ export async function actionsDeleteRecurso(
     let newUrl = "/dashboard/recursos" + url.search;
 
     revalidatePath(newUrl);
-    redirect(newUrl);
+    return {
+      message: "Success",
+      isError: false,
+    };
   } catch (error) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     if (error instanceof ZodError) {
       return {
         message: error.errors.map((err) => err.message),

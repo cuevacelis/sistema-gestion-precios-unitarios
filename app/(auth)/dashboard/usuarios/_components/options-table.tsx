@@ -24,28 +24,12 @@ export default function OptionsTable({ session }: { session: Session | null }) {
 
   const createPath = `${pathname}/crear`;
 
-  const handleExport = async () => {
-    // try {
-    //   toast.info("Exportación iniciada", {
-    //     description:
-    //       "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
-    //     duration: 3000,
-    //   });
-    //   await actionsQueueExportS3Presupuestos({
-    //     userId: String(session?.user?.id),
-    //     prefixNameFile: "presupuestos",
-    //     email: String(session?.user?.email),
-    //   });
-    // } catch (error) {
-    //   toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");
-    // } finally {
-    // }
-  };
+  const handleExport = async () => {};
 
   return (
     <section className="flex flex-wrap items-center gap-4">
       <Link href={createPath} scroll={false}>
-        <Button size="default" variant="default" className="h-9 gap-1" disabled>
+        <Button size="default" variant="default" className="h-9 gap-1">
           <PlusCircle className="w-4" />
           <span>Nuevo</span>
         </Button>
@@ -53,7 +37,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
 
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button
+          {/* <Button
             size="default"
             variant="secondary"
             className="h-9 gap-1"
@@ -61,7 +45,7 @@ export default function OptionsTable({ session }: { session: Session | null }) {
           >
             <Download className="w-4" />
             <span>Exportar</span>
-          </Button>
+          </Button> */}
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>

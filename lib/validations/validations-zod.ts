@@ -20,6 +20,77 @@ export const credentialsSchema = z.object({
     }),
 });
 
+// #region USUARIOS
+export const crearUsuarioSchema = z.object({
+  correo: z.string().email({ message: "Correo electrónico no válido." }),
+  clave: z
+    .string()
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
+    .regex(/[A-Z]/, {
+      message: "La contraseña debe contener al menos una letra mayúscula.",
+    })
+    .regex(/[a-z]/, {
+      message: "La contraseña debe contener al menos una letra minúscula.",
+    })
+    .regex(/[0-9]/, {
+      message: "La contraseña debe contener al menos un número.",
+    })
+    .regex(/[^A-Za-z0-9]/, {
+      message: "La contraseña debe contener al menos un carácter especial.",
+    }),
+  nombre: z.string().min(1, "El campo 'Nombre' es requerido"),
+  rol: z.string().min(1, "El campo 'Rol' es requerido"),
+});
+
+export const editarUsuarioSchema = z.object({
+  idUsuario: z.number().min(1, "El campo 'Id de usuario' es requerido"),
+  correo: z.string().email({ message: "Correo electrónico no válido." }),
+  clave: z
+    .string()
+    .min(8, { message: "La contraseña debe tener al menos 8 caracteres." })
+    .regex(/[A-Z]/, {
+      message: "La contraseña debe contener al menos una letra mayúscula.",
+    })
+    .regex(/[a-z]/, {
+      message: "La contraseña debe contener al menos una letra minúscula.",
+    })
+    .regex(/[0-9]/, {
+      message: "La contraseña debe contener al menos un número.",
+    })
+    .regex(/[^A-Za-z0-9]/, {
+      message: "La contraseña debe contener al menos un carácter especial.",
+    }),
+  nombre: z.string().min(1, "El campo 'Nombre' es requerido"),
+  rol: z.string().min(1, "El campo 'Rol' es requerido"),
+  observacion: z.string().min(1, "El campo 'Observación' es requerido"),
+});
+
+export const cambioEstadoUsuarioSchema = z.object({
+  idUsuario: z.number().min(1, "El campo 'Id de usuario' es requerido"),
+  newState: z.number().min(0, "El campo 'Estado' es requerido"),
+});
+
+// #region CLIENTES
+export const crearClienteSchema = z.object({
+  nombre: z.string().min(1, "El campo 'Nombre' es requerido"),
+  abreviatura: z.string().min(1, "El campo 'Abreviatura' es requerido"),
+  tipoDoc: z.number().min(1, "El campo 'Tipo de documento' es requerido"),
+  numeroDoc: z.string().min(1, "El campo 'Numero de documento' es requerido"),
+});
+
+export const editarClienteSchema = z.object({
+  idCliente: z.number().min(1, "El campo 'Id de cliente' es requerido"),
+  nombre: z.string().min(1, "El campo 'Nombre' es requerido"),
+  abreviatura: z.string().min(1, "El campo 'Abreviatura' es requerido"),
+  tipoDoc: z.number().min(1, "El campo 'Tipo de documento' es requerido"),
+  numeroDoc: z.string().min(1, "El campo 'Numero de documento' es requerido"),
+});
+
+export const cambioEstadoClienteSchema = z.object({
+  idCliente: z.number().min(1, "El campo 'Id de cliente' es requerido"),
+  newState: z.number().min(0, "El campo 'Estado' es requerido"),
+});
+
 // #region PRESUPUESTOS
 export const creatPresupuestoSchema = z.object({
   namePresupuesto: z

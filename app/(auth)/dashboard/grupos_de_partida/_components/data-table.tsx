@@ -220,7 +220,7 @@ export default function TableComponent({
           No hay grupos de partidas
         </h2>
         <p className="text-center text-muted-foreground max-w-md">
-          Aún no se han creado grupos de partidas asociados a este proyecto.
+          Aún no se han creado grupos de partida.
         </p>
       </section>
     );
