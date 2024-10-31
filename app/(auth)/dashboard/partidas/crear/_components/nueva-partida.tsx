@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
 import Form from "next/form";
+import ContainerInput from "@/components/ui/container-input";
 
 interface INuevoPartida {
   dataGruposDePartidas: Awaited<ReturnType<typeof obtenerGruposDePartidas>>;
@@ -62,13 +63,15 @@ export default function NuevoPartida({
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-6">
-        <Alert>
-          <InfoIcon className="h-4 w-4" />
-          <AlertTitle>Nota</AlertTitle>
-          <AlertDescription>
+        <Alert className="border-blue-200 dark:border-blue-800">
+          <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <AlertTitle className="text-blue-800 dark:text-blue-200">
+            Nota
+          </AlertTitle>
+          <AlertDescription className="text-blue-700 dark:text-blue-300">
             {Boolean(grupoPartidaId) ? (
               <>
-                Esta sera la nueva partida del grupo de partida &quot;
+                Esta sera la nueva partida, del grupo de partida: &quot;
                 <span>
                   {
                     dataGruposDePartidas.find(
@@ -102,8 +105,12 @@ export default function NuevoPartida({
         </Alert>
       </div>
       {!Boolean(grupoPartidaId) && (
-        <div className={cn("sm:col-span-3", {})}>
-          <Label className="text-sm w-20 truncate">Grupo de partida</Label>
+        <ContainerInput
+          nameLabel="Grupo de partida:"
+          htmlFor="jornal"
+          icon="grupos de partida"
+          className="sm:col-span-3"
+        >
           <ComboboxSingleSelection
             placeholder="Seleccione un grupo de partida..."
             options={dataGruposDePartidas.map((item) => ({
@@ -114,7 +121,7 @@ export default function NuevoPartida({
             disabled={Boolean(grupoPartidaId)}
             value={formDataExtra["idGrupoPartida"]}
           />
-        </div>
+        </ContainerInput>
       )}
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Nombre de partida</Label>

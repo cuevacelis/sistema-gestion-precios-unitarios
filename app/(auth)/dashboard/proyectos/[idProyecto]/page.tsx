@@ -34,16 +34,17 @@ export default async function VerDetalleProyectoPage(
 ) {
   const params = await props.params;
   const { idProyecto } = params;
+  const uniqueKey = `ver-detalle-proyecto-${idProyecto}`;
   return (
     <div className="block p-4 lg:p-6">
       <h1 className="text-lg font-semibold mb-6">Detalle del Proyecto</h1>
       <Card x-chunk="overflow-auto" className="mb-6">
         <CardContent>
-          <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+          <Suspense key={uniqueKey} fallback={<p>Cargando...</p>}>
             <GetDataVerDetalleProyecto idProyecto={idProyecto} />
           </Suspense>
           <Separator className="col-span-full my-4" />
-          <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+          <Suspense key={uniqueKey + "table"} fallback={<p>Cargando...</p>}>
             <GetDataVerPartidas idProyecto={idProyecto} />
           </Suspense>
         </CardContent>

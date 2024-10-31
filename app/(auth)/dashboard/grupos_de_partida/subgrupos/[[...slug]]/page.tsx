@@ -16,6 +16,7 @@ import {
   ISearchParams,
 } from "@/lib/types/types";
 import { convertToStringOrNull } from "@/lib/utils";
+import Link from "next/link";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -46,6 +47,7 @@ export default async function GruposDePartidaSubgruposPage(
   const searchParams = await props.searchParams;
   const { slug = [] } = params;
   const isSubGroup = slug.length > 0;
+  const totalSubgrupos = slug.length;
   const lastGrupoPartidaId = slug[slug.length - 1];
   const { page, rowsPerPage, query, proyectoId } = searchParams;
   const uniqueKey = `table-grupos-de-partida-${page}-${rowsPerPage}-${query}-${proyectoId}-${slug.join("-")}`;
@@ -63,6 +65,7 @@ export default async function GruposDePartidaSubgruposPage(
               idPresupuesto={proyectoId}
               idGrupoPartida={lastGrupoPartidaId}
               isSubGroup={isSubGroup}
+              totalSubgrupos={totalSubgrupos}
             />
           </Suspense>
         </CardHeader>
@@ -102,10 +105,12 @@ async function Title({
   idPresupuesto,
   idGrupoPartida,
   isSubGroup,
+  totalSubgrupos,
 }: {
   idPresupuesto: string | string[] | undefined;
   idGrupoPartida: string | string[] | undefined;
   isSubGroup: boolean;
+  totalSubgrupos: number;
 }) {
   let dataPresupuesto: Awaited<
     ReturnType<typeof obtenerNombrePresupuestosById>
@@ -132,7 +137,7 @@ async function Title({
   return (
     <div className="flex items-center gap-4">
       <BackButtonHistory />
-      <CardTitle className="text-2xl font-bold flex flex-col">
+      <CardTitle className="text-2xl font-bold flex flex-col overflow-auto">
         <div className="flex items-center">
           <ModuleIconsComponent
             className="mr-2 h-8 w-8 flex-shrink-0"
@@ -140,7 +145,11 @@ async function Title({
           />
           {isSubGroup ? (
             <p>
-              Grupos de Partida del subgrupo {dataGrupoPartida?.grupar_nombre}
+              Grupos de Partida del{" "}
+              {totalSubgrupos === 1 ? "grupo" : "subgrupo"}:{" "}
+              <span className="italic text-lg underline underline-offset-4">
+                {dataGrupoPartida?.grupar_nombre}
+              </span>
             </p>
           ) : (
             <p>Grupos de partidas</p>
@@ -153,7 +162,13 @@ async function Title({
               modNombre="proyectos"
             />
             <p className="text-base text-blue-600 font-medium">
-              Proyecto: {dataPresupuesto?.pre_nombre}
+              Proyecto:{" "}
+              <Link
+                href={`/dashboard/proyectos/${dataPresupuesto?.pre_id}`}
+                className="underline underline-offset-4 italic"
+              >
+                {dataPresupuesto?.pre_nombre}
+              </Link>
             </p>
           </div>
         )}

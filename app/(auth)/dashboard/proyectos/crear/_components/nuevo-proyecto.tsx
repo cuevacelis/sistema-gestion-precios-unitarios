@@ -126,7 +126,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           options={options}
           onSelect={(value) => handleSelectChange(type, value)}
           placeholder={placeholder}
-          disabled={isLoading}
+          disabled={isLoading || isPending}
           value={formDataExtra[type]}
           messageEmpty={messageEmpty}
         />
@@ -215,6 +215,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           className="bg-secondary"
           required
           autoFocus
+          disabled={isPending}
         />
       </ContainerInput>
       {renderCombobox(
@@ -290,6 +291,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           className="bg-secondary"
           defaultValue={8}
           required
+          disabled={isPending}
         />
       </ContainerInput>
       <div className="col-span-full">

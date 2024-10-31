@@ -15,6 +15,7 @@ import ComboboxSingleSelection from "@/components/combobox/combobox-single-selec
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import ContainerInput from "@/components/ui/container-input";
 
 interface INuevoGrupoPartida {
   idProyecto: string | null;
@@ -68,18 +69,18 @@ export default function NuevoGrupoPartida({
           <AlertDescription className="text-blue-700 dark:text-blue-300">
             {dataGrupoPartidaParent?.grupar_nombre ? (
               <>
-                Este sera el nuevo subgrupo de partida, del proyecto{" "}
+                Este sera el nuevo subgrupo de partida, del proyecto:{" "}
                 <span className="underline underline-offset-4">
                   {dataProyectos[0].pre_nombre}
                 </span>
-                , y sera hijo del grupo de partida{" "}
+                , y estara dentro del grupo de partida{" "}
                 <span className="underline underline-offset-4">
                   {dataGrupoPartidaParent.grupar_nombre}.
                 </span>
               </>
             ) : (
               <>
-                Este sera el nuevo grupo de partida, del proyecto{" "}
+                Este sera el nuevo grupo de partida, del proyecto:{" "}
                 {formDataExtra.idProyecto ? (
                   <span className="underline underline-offset-4">
                     {
@@ -89,7 +90,7 @@ export default function NuevoGrupoPartida({
                     }
                   </span>
                 ) : (
-                  "que selecciones"
+                  "!Aún no se ha seleccionado un proyecto!"
                 )}
                 .
               </>
@@ -98,8 +99,12 @@ export default function NuevoGrupoPartida({
         </Alert>
       </div>
       {!(isSubGroup || Boolean(idProyecto)) && (
-        <div className={cn("col-span-full sm:col-span-3", {})}>
-          <Label className="text-sm w-20 truncate">Proyectos</Label>
+        <ContainerInput
+          nameLabel="Seleccione un proyecto:"
+          htmlFor="idProyecto"
+          icon="proyecto"
+          className="col-span-full sm:col-span-3"
+        >
           <ComboboxSingleSelection
             placeholder="Selecciona un proyecto..."
             options={dataProyectos.map((item) => ({
@@ -110,12 +115,23 @@ export default function NuevoGrupoPartida({
             disabled={isSubGroup || Boolean(idProyecto)}
             value={formDataExtra["idProyecto"]}
           />
-        </div>
+        </ContainerInput>
       )}
-      <div className="sm:col-span-3">
-        <Label className="text-sm">Nombre del grupo de partida</Label>
-        <Input type="text" name="nombreGrupoPartida" required autoFocus />
-      </div>
+      <ContainerInput
+        nameLabel="Nombre del grupo de partida:"
+        htmlFor="nombreGrupoPartida"
+        icon="grupos de partida"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input
+          type="text"
+          name="nombreGrupoPartida"
+          id="nombreGrupoPartida"
+          required
+          autoFocus
+          disabled={isPending}
+        />
+      </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}

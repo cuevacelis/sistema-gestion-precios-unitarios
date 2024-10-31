@@ -1,13 +1,13 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 import { actionsEditarGrupoPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import { obtenerNombreGruposDePartidasById } from "@/lib/services/sql-queries";
 import { useActionState, useState } from "react";
 import Form from "next/form";
+import ContainerInput from "@/components/ui/container-input";
 
 interface IEditarGrupoPartida {
   idGrupoPartida: string | null;
@@ -41,17 +41,22 @@ export default function EditarGrupoPartida({
       action={handleSubmit}
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">
-          Nombre del grupo de partida
-        </Label>
+      <ContainerInput
+        nameLabel="Nombre del grupo de partida:"
+        htmlFor="nombreGrupoPartida"
+        icon="grupos de partida"
+        className="col-span-full sm:col-span-3"
+      >
         <Input
           type="text"
           name="nombreGrupoPartida"
+          id="nombreGrupoPartida"
           required
           defaultValue={dataGrupoPartida?.grupar_nombre}
+          autoFocus
+          disabled={isPending}
         />
-      </div>
+      </ContainerInput>
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}

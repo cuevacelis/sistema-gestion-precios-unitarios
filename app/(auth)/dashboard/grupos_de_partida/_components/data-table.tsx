@@ -1,7 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { DataTableViewOptions } from "@/components/data-table/view-options";
@@ -29,7 +34,7 @@ import {
 import { ColumnDef, flexRender } from "@tanstack/react-table";
 import Link from "next/link";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
-import { replaceSegmentInPath } from "@/lib/utils";
+import { cn, replaceSegmentInPath } from "@/lib/utils";
 import { useWindowSize } from "usehooks-ts";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { toast } from "sonner";
@@ -49,6 +54,8 @@ export default function TableComponent({
 }: IProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const params = useParams();
+  const { slug = [] } = params;
   const searchParams = useSearchParams();
   const { width } = useWindowSize();
   const isMobile = width < 768;
@@ -76,23 +83,6 @@ export default function TableComponent({
         ),
       },
       {
-        accessorKey: "pre_nombre",
-        header: ({ column }) => (
-          <DataTableColumnHeader
-            column={column}
-            title={
-              <>
-                <ModuleIconsComponent
-                  className="mr-2 h-4 w-4 inline-flex"
-                  modNombre="proyectos"
-                />
-                Nombre del proyecto
-              </>
-            }
-          />
-        ),
-      },
-      {
         accessorKey: "grupar_nombre",
         header: ({ column }) => (
           <DataTableColumnHeader
@@ -104,6 +94,59 @@ export default function TableComponent({
                   modNombre="grupos de partida"
                 />
                 Nombre grupo de partida
+              </>
+            }
+          />
+        ),
+      },
+      {
+        accessorKey: "tiene_hijos",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Tiene subgrupos" />
+        ),
+        cell: ({ row }) => (
+          <span
+            className={cn(
+              "px-2 py-1 rounded-full text-xs font-semibold",
+              row.original.tiene_hijos
+                ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+                : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
+            )}
+          >
+            {row.original.tiene_hijos ? "Sí" : "No"}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "tiene_partidas",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Tiene partidas" />
+        ),
+        cell: ({ row }) => (
+          <span
+            className={cn(
+              "px-2 py-1 rounded-full text-xs font-semibold",
+              row.original.tiene_partidas
+                ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
+                : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
+            )}
+          >
+            {row.original.tiene_partidas ? "Sí" : "No"}
+          </span>
+        ),
+      },
+      {
+        accessorKey: "pre_nombre",
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={
+              <>
+                <ModuleIconsComponent
+                  className="mr-2 h-4 w-4 inline-flex"
+                  modNombre="proyectos"
+                />
+                Nombre del proyecto
               </>
             }
           />
@@ -131,6 +174,15 @@ export default function TableComponent({
         grupar_nombre:
           searchParamsShowColumns.includes("grupar_nombre") ||
           searchParamsShowColumns.length === 0,
+        tiene_hijos:
+          slug.length > 0
+            ? searchParamsShowColumns.includes("tiene_hijos") || true
+            : searchParamsShowColumns.includes("tiene_hijos") ||
+              searchParamsShowColumns.length === 0,
+        tiene_partidas:
+          slug.length > 0
+            ? searchParamsShowColumns.includes("tiene_partidas") || true
+            : searchParamsShowColumns.includes("tiene_partidas") || false,
       },
     },
   });

@@ -138,7 +138,7 @@ export default function EditarProyectosPage({
           options={options}
           onSelect={(value) => handleSelectChange(type, value)}
           placeholder={placeholder}
-          disabled={!options.length || isLoading}
+          disabled={!options.length || isLoading || isPending}
           value={formDataExtra[type]}
         />
         {isLoading && (
@@ -204,6 +204,7 @@ export default function EditarProyectosPage({
           required
           defaultValue={initialData.namePresupuesto}
           autoFocus
+          disabled={isPending}
         />
       </ContainerInput>
       {renderCombobox(
@@ -263,6 +264,7 @@ export default function EditarProyectosPage({
           className="bg-secondary"
           required
           defaultValue={initialData.jornal}
+          disabled={isPending}
         />
       </ContainerInput>
       <div className="col-span-full">
