@@ -21,7 +21,7 @@ interface IPropsNuevoGrupoPartida {
   }>;
 }
 
-export default async function NuevoProyectoModalPage(
+export default async function NuevoGrupoPartidaModalPage(
   props: IPropsNuevoGrupoPartida
 ) {
   const params = await props.params;

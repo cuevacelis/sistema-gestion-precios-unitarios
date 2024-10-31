@@ -28,12 +28,14 @@ interface ComboboxMultipleSelectionProps {
   options: Option[];
   onSelect: (values: string[]) => void;
   placeholder?: string;
+  messageEmpty?: string;
 }
 
 export default function ComboboxMultipleSelection({
   options,
   onSelect,
   placeholder = "Selecciona opciones...",
+  messageEmpty = "No se encontró ninguna opción.",
 }: ComboboxMultipleSelectionProps) {
   const [open, setOpen] = React.useState(false);
   const [selectedValues, setSelectedValues] = React.useState<string[]>([]);
@@ -93,7 +95,7 @@ export default function ComboboxMultipleSelection({
       <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Buscar opción..." />
-          <CommandEmpty>No se encontró ninguna opción.</CommandEmpty>
+          <CommandEmpty>{messageEmpty}</CommandEmpty>
           <CommandGroup>
             {options.map((option) => (
               <CommandItem

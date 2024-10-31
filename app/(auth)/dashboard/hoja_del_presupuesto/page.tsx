@@ -51,11 +51,6 @@ export default async function HojaDelPresupuestoPage(props: IProjectPage) {
                 Hoja de Presupuesto
               </CardTitle>
             </div>
-            <Search
-              placeholder="Buscar en hojas de presupuesto..."
-              className="w-full sm:w-64 lg:w-96"
-              disabled
-            />
           </div>
         </CardHeader>
       </Card>

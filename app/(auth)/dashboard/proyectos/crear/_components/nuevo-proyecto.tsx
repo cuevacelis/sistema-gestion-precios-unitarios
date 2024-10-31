@@ -25,6 +25,8 @@ import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
 import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
 import ContainerInput from "@/components/ui/container-input";
 import Form from "next/form";
+import Link from "next/link";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface INuevoProyecto {
   session: Session | null;
@@ -108,10 +110,12 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
     placeholder: string,
     label: string,
     isLoading: boolean,
-    icon?: string
+    icon?: string,
+    messageEmpty?: React.ReactNode,
+    labelReactNode?: React.ReactNode
   ) => (
     <ContainerInput
-      nameLabel={label}
+      nameLabel={labelReactNode || label}
       htmlFor=""
       icon={icon}
       className="col-span-3"
@@ -122,8 +126,9 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           options={options}
           onSelect={(value) => handleSelectChange(type, value)}
           placeholder={placeholder}
-          disabled={!options.length || isLoading}
+          disabled={isLoading}
           value={formDataExtra[type]}
+          messageEmpty={messageEmpty}
         />
         {isLoading && (
           <div className="mt-2 flex items-center text-sm text-muted-foreground">
@@ -172,7 +177,30 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "Seleccione un cliente",
         "Cliente",
         isLoadingClients,
-        "cliente"
+        "cliente",
+        <section className="flex flex-col gap-2 items-center">
+          No se encontró ningún cliente.
+          <br />
+          <Link
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent("/dashboard/proyectos/crear")}`}
+            className="underline underline-offset-4 flex items-center"
+          >
+            <ModuleIconsComponent
+              className="mr-2 h-4 w-4 flex-shrink-0"
+              modNombre="Cliente"
+            />
+            Crear cliente +
+          </Link>
+        </section>,
+        <section className="flex flex-row gap-2 items-center">
+          Cliente{" "}
+          <Link
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent("/dashboard/proyectos/crear")}`}
+            className="underline underline-offset-4 flex items-center"
+          >
+            +
+          </Link>
+        </section>
       )}
       <ContainerInput
         nameLabel="Nombre del proyecto:"
@@ -186,6 +214,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           name="name-presupuesto"
           className="bg-secondary"
           required
+          autoFocus
         />
       </ContainerInput>
       {renderCombobox(
@@ -197,7 +226,8 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "Seleccione un país",
         "País",
         isLoadingCountries,
-        "ubicacion"
+        "ubicacion",
+        "No se encontró ningún país."
       )}
       {renderCombobox(
         "department",
@@ -208,7 +238,12 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "Seleccione un departamento",
         "Departamento",
         isLoadingDepartments,
-        "ubicacion"
+        "ubicacion",
+        <>
+          {formDataExtra["country"] !== ""
+            ? "No se encontró ningún departamento."
+            : "Por favor, seleccione un país."}
+        </>
       )}
       {renderCombobox(
         "province",
@@ -219,7 +254,12 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "Seleccione una provincia",
         "Provincia",
         isLoadingProvinces,
-        "ubicacion"
+        "ubicacion",
+        <>
+          {formDataExtra["department"] !== ""
+            ? "No se encontró ningún provincia."
+            : "Por favor, seleccione un departamento."}
+        </>
       )}
       {renderCombobox(
         "district",
@@ -230,7 +270,12 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         "Seleccione un distrito",
         "Distrito",
         isLoadingDistricts,
-        "ubicacion"
+        "ubicacion",
+        <>
+          {formDataExtra["province"] !== ""
+            ? "No se encontró ningún distrito."
+            : "Por favor, seleccione una provincia."}
+        </>
       )}
       <ContainerInput
         nameLabel="Jornal en horas:"

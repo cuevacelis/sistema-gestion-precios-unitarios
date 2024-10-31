@@ -5,8 +5,8 @@ import { Label } from "./label";
 interface IContainerInput {
   children: React.ReactNode;
   className?: string;
-  icon?: string | React.ReactNode;
-  nameLabel?: string;
+  icon?: React.ReactNode;
+  nameLabel?: React.ReactNode;
   htmlFor: string;
 }
 

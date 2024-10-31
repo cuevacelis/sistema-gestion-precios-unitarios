@@ -32,6 +32,7 @@ export interface ComboboxSingleSelectionProps {
   disabled?: boolean;
   value: string | null;
   className?: string;
+  messageEmpty?: React.ReactNode;
 }
 
 const normalizeText = (text: string): string => {
@@ -48,6 +49,7 @@ export default function ComboboxSingleSelection({
   disabled = false,
   value,
   className,
+  messageEmpty = "No se encontró ninguna opción.",
 }: ComboboxSingleSelectionProps) {
   const [open, setOpen] = React.useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -66,7 +68,7 @@ export default function ComboboxSingleSelection({
     <Command>
       <CommandInput placeholder="Buscar opción..." />
       <CommandList>
-        <CommandEmpty>No se encontró ninguna opción.</CommandEmpty>
+        <CommandEmpty>{messageEmpty}</CommandEmpty>
         <CommandGroup>
           {safeOptions.map((option) => (
             <CommandItem

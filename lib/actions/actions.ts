@@ -195,6 +195,8 @@ export async function actionsCrearUsuario(_prevState: any, formData: FormData) {
     await crearUsuario(correo, clave, nombre, Number(rol));
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/usuarios" + url.search;
 
     revalidatePath(newUrl);
@@ -249,6 +251,8 @@ export async function actionsEditarUsuario(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/usuarios" + url.search;
 
     revalidatePath(newUrl);
@@ -292,6 +296,8 @@ export async function actionsDeleteUsuario(
     console.log(idUsuario, newState);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/usuarios" + url.search;
 
     revalidatePath(newUrl);
@@ -335,7 +341,9 @@ export async function actionsCrearCliente(_prevState: any, formData: FormData) {
     await crearCliente(nombre, abreviatura, tipoDoc, numeroDoc);
 
     const url = new URL(referer);
-    let newUrl = "/dashboard/clientes" + url.search;
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
+    let newUrl = returnUrl + url.search;
 
     revalidatePath(newUrl);
     redirect(newUrl);
@@ -387,6 +395,8 @@ export async function actionsEditarCliente(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/clientes" + url.search;
 
     revalidatePath(newUrl);
@@ -429,6 +439,8 @@ export async function actionsDeleteCliente(
     await cambioEstadoCliente(Number(idCliente), Number(newState || 0));
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/clientes" + url.search;
 
     revalidatePath(newUrl);
@@ -547,6 +559,8 @@ export async function actionsCrearPresupuesto(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
@@ -617,6 +631,8 @@ export async function actionsEditarPresupuesto(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
@@ -658,6 +674,8 @@ export async function actionsDeletePresupuesto(
     await cambioEstadoPresupuesto(id, newState || 0);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
@@ -699,6 +717,8 @@ export async function actionsDeleteEstadoPresupuestoRecursivo(
     await cambioEstadoPresupuestoRecursivo(id, newState || 0);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/proyectos" + url.search;
 
     revalidatePath(newUrl);
@@ -777,6 +797,8 @@ export async function actionsCrearGrupoPartida(
     await crearGrupoPartida(idProyecto, idLastGroupPartida, nombreGrupoPartida);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = replaceSegmentInPath(
       url.pathname + url.search,
       "crear",
@@ -826,6 +848,8 @@ export async function actionsEditarGrupoPartida(
     await editarGrupoPartida(idGrupoPartida, nombreGrupoPartida);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "";
 
     let segments = url.pathname.split("/");
@@ -887,6 +911,8 @@ export async function actionsDeleteGrupoPartida(
     await cambioEstadoGrupoPartida(id, newState || 0);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/grupos_de_partida" + url.search;
 
     revalidatePath(newUrl);
@@ -942,6 +968,8 @@ export async function actionsCrearPartida(_prevState: any, formData: FormData) {
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
@@ -999,6 +1027,8 @@ export async function actionsEditarPartida(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
@@ -1039,6 +1069,8 @@ export async function actionsDeletePartida(
     await cambioEstadoPartida(idPartida, newState || 0);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
@@ -1087,6 +1119,8 @@ export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/recursos" + url.search;
 
     revalidatePath(newUrl);
@@ -1139,6 +1173,8 @@ export async function actionsAsignarRecursoToPartida(
     );
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/partidas" + url.search;
 
     revalidatePath(newUrl);
@@ -1180,6 +1216,8 @@ export async function actionsDeleteRecurso(
     await cambioEstadoRecurso(Number(idRecurso), newState || 0);
 
     const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/clientes";
     let newUrl = "/dashboard/recursos" + url.search;
 
     revalidatePath(newUrl);

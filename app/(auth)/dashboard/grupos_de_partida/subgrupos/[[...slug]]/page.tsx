@@ -149,10 +149,12 @@ async function Title({
         {dataPresupuesto && (
           <div className="flex items-center">
             <ModuleIconsComponent
-              className="mr-2 h-8 w-8 flex-shrink-0"
+              className="mr-2 h-5 w-5 flex-shrink-0 text-blue-600"
               modNombre="proyectos"
             />
-            <p className="">Proyecto: {dataPresupuesto?.pre_nombre}</p>
+            <p className="text-base text-blue-600 font-medium">
+              Proyecto: {dataPresupuesto?.pre_nombre}
+            </p>
           </div>
         )}
       </CardTitle>

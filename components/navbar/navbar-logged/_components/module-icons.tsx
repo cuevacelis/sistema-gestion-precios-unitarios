@@ -13,6 +13,7 @@ import {
   PencilLine,
   PlusCircle,
   Trash,
+  TrendingUpIcon,
   UserRoundCogIcon,
   UsersRoundIcon,
 } from "lucide-react";
@@ -55,6 +56,8 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <FileText className={className} />;
   } else if (modNombre.toLowerCase().includes("hoja de presupuesto")) {
     return <FileText className={className} />;
+  } else if (modNombre.toLowerCase().includes("indices unificados")) {
+    return <TrendingUpIcon className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

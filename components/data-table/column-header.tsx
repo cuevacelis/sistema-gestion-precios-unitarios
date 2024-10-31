@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
-interface DataTableColumnHeaderProps<TData, TValue>
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableColumnHeaderProps<TData, TValue> {
   column: Column<TData, TValue>;
-  title: string;
+  title: React.ReactNode;
   hideSort?: boolean;
+  className?: string;
 }
 
 export function DataTableColumnHeader<TData, TValue>({

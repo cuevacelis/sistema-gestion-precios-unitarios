@@ -60,29 +60,33 @@ export default function NuevoGrupoPartida({
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="col-span-6">
-        <Alert>
-          <InfoIcon className="h-4 w-4" />
-          <AlertTitle>Nota</AlertTitle>
-          <AlertDescription>
+        <Alert className="border-blue-200 dark:border-blue-800">
+          <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <AlertTitle className="text-blue-800 dark:text-blue-200">
+            Nota
+          </AlertTitle>
+          <AlertDescription className="text-blue-700 dark:text-blue-300">
             {dataGrupoPartidaParent?.grupar_nombre ? (
               <>
-                Este sera el nuevo subgrupo de partida, del proyecto &quot;
-                <span>{dataProyectos[0].pre_nombre}</span>&quot;, y sera hijo
-                del grupo de partida &quot;
-                <span>{dataGrupoPartidaParent.grupar_nombre}</span>&quot;
+                Este sera el nuevo subgrupo de partida, del proyecto{" "}
+                <span className="underline underline-offset-4">
+                  {dataProyectos[0].pre_nombre}
+                </span>
+                , y sera hijo del grupo de partida{" "}
+                <span className="underline underline-offset-4">
+                  {dataGrupoPartidaParent.grupar_nombre}.
+                </span>
               </>
             ) : (
               <>
                 Este sera el nuevo grupo de partida, del proyecto{" "}
                 {formDataExtra.idProyecto ? (
-                  <span>
-                    &quot;
+                  <span className="underline underline-offset-4">
                     {
                       dataProyectos.find(
                         (e) => String(e.pre_id) === formDataExtra.idProyecto
                       )?.pre_nombre
                     }
-                    &quot;
                   </span>
                 ) : (
                   "que selecciones"
@@ -110,7 +114,7 @@ export default function NuevoGrupoPartida({
       )}
       <div className="sm:col-span-3">
         <Label className="text-sm">Nombre del grupo de partida</Label>
-        <Input type="text" name="nombreGrupoPartida" required />
+        <Input type="text" name="nombreGrupoPartida" required autoFocus />
       </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent

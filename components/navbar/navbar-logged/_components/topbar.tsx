@@ -236,7 +236,7 @@ export default function TopBarComponent(props: IProps) {
                 >
                   <User className="mr-2 h-4 w-4" />
                   <span>Perfil</span>
-                  <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                  {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -246,7 +246,7 @@ export default function TopBarComponent(props: IProps) {
                 >
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Configuración</span>
-                  <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                  {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -294,10 +294,10 @@ export default function TopBarComponent(props: IProps) {
                 <span>GitHub</span>
               </a>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            {/* <DropdownMenuItem>
               <LifeBuoy className="mr-2 h-4 w-4" />
               <span>Soporte</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-[#FF666618] [&>svg]:!text-red-500"

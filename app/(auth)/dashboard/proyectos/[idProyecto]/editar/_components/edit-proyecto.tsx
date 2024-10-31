@@ -203,6 +203,7 @@ export default function EditarProyectosPage({
           className="bg-secondary"
           required
           defaultValue={initialData.namePresupuesto}
+          autoFocus
         />
       </ContainerInput>
       {renderCombobox(

@@ -88,7 +88,7 @@ export default function CrearUsuario({ dataRoles }: ICrearUsuario) {
         <SubmitFormButtonComponent
           isPending={isPending}
           name="Crear usuario"
-          nameLoading="Editando..."
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

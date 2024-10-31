@@ -65,7 +65,7 @@ export function DataTableViewOptions<TData>({
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize"
+                className="text-xs"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) =>
                   handleColumnVisibilityChange(column, value)

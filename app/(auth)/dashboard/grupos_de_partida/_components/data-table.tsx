@@ -58,6 +58,7 @@ export default function TableComponent({
   const [statusRespDeleteGrupoPartida, setStatusRespDeleteGrupoPartida] =
     useState<TStatusResponseActions>("idle");
   const searchParamsShowColumns = searchParams.getAll("fshow");
+  const isSearchParamsProyectoId = searchParams.get("proyectoId");
 
   const columns: ColumnDef<IDataDBObtenerGruposDePartidasId>[] = useMemo(
     () => [
@@ -65,7 +66,7 @@ export default function TableComponent({
         id: "grupar_id",
         accessorKey: "grupar_id",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Id" />
+          <DataTableColumnHeader column={column} title="Id grupo de partida" />
         ),
       },
       {
@@ -77,7 +78,18 @@ export default function TableComponent({
       {
         accessorKey: "pre_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre proyecto" />
+          <DataTableColumnHeader
+            column={column}
+            title={
+              <>
+                <ModuleIconsComponent
+                  className="mr-2 h-4 w-4 inline-flex"
+                  modNombre="proyectos"
+                />
+                Nombre del proyecto
+              </>
+            }
+          />
         ),
       },
       {
@@ -85,7 +97,15 @@ export default function TableComponent({
         header: ({ column }) => (
           <DataTableColumnHeader
             column={column}
-            title="Nombre grupo de partida"
+            title={
+              <>
+                <ModuleIconsComponent
+                  className="mr-2 h-4 w-4 inline-flex"
+                  modNombre="grupos de partida"
+                />
+                Nombre grupo de partida
+              </>
+            }
           />
         ),
       },
@@ -104,9 +124,10 @@ export default function TableComponent({
           searchParamsShowColumns.includes("grupar_id") ||
           searchParamsShowColumns.length === 0,
         pre_id: searchParamsShowColumns.includes("pre_id") || false,
-        pre_nombre:
-          searchParamsShowColumns.includes("pre_nombre") ||
-          searchParamsShowColumns.length === 0,
+        pre_nombre: isSearchParamsProyectoId
+          ? searchParamsShowColumns.includes("pre_nombre") || false
+          : searchParamsShowColumns.includes("pre_nombre") ||
+            searchParamsShowColumns.length === 0,
         grupar_nombre:
           searchParamsShowColumns.includes("grupar_nombre") ||
           searchParamsShowColumns.length === 0,

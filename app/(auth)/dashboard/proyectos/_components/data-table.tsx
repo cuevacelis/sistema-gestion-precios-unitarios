@@ -379,7 +379,7 @@ export default function TableComponent({ dataProyectos }: IProps) {
       <ModalConfirmacionComponent
         title={
           <>
-            ¿Está seguro de eliminar el presupuesto{" "}
+            ¿Está seguro de eliminar el proyecto{" "}
             <span className="font-bold underline">
               {rowSelected?.pre_nombre}
             </span>
