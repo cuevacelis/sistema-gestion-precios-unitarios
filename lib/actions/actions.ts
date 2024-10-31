@@ -231,7 +231,7 @@ export async function actionsEditarUsuario(
     const referer = headersList.get("referer") || "/dashboard/usuarios";
     const { idUsuario, correo, clave, nombre, rol, observacion } =
       await editarUsuarioSchema.parseAsync({
-        idUsuario: formData.get("idUsuario"),
+        idUsuario: Number(formData.get("idUsuario")),
         correo: formData.get("correo"),
         clave: formData.get("clave"),
         nombre: formData.get("nombre"),
@@ -289,6 +289,7 @@ export async function actionsDeleteUsuario(
     });
 
     await cambioEstadoUsuario(Number(idUsuario), Number(newState || 0));
+    console.log(idUsuario, newState);
 
     const url = new URL(referer);
     let newUrl = "/dashboard/usuarios" + url.search;
@@ -327,11 +328,11 @@ export async function actionsCrearCliente(_prevState: any, formData: FormData) {
       await crearClienteSchema.parseAsync({
         nombre: formData.get("nombre"),
         abreviatura: formData.get("abreviatura"),
-        tipoDoc: formData.get("tipoDoc"),
+        tipoDoc: Number(formData.get("tipoDoc")),
         numeroDoc: formData.get("numeroDoc"),
       });
 
-    await crearCliente(nombre, abreviatura, Number(tipoDoc), numeroDoc);
+    await crearCliente(nombre, abreviatura, tipoDoc, numeroDoc);
 
     const url = new URL(referer);
     let newUrl = "/dashboard/clientes" + url.search;

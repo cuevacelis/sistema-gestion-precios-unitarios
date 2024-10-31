@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ColumnDef, flexRender } from "@tanstack/react-table";
-import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
@@ -27,7 +26,7 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { actionsDeleteUsuario } from "@/lib/actions/actions";
+import { actionsDeleteCliente, actionsDeleteUsuario } from "@/lib/actions/actions";
 import {
   ISpClienteObtenPaginado,
   TDataDBObtenerClientesPaginados,
@@ -37,7 +36,6 @@ import useUpdateTableComplete from "@/hooks/useTableComplete";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { useWindowSize } from "usehooks-ts";
 import { useSearchToast } from "@/hooks/useSearchToast";
-import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
 
 interface IProps {
   dataClientes: ISpClienteObtenPaginado[];
@@ -122,12 +120,12 @@ export default function TableComponent({ dataClientes }: IProps) {
     if (!rowSelected) return;
     setStatusRespDeleteUsuarios("pending");
     try {
-      const respDelete = await actionsDeleteUsuario(rowSelected.cli_id);
+      const respDelete = await actionsDeleteCliente(rowSelected.cli_id);
       if (respDelete?.isError) {
         throw respDelete.message;
       }
       setStatusRespDeleteUsuarios("success");
-      toast.success("Proyecto eliminado", {
+      toast.success("Cliente eliminado", {
         action: {
           label: "Deshacer cambios",
           onClick: async () => {

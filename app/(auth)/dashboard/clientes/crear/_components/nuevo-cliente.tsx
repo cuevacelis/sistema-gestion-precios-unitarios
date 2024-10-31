@@ -7,7 +7,7 @@ import ErrorMessage from "@/components/validation/message/error-message";
 
 import { actionsCrearCliente } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
-import { obtenerRoles, obtenerTipoDocumento } from "@/lib/services/sql-queries";
+import { obtenerTipoDocumento } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import Form from "next/form";
 import ContainerInput from "@/components/ui/container-input";
@@ -25,8 +25,7 @@ export default function CrearCliente({ dataTipoDocumento }: ICrearCliente) {
     }
   );
   const [formDataExtra, setFormDataExtra] = useState({
-    idCliente: null as string | null,
-    rol: "",
+    tipoDoc: null as string | null,
   });
 
   const handleSubmit = (formData: FormData) => {
@@ -72,23 +71,23 @@ export default function CrearCliente({ dataTipoDocumento }: ICrearCliente) {
               value: String(item.tipdoc_id),
               label: item.tipdoc_nombre,
             }))}
-            onSelect={(value) => handleSelectChange(value, "rol")}
+            onSelect={(value) => handleSelectChange(value, "tipoDoc")} 
             disabled={false}
-            value={formDataExtra["rol"]}
+            value={formDataExtra["tipoDoc"]}
           />
         </div>
       </ContainerInput>
 
       <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Número de documento</Label>
-        <Input type="number" name="numDocumento" required />
+        <Input type="number" name="numeroDoc" required />
       </div>
 
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}
           name="Crear cliente"
-          nameLoading="Editando..."
+          nameLoading="Creando..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

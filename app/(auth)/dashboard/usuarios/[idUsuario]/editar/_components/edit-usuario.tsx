@@ -84,6 +84,15 @@ export default function EditarUsuario({
         />
       </div>
 
+      <div className="sm:col-span-3">
+        <Label className="text-sm w-20 truncate">Observación</Label>
+        <Input
+          type="text"
+          name="observacion"
+          defaultValue={dataUsuario.usu_observacion}
+        />
+      </div>
+
       <ContainerInput
         nameLabel="Rol"
         htmlFor="rol"

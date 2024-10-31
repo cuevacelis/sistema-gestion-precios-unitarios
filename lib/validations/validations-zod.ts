@@ -62,7 +62,7 @@ export const editarUsuarioSchema = z.object({
     }),
   nombre: z.string().min(1, "El campo 'Nombre' es requerido"),
   rol: z.string().min(1, "El campo 'Rol' es requerido"),
-  observacion: z.string().min(1, "El campo 'Observación' es requerido"),
+  observacion: z.string().min(0, "El campo 'Observación' es requerido"),
 });
 
 export const cambioEstadoUsuarioSchema = z.object({

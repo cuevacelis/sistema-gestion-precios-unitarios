@@ -140,7 +140,7 @@ export default function TableComponent({ dataUsuarios }: IProps) {
         throw respDelete.message;
       }
       setStatusRespDeleteUsuarios("success");
-      toast.success("Proyecto eliminado", {
+      toast.success("Usuario eliminado", {
         action: {
           label: "Deshacer cambios",
           onClick: async () => {
