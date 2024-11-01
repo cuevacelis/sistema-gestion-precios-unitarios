@@ -56,7 +56,7 @@ export default async function UsuariosPage(props: IProjectPage) {
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar usuarios..."
+              placeholder="Buscar usuarios por email..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>

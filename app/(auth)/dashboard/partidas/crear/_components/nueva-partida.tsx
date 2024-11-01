@@ -83,20 +83,18 @@ export default function NuevoPartida({
               </>
             ) : (
               <>
-                Esta sera la nueva partida del grupo de partida{" "}
+                Esta sera la nueva partida del grupo de partida:{" "}
                 {formDataExtra.idGrupoPartida ? (
-                  <span>
-                    &quot;
+                  <span className="underline underline-offset-4">
                     {
                       dataGruposDePartidas.find(
                         (e) =>
                           String(e.grupar_id) === formDataExtra.idGrupoPartida
                       )?.grupar_nombre
                     }
-                    &quot;
                   </span>
                 ) : (
-                  "que selecciones"
+                  "!Aún no se ha seleccionado un grupo de partida!"
                 )}
                 .
               </>
@@ -123,22 +121,56 @@ export default function NuevoPartida({
           />
         </ContainerInput>
       )}
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre de partida</Label>
-        <Input type="text" name="nombrePartida" required />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">
-          Rendimiento mano de obra
-        </Label>
-        <Input type="number" name="rendimientoManoDeObra" required />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Rendimiento equipo</Label>
-        <Input type="number" name="rendimientoEquipo" required />
-      </div>
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Unidad de medida</Label>
+
+      <ContainerInput
+        nameLabel="Nombre de partida:"
+        htmlFor="nombrePartida"
+        icon="partida"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input
+          type="text"
+          name="nombrePartida"
+          id="nombrePartida"
+          required
+          autoFocus
+        />
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Rendimiento mano de obra:"
+        htmlFor="rendimientoManoDeObra"
+        icon="mano de obra"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input
+          type="number"
+          name="rendimientoManoDeObra"
+          id="rendimientoManoDeObra"
+          required
+        />
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Rendimiento equipo:"
+        htmlFor="rendimientoEquipo"
+        icon="rendimiento de equipo"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input
+          type="number"
+          name="rendimientoEquipo"
+          id="rendimientoEquipo"
+          required
+        />
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Unidad de medida:"
+        htmlFor="unidadMedida"
+        icon="unidad de medida"
+        className="col-span-full sm:col-span-3"
+      >
         <ComboboxSingleSelection
           placeholder="Seleccione una unidad de medida..."
           options={dataUnidadesDeMedida.map((item) => ({
@@ -149,7 +181,8 @@ export default function NuevoPartida({
           disabled={false}
           value={formDataExtra["unidadMedida"]}
         />
-      </div>
+      </ContainerInput>
+
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}

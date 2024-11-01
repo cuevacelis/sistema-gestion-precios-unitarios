@@ -16,6 +16,7 @@ import {
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import { cn } from "@/lib/utils";
 import Form from "next/form";
+import ContainerInput from "@/components/ui/container-input";
 
 interface IEditarPartida {
   dataPartida: IDataDBObtenerPartidasPaginados;
@@ -60,37 +61,54 @@ export default function EditarPartida({
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre de partida</Label>
+      <ContainerInput
+        nameLabel="Nombre de partida:"
+        htmlFor="nombrePartida"
+        icon="partida"
+        className="col-span-full sm:col-span-3"
+      >
         <Input
           type="text"
           name="nombrePartida"
           required
           defaultValue={dataPartida.par_nombre}
         />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">
-          Rendimiento mano de obra
-        </Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Rendimiento mano de obra:"
+        htmlFor="rendimientoManoDeObra"
+        icon="mano de obra"
+        className="col-span-full sm:col-span-3"
+      >
         <Input
           type="number"
           name="rendimientoManoDeObra"
           required
           defaultValue={dataPartida.par_renmanobra}
         />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Rendimiento equipo</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Rendimiento equipo:"
+        htmlFor="rendimientoEquipo"
+        icon="rendimiento de equipo"
+        className="col-span-full sm:col-span-3"
+      >
         <Input
           type="number"
           name="rendimientoEquipo"
           required
           defaultValue={dataPartida.par_renequipo}
         />
-      </div>
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Unidad de medida</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Unidad de medida:"
+        htmlFor="unidadMedida"
+        icon="unidad de medida"
+        className="col-span-full sm:col-span-3"
+      >
         <ComboboxSingleSelection
           options={dataUnidadesDeMedida.map((item) => ({
             value: String(item.unimed_id),
@@ -100,7 +118,8 @@ export default function EditarPartida({
           disabled={false}
           value={formDataExtra["unidadMedida"]}
         />
-      </div>
+      </ContainerInput>
+
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}

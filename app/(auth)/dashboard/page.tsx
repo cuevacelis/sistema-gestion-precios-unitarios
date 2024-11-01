@@ -54,7 +54,7 @@ export default async function DashboardPage() {
           Te recomendamos que uses el índice unificado de precios, para la
           creación de precios unitarios.{" "}
           <Link
-            href="/dashboard/indices_de_precios_unificados"
+            href="/dashboard/indices_unificados_de_precios"
             className="inline-flex items-center gap-1 text-primary hover:underline"
           >
             Ver más

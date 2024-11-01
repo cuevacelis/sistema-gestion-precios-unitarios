@@ -30,7 +30,7 @@ import {
 import ContainerInput from "@/components/ui/container-input";
 import useCountryQuery from "@/hooks/tanstack-query/useCountryQuery";
 import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
-import { Loader2, RocketIcon } from "lucide-react";
+import { InfoIcon, Loader2, RocketIcon, SearchSlash } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Dialog,
@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dialog";
 import usePrecioRecomendadoQuery from "@/hooks/tanstack-query/usePrecioRecomendadoQuery";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 interface IAsignarRecursoPartida {
   dataPartida: IDataDBObtenerPartidasPaginados;
@@ -88,7 +89,7 @@ export default function AsignarRecursoPartida({
 
   //MODAL
   const [formDataExtraModal, setFormDataExtraModal] = useState({
-    country: "",
+    country: "1",
     department: "",
     precioRecomendado: "",
   });
@@ -113,7 +114,6 @@ export default function AsignarRecursoPartida({
       idDepartament: formDataExtraModal.department,
       isEnabled: !!formDataExtraModal.department && !!formDataExtra.idRecurso,
     });
-  console.log(precioRecomendado);
 
   const handleInputChangeModal = (name: string, value: string) => {
     setFormDataExtraModal((prev) => ({ ...prev, [name]: value }));
@@ -142,22 +142,40 @@ export default function AsignarRecursoPartida({
     const precioRecomendadoValue = Number(precioRecomendado?.[0]?.precio) || "";
     setFormDataExtra((prev) => ({
       ...prev,
-      precio: precioRecomendadoValue.toString(), // Actualizar el valor de "precio" en formDataExtra
+      precio: precioRecomendadoValue.toString(),
     }));
-    setIsShowModalPreciosRecomendados(false); // Cerrar el modal
+    setIsShowModalPreciosRecomendados(false);
   };
+
+  const recursosFound = dataRecursos.find(
+    (recurso) => recurso.rec_id === Number(formDataExtra.idRecurso)
+  );
 
   return (
     <Form
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre de partida</Label>
-        <Input type="text" required value={dataPartida.par_nombre} disabled />
-      </div>
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Seleccione un recurso</Label>
+      <ContainerInput
+        nameLabel={
+          <div className="flex items-center justify-between w-full">
+            <span>Seleccione un recurso:</span>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => setIsShowModalPreciosRecomendados(true)}
+              className="ml-2 animate-pulse"
+            >
+              <InfoIcon className="w-4 h-4 mr-1" />
+              Precios recomendados
+            </Button>
+          </div>
+        }
+        htmlFor="idRecurso"
+        icon="recurso"
+        className="col-span-full"
+      >
         <ComboboxSingleSelection
           options={dataRecursos.map((item) => ({
             value: String(item.rec_id),
@@ -167,23 +185,41 @@ export default function AsignarRecursoPartida({
           disabled={false}
           value={formDataExtra["idRecurso"]}
         />
-        <Button
-          type="button"
-          onClick={() => setIsShowModalPreciosRecomendados(true)}
-        >
-          Busca precios recomendados.
-        </Button>
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Cantidad</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Nombre de partida:"
+        htmlFor="nombrePartida"
+        icon="partida"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input type="text" required value={dataPartida.par_nombre} disabled />
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Cantidad:"
+        htmlFor="cantidad"
+        icon="cantidad"
+        className="col-span-full sm:col-span-3"
+      >
         <Input type="number" required name="cantidad" />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Cuadrilla</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Cuadrilla:"
+        htmlFor="cuadrilla"
+        icon="cuadrilla"
+        className="col-span-full sm:col-span-3"
+      >
         <Input type="number" required name="cuadrilla" />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Precio</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Precio:"
+        htmlFor="precio"
+        icon="precio"
+        className="col-span-full sm:col-span-3"
+      >
         <Input
           type="number"
           required
@@ -191,7 +227,8 @@ export default function AsignarRecursoPartida({
           value={formDataExtra.precio}
           onChange={(e) => handleInputChange("precio", e.target.value)}
         />
-      </div>
+      </ContainerInput>
+
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}
@@ -325,7 +362,7 @@ export default function AsignarRecursoPartida({
               {isLoadingPrecioRecomendado && (
                 <div className="mt-2 flex items-center text-sm text-muted-foreground">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {`Cargando precios recomendados...`}
+                  {`Buscando precios recomendados...`}
                 </div>
               )}
             </ContainerInput>

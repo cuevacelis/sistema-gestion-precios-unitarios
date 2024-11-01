@@ -14,6 +14,7 @@ import {
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import { cn } from "@/lib/utils";
 import Form from "next/form";
+import ContainerInput from "@/components/ui/container-input";
 
 interface INuevoRecurso {
   dataUnidadesDeMedida: Awaited<ReturnType<typeof obtenerUnidadesDeMedida>>;
@@ -56,12 +57,21 @@ export default function NuevoRecurso({
       action={handleSubmit}
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Nombre del recurso</Label>
-        <Input type="text" name="nombreRecurso" required />
-      </div>
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Tipo de recurso</Label>
+      <ContainerInput
+        nameLabel="Nombre del recurso:"
+        htmlFor="nombreRecurso"
+        icon="recurso"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input type="text" name="nombreRecurso" required autoFocus />
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Tipo de recurso:"
+        htmlFor="tipoRecurso"
+        icon="tipo de recurso"
+        className="col-span-full sm:col-span-3"
+      >
         <ComboboxSingleSelection
           options={dataTipoRecurso.map((item) => ({
             value: String(item.tiprec_id),
@@ -71,9 +81,14 @@ export default function NuevoRecurso({
           disabled={false}
           value={formDataExtra["tipoRecurso"]}
         />
-      </div>
-      <div className={cn("sm:col-span-3", {})}>
-        <Label className="text-sm w-20 truncate">Unidad de medida</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Unidad de medida:"
+        htmlFor="unidadMedida"
+        icon="unidad de medida"
+        className="col-span-full sm:col-span-3"
+      >
         <ComboboxSingleSelection
           options={dataUnidadesDeMedida.map((item) => ({
             value: String(item.unimed_id),
@@ -83,11 +98,17 @@ export default function NuevoRecurso({
           disabled={false}
           value={formDataExtra["unidadMedida"]}
         />
-      </div>
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Indunificado</Label>
+      </ContainerInput>
+
+      <ContainerInput
+        nameLabel="Indunificado:"
+        htmlFor="indunificado"
+        icon="indunificado"
+        className="col-span-full sm:col-span-3"
+      >
         <Input type="text" name="indunificado" required />
-      </div>
+      </ContainerInput>
+
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}

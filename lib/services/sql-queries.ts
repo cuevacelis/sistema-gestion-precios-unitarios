@@ -17,6 +17,7 @@ import {
   ISpPaisObten,
   ISpPresupuestoObtenPaginado,
   ISpProvinciaObten,
+  ISpRecursosObtenPaginado,
   ISpUsuarioObtenLoginV2,
   ISpUsuarioObtenPaginado,
 } from "../types/types";
@@ -988,11 +989,13 @@ export const obtenerUnidadesDeMedida = cache(
 
 // #region RECURSOS
 export const obtenerRecursosPaginados = cache(
-  async () => {
+  async (rowsPerPage: number, paginaActual: number, busqueda: string) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten()`.as("result")
+          sql<ISpRecursosObtenPaginado>`sp_recurso_obten_paginado(${rowsPerPage}, ${paginaActual}, ${busqueda})`.as(
+            "result"
+          )
         )
         .selectAll()
         .execute();

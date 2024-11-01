@@ -1,4 +1,5 @@
 import {
+  BicepsFlexed,
   BracesIcon,
   Clock,
   Download,
@@ -11,6 +12,8 @@ import {
   MapPinIcon,
   Package,
   PencilLine,
+  PencilRuler,
+  Pickaxe,
   PlusCircle,
   Trash,
   TrendingUpIcon,
@@ -58,6 +61,12 @@ export default function ModuleIconsComponent({ modNombre, className }: IProps) {
     return <FileText className={className} />;
   } else if (modNombre.toLowerCase().includes("indices unificados")) {
     return <TrendingUpIcon className={className} />;
+  } else if (modNombre.toLowerCase().includes("unidad de medida")) {
+    return <PencilRuler className={className} />;
+  } else if (modNombre.toLowerCase().includes("mano de obra")) {
+    return <BicepsFlexed className={className} />;
+  } else if (modNombre.toLowerCase().includes("rendimiento de equipo")) {
+    return <Pickaxe className={className} />;
   } else {
     return <BracesIcon className={className} />;
   }

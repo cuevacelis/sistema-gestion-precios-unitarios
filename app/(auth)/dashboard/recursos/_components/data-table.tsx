@@ -27,9 +27,9 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-// import { actionsDeleteRecurso } from "@/lib/actions/actions";
 import {
-  IDataDBObtenerRecursosPaginados,
+  ISpRecursosObtenPaginado,
+  TDataDBObtenerRecursosPaginados,
   TStatusResponseActions,
 } from "@/lib/types/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
@@ -39,13 +39,13 @@ import { useSearchToast } from "@/hooks/useSearchToast";
 import { actionsDeleteRecurso } from "@/lib/actions/actions";
 
 interface IProps {
-  dataRecursos: IDataDBObtenerRecursosPaginados[];
+  dataRecursos: ISpRecursosObtenPaginado[];
 }
 
 export default function TableComponent({ dataRecursos }: IProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const totalResults = dataRecursos.length ?? 0;
+  const totalResults = dataRecursos[0]?.result?.meta?.total_registro ?? 0;
   useSearchToast(totalResults);
   const { width } = useWindowSize();
   const isMobile = width < 768;
@@ -53,33 +53,21 @@ export default function TableComponent({ dataRecursos }: IProps) {
     useState<TStatusResponseActions>("idle");
   const [isShowDeleteModal, setIsShowDeleteModal] = useState(false);
   const [rowSelected, setRowSelected] =
-    useState<IDataDBObtenerRecursosPaginados | null>(null);
+    useState<TDataDBObtenerRecursosPaginados | null>(null);
   const searchParamsShowColumns = searchParams.getAll("fshow");
 
-  const columns: ColumnDef<IDataDBObtenerRecursosPaginados>[] = useMemo(
+  const columns: ColumnDef<TDataDBObtenerRecursosPaginados>[] = useMemo(
     () => [
       {
-        accessorKey: "rec_id",
+        accessorKey: "rec_indunificado",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Id recurso" />
-        ),
-      },
-      {
-        accessorKey: "par_id",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Id partida" />
-        ),
-      },
-      {
-        accessorKey: "par_nombre",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre partida" />
+          <DataTableColumnHeader column={column} title="Indunificado" />
         ),
       },
       {
         accessorKey: "rec_nombre",
         header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Nombre del recurso" />
+          <DataTableColumnHeader column={column} title="Recurso" />
         ),
       },
       {
@@ -94,41 +82,19 @@ export default function TableComponent({ dataRecursos }: IProps) {
           <DataTableColumnHeader column={column} title="Unidad de medida" />
         ),
       },
-      {
-        accessorKey: "rec_cantidad",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Cantidad" />
-        ),
-      },
-      {
-        accessorKey: "rec_cuadrilla",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Cuadrilla" />
-        ),
-      },
-      {
-        accessorKey: "detrec_precio",
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} title="Precio" />
-        ),
-      },
     ],
     []
   );
 
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: dataRecursos ?? [],
+    data: dataRecursos[0]?.result?.data ?? [],
     columns,
     rowCount: totalResults,
-    identifierField: "rec_id",
+    identifierField: "rec_indunificado",
     initialState: {
       columnVisibility: {
-        rec_id:
-          searchParamsShowColumns.includes("rec_id") ||
-          searchParamsShowColumns.length === 0,
-        par_id: searchParamsShowColumns.includes("par_id") || false,
-        par_nombre:
-          searchParamsShowColumns.includes("par_nombre") ||
+        rec_indunificado:
+          searchParamsShowColumns.includes("rec_indunificado") ||
           searchParamsShowColumns.length === 0,
         rec_nombre:
           searchParamsShowColumns.includes("rec_nombre") ||
@@ -139,15 +105,6 @@ export default function TableComponent({ dataRecursos }: IProps) {
         unimed_nombre:
           searchParamsShowColumns.includes("unimed_nombre") ||
           searchParamsShowColumns.length === 0,
-        rec_cantidad:
-          searchParamsShowColumns.includes("rec_cantidad") ||
-          searchParamsShowColumns.length === 0,
-        rec_cuadrilla:
-          searchParamsShowColumns.includes("rec_cuadrilla") ||
-          searchParamsShowColumns.length === 0,
-        detrec_precio:
-          searchParamsShowColumns.includes("detrec_precio") ||
-          searchParamsShowColumns.length === 0,
       },
     },
   });
@@ -156,7 +113,9 @@ export default function TableComponent({ dataRecursos }: IProps) {
     if (!rowSelected) return;
     setStatusRespDeleteRecurso("pending");
     try {
-      const respDelete = await actionsDeleteRecurso(String(rowSelected.rec_id));
+      const respDelete = await actionsDeleteRecurso(
+        String(rowSelected.rec_indunificado)
+      );
       if (respDelete?.isError) {
         throw respDelete.message;
       }
@@ -166,7 +125,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
           label: "Deshacer cambios",
           onClick: async () => {
             setStatusRespDeleteRecurso("pending");
-            await actionsDeleteRecurso(String(rowSelected.rec_id), 1);
+            await actionsDeleteRecurso(String(rowSelected.rec_indunificado), 1);
             setStatusRespDeleteRecurso("success");
           },
         },
@@ -181,8 +140,8 @@ export default function TableComponent({ dataRecursos }: IProps) {
     }
   };
 
-  const handleRowClick = (row: IDataDBObtenerRecursosPaginados) => {
-    const rowId = row.rec_id.toString();
+  const handleRowClick = (row: TDataDBObtenerRecursosPaginados) => {
+    // const rowId = row.rec_id.toString();
     // if (isMobile) {
     //   router.push(`/dashboard/recursos?partidaId=${row.rec_id}`);
     // } else {
@@ -198,7 +157,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
     // }
   };
 
-  const handleRowDoubleClick = (row: IDataDBObtenerRecursosPaginados) => {
+  const handleRowDoubleClick = (row: TDataDBObtenerRecursosPaginados) => {
     if (!isMobile) {
       // router.push(`/dashboard/recursos?partidaId=${row.rec_id}`);
     }
@@ -277,7 +236,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild disabled>
                       <Link
-                        href={`/dashboard/recurso/${row.original.rec_id}`}
+                        href={`/dashboard/recurso/${row.original.rec_indunificado}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
@@ -289,7 +248,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`recurso/${row.original.rec_id}/editar?${searchParams.toString()}`}
+                        href={`recurso/${row.original.rec_indunificado}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"
                       >

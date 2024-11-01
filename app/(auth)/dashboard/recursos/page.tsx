@@ -55,7 +55,6 @@ export default async function ProyectPage(props: IProjectPage) {
             <Search
               placeholder="Buscar recursos..."
               className="w-full sm:w-64 lg:w-96"
-              disabled={true}
             />
           </div>
         </CardHeader>
@@ -84,6 +83,15 @@ export default async function ProyectPage(props: IProjectPage) {
 }
 
 async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
-  const dataRecursos = await obtenerRecursosPaginados();
+  const query = String(searchParams.query || "");
+  const currentPage = Number(searchParams.page) || 1;
+  const rowsPerPage =
+    Number(searchParams.rowsPerPage) ||
+    Number(process.env.NEXT_PUBLIC_DEFAULT_ROWS_PER_PAGE!);
+  const dataRecursos = await obtenerRecursosPaginados(
+    rowsPerPage,
+    currentPage,
+    query
+  );
   return <TableComponent dataRecursos={dataRecursos} />;
 }

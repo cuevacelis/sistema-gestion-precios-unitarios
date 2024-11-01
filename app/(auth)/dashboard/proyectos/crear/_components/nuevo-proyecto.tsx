@@ -27,6 +27,7 @@ import ContainerInput from "@/components/ui/container-input";
 import Form from "next/form";
 import Link from "next/link";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { usePathname } from "next/navigation";
 
 interface INuevoProyecto {
   session: Session | null;
@@ -40,12 +41,13 @@ type LoadingKeys =
   | "client";
 
 export default function NuevoProyecto({ session }: INuevoProyecto) {
+  const pathname = usePathname();
   const [stateForm, formActionNewPresupuesto, isPending] = useActionState(
     actionsCrearPresupuesto,
     { isError: false, message: "" }
   );
   const [formDataExtra, setFormDataExtra] = useState({
-    country: "",
+    country: "1",
     department: "",
     province: "",
     district: "",
@@ -182,7 +184,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
           No se encontró ningún cliente.
           <br />
           <Link
-            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent("/dashboard/proyectos/crear")}`}
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
             className="underline underline-offset-4 flex items-center"
           >
             <ModuleIconsComponent
@@ -192,15 +194,15 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
             Crear cliente +
           </Link>
         </section>,
-        <section className="flex flex-row gap-2 items-center">
+        <>
           Cliente{" "}
           <Link
-            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent("/dashboard/proyectos/crear")}`}
-            className="underline underline-offset-4 flex items-center"
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
+            className="underline underline-offset-4 flex-inline"
           >
             +
           </Link>
-        </section>
+        </>
       )}
       <ContainerInput
         nameLabel="Nombre del proyecto:"

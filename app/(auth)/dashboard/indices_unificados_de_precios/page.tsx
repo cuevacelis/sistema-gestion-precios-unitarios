@@ -11,7 +11,9 @@ interface IProjectPage {}
 export default async function IndicesDePreciosUnificadosPage({}: IProjectPage) {
   return (
     <div className="container p-6 space-y-6">
-      <h1 className="text-3xl font-bold mb-6">Índices de Precios Unificados</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        Índices unificados de precios para la construcción
+      </h1>
 
       <Alert
         className="mb-6 border-blue-200 dark:border-blue-800"
@@ -120,7 +122,7 @@ function SkeletonLoadingIndicesDePreciosUnificados() {
       <div className="flex items-center justify-center py-4">
         <div className="text-center space-y-2">
           <div className="text-xl text-muted-foreground animate-pulse">
-            Cargando datos de índices de precios unificados, por favor espere...
+            Cargando datos de índices unificados de precios, por favor espere...
           </div>
           <div className="flex justify-center gap-1">
             <div className="w-2 h-2 rounded-full bg-muted-foreground/20 animate-bounce [animation-delay:-0.3s]" />

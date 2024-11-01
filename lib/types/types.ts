@@ -225,6 +225,26 @@ export interface IDataDBObtenerPartidasPaginados {
 }
 
 // #region RECURSOS
+export interface ISpRecursosObtenPaginado {
+  result: {
+    data: Array<{
+      rec_indunificado: string;
+      rec_nombre: string;
+      tiprec_nombre: string;
+      unimed_nombre: string;
+    }>;
+    meta: {
+      total_pagina: number;
+      total_registro: number;
+      tiene_pagina_anterior: boolean;
+      tiene_pagina_proximo: boolean;
+    };
+  };
+}
+
+export type TDataDBObtenerRecursosPaginados =
+  ISpRecursosObtenPaginado["result"]["data"][0];
+
 export interface IDataDBObtenerRecursosPaginados {
   rec_id: number;
   rec_nombre: string;

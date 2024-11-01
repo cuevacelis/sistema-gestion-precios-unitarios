@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Session } from "next-auth";
 import { Loader2 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -25,9 +24,11 @@ import useDistrictQuery from "@/hooks/tanstack-query/useDistrictQuery";
 import useClientQuery from "@/hooks/tanstack-query/useClientQuery";
 import ContainerInput from "@/components/ui/container-input";
 import Form from "next/form";
+import Link from "next/link";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
+import { usePathname } from "next/navigation";
 
 interface IEditarPresupuesto {
-  session: Session | null;
   presupuestoId: string;
   initialData: {
     nameUser: string;
@@ -49,10 +50,10 @@ type LoadingKeys =
   | "client";
 
 export default function EditarProyectosPage({
-  session,
   presupuestoId,
   initialData,
 }: IEditarPresupuesto) {
+  const pathname = usePathname();
   const [stateForm, formActionEditPresupuesto, isPending] = useActionState(
     (prevState: any, formData: FormData) =>
       actionsEditarPresupuesto(presupuestoId, prevState, formData),
@@ -124,10 +125,12 @@ export default function EditarProyectosPage({
     placeholder: string,
     label: string,
     isLoading: boolean,
-    icon?: string
+    icon?: string,
+    messageEmpty?: React.ReactNode,
+    labelReactNode?: React.ReactNode
   ) => (
     <ContainerInput
-      nameLabel={label}
+      nameLabel={labelReactNode || label}
       htmlFor=""
       icon={icon}
       className="col-span-3"
@@ -188,7 +191,30 @@ export default function EditarProyectosPage({
         "Seleccione un cliente",
         "Cliente",
         isLoadingClients,
-        "cliente"
+        "cliente",
+        <section className="flex flex-col gap-2 items-center">
+          No se encontró ningún cliente.
+          <br />
+          <Link
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
+            className="underline underline-offset-4 flex items-center"
+          >
+            <ModuleIconsComponent
+              className="mr-2 h-4 w-4 flex-shrink-0"
+              modNombre="Cliente"
+            />
+            Crear cliente +
+          </Link>
+        </section>,
+        <>
+          Cliente{" "}
+          <Link
+            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
+            className="underline underline-offset-4 flex-inline"
+          >
+            +
+          </Link>
+        </>
       )}
       <ContainerInput
         nameLabel="Nombre del proyecto:"

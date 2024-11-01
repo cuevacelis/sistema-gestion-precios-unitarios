@@ -56,7 +56,7 @@ export default async function ClientesPage(props: IProjectPage) {
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar clientes..."
+              placeholder="Buscar clientes por DNI..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>
