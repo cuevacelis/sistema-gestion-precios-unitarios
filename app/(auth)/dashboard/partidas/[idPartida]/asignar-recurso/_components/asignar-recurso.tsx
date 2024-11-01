@@ -248,23 +248,35 @@ export default function AsignarRecursoPartida({
           <DialogHeader>
             <DialogTitle>Precios recomendados</DialogTitle>
             <DialogDescription>
-              Busca los precios recomendados segun la OSCE.
+              Busca los precios recomendados según el índice unificado de
+              precios de la construcción.
+              <Link
+                href="/dashboard/indices_unificados_de_precios"
+                target="_blank"
+                className="inline-flex items-center gap-1 text-primary hover:underline"
+              >
+                Ver más
+              </Link>
             </DialogDescription>
           </DialogHeader>
           <section className="flex flex-col gap-4">
-            <Alert>
-              <RocketIcon className="h-4 w-4" />
-              <AlertTitle>Información importante</AlertTitle>
-              <AlertDescription>
+            <Alert className="border-blue-200 dark:border-blue-800">
+              <RocketIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertTitle className="text-blue-800 dark:text-blue-200">
+                Información importante
+              </AlertTitle>
+              <AlertDescription className="text-blue-700 dark:text-blue-300">
                 Esta seccion te brinda recomendaciones de precios segun el
                 recurso y el departamento seleccionado.
               </AlertDescription>
             </Alert>
 
-            <div className={cn("sm:col-span-3", {})}>
-              <Label className="text-sm w-20 truncate">
-                Seleccione un recurso
-              </Label>
+            <ContainerInput
+              nameLabel="Seleccione un recurso:"
+              htmlFor="idRecurso"
+              icon="recurso"
+              className="col-span-full"
+            >
               <ComboboxSingleSelection
                 options={dataRecursos.map((item) => ({
                   value: String(item.rec_id),
@@ -274,7 +286,7 @@ export default function AsignarRecursoPartida({
                 disabled={false}
                 value={formDataExtra["idRecurso"]}
               />
-            </div>
+            </ContainerInput>
 
             <ContainerInput
               nameLabel="País"
@@ -282,29 +294,25 @@ export default function AsignarRecursoPartida({
               icon={"ubicacion"}
               className="col-span-3"
             >
-              <div className="flex flex-col w-full">
-                <ComboboxSingleSelection
-                  className="bg-secondary"
-                  options={
-                    countries?.map((country: ISpPaisObten) => ({
-                      value: String(country.pai_id),
-                      label: country.pai_nombre,
-                    })) || []
-                  }
-                  onSelect={(value) =>
-                    handleSelectChangeModal("country", value)
-                  }
-                  placeholder={"Seleccione un país"}
-                  disabled={!countries?.length || isLoadingCountries}
-                  value={formDataExtraModal["country"]}
-                />
-                {isLoadingCountries && (
-                  <div className="mt-2 flex items-center text-sm text-muted-foreground">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {`Cargando países...`}
-                  </div>
-                )}
-              </div>
+              <ComboboxSingleSelection
+                className="bg-secondary"
+                options={
+                  countries?.map((country: ISpPaisObten) => ({
+                    value: String(country.pai_id),
+                    label: country.pai_nombre,
+                  })) || []
+                }
+                onSelect={(value) => handleSelectChangeModal("country", value)}
+                placeholder={"Seleccione un país"}
+                disabled={!countries?.length || isLoadingCountries}
+                value={formDataExtraModal["country"]}
+              />
+              {isLoadingCountries && (
+                <div className="mt-2 flex items-center text-sm text-muted-foreground">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {`Cargando países...`}
+                </div>
+              )}
             </ContainerInput>
 
             <ContainerInput
@@ -313,29 +321,27 @@ export default function AsignarRecursoPartida({
               icon={"ubicacion"}
               className="col-span-3"
             >
-              <div className="flex flex-col w-full">
-                <ComboboxSingleSelection
-                  className="bg-secondary"
-                  options={
-                    departments?.map((department: ISpDepartamentoObten) => ({
-                      value: String(department.dep_id),
-                      label: department.dep_nombre,
-                    })) || []
-                  }
-                  onSelect={(value) =>
-                    handleSelectChangeModal("department", value)
-                  }
-                  placeholder={"Seleccione un departamento"}
-                  disabled={!departments?.length || isLoadingDepartments}
-                  value={formDataExtraModal["department"]}
-                />
-                {isLoadingDepartments && (
-                  <div className="mt-2 flex items-center text-sm text-muted-foreground">
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {`Cargando departamentos...`}
-                  </div>
-                )}
-              </div>
+              <ComboboxSingleSelection
+                className="bg-secondary"
+                options={
+                  departments?.map((department: ISpDepartamentoObten) => ({
+                    value: String(department.dep_id),
+                    label: department.dep_nombre,
+                  })) || []
+                }
+                onSelect={(value) =>
+                  handleSelectChangeModal("department", value)
+                }
+                placeholder={"Seleccione un departamento"}
+                disabled={!departments?.length || isLoadingDepartments}
+                value={formDataExtraModal["department"]}
+              />
+              {isLoadingDepartments && (
+                <div className="mt-2 flex items-center text-sm text-muted-foreground">
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {`Cargando departamentos...`}
+                </div>
+              )}
             </ContainerInput>
 
             <ContainerInput
@@ -354,9 +360,19 @@ export default function AsignarRecursoPartida({
               />
               {!isLoadingPrecioRecomendado &&
                 precioRecomendado?.length === 0 && (
-                  <div className="mt-2 flex items-center text-sm text-muted-foreground">
-                    <ExclamationCircleIcon className="mr-2 h-4 w-4 animate-spin" />
-                    {`No hay precios recomendados`}
+                  <div className="mt-2 flex items-center text-sm text-muted-foreground text-red-400 dark:text-red-500">
+                    <ExclamationCircleIcon className="mr-2 h-4 w-4" />
+                    <p>
+                      No hay precios recomendados para este recurso, obten una
+                      lista de índices unificados{" "}
+                      <Link
+                        href="/dashboard/indices_unificados_de_precios"
+                        target="_blank"
+                        className="inline-block text-primary hover:underline"
+                      >
+                        aquí
+                      </Link>
+                    </p>
                   </div>
                 )}
               {isLoadingPrecioRecomendado && (
