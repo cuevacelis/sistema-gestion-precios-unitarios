@@ -26,7 +26,10 @@ import {
   Table as TableUI,
 } from "@/components/ui/table";
 import ValidateMutation from "@/components/validate/validateMutation";
-import { actionsDeleteCliente, actionsDeleteUsuario } from "@/lib/actions/actions";
+import {
+  actionsDeleteCliente,
+  actionsDeleteUsuario,
+} from "@/lib/actions/actions";
 import {
   ISpClienteObtenPaginado,
   TDataDBObtenerClientesPaginados,
@@ -105,7 +108,8 @@ export default function TableComponent({ dataClientes }: IProps) {
           searchParamsShowColumns.includes("cli_nomaperazsocial") ||
           searchParamsShowColumns.length === 0,
         cli_abreviatura:
-          searchParamsShowColumns.includes("cli_abreviatura") || false,
+          searchParamsShowColumns.includes("cli_abreviatura") ||
+          searchParamsShowColumns.length === 0,
         tipdoc_nombre:
           searchParamsShowColumns.includes("tipdoc_nombre") ||
           searchParamsShowColumns.length === 0,

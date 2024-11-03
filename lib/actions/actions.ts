@@ -379,10 +379,10 @@ export async function actionsEditarCliente(
     const referer = headersList.get("referer") || "/dashboard/clientes";
     const { idCliente, nombre, abreviatura, tipoDoc, numeroDoc } =
       await editarClienteSchema.parseAsync({
-        idCliente: formData.get("idCliente"),
+        idCliente: Number(formData.get("idCliente")),
         nombre: formData.get("nombre"),
         abreviatura: formData.get("abreviatura"),
-        tipoDoc: formData.get("tipoDoc"),
+        tipoDoc: Number(formData.get("tipoDoc")),
         numeroDoc: formData.get("numeroDoc"),
       });
 

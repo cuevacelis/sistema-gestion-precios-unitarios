@@ -117,7 +117,7 @@ export interface IDataDBObtenerClientesId {
   cli_id: number;
   cli_nomaperazsocial: string;
   cli_abreviatura: string;
-  tipdoc_nombre: string;
+  tipdoc_id: number;
   cli_numdocumento: string;
   cli_estado: number;
 }

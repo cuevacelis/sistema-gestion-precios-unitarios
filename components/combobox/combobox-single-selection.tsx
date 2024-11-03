@@ -96,22 +96,22 @@ export default function ComboboxSingleSelection({
       variant="outline"
       role="combobox"
       aria-expanded={open}
-      className="w-full justify-between"
+      className="w-full justify-between flex items-center gap-2"
       disabled={disabled}
     >
-      <span className="flex items-center gap-2 truncate">
+      <span className="text-start truncate w-9/12">
         {value
           ? safeOptions.find((option) => option.value === value)?.label
           : placeholder}
       </span>
-      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
     </Button>
   );
 
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild className={cn(className)}>
+        <PopoverTrigger asChild className={cn(className, "")}>
           {trigger}
         </PopoverTrigger>
         <PopoverContent
@@ -126,7 +126,9 @@ export default function ComboboxSingleSelection({
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+      <DrawerTrigger asChild className={cn(className)}>
+        {trigger}
+      </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">{content}</div>
       </DrawerContent>

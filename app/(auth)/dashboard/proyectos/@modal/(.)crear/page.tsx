@@ -14,7 +14,7 @@ const NuevoProyecto = dynamic(
 
 export default async function NuevoProyectoModalPage() {
   return (
-    <Modal title="Crear nuevo proyecto" classNameDialogContent="h-[500px]">
+    <Modal title="Crear nuevo proyecto">
       <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataNuevoProyecto />
       </Suspense>

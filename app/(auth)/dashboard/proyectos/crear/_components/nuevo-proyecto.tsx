@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Session } from "next-auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +28,14 @@ import Form from "next/form";
 import Link from "next/link";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { usePathname } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
+import { Button } from "@/components/ui/button";
 
 interface INuevoProyecto {
   session: Session | null;
@@ -114,7 +122,8 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
     isLoading: boolean,
     icon?: string,
     messageEmpty?: React.ReactNode,
-    labelReactNode?: React.ReactNode
+    labelReactNode?: React.ReactNode,
+    moreInfo?: React.ReactNode
   ) => (
     <ContainerInput
       nameLabel={labelReactNode || label}
@@ -123,15 +132,18 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
       className="col-span-3"
     >
       <div className="flex flex-col w-full">
-        <ComboboxSingleSelection
-          className="bg-secondary"
-          options={options}
-          onSelect={(value) => handleSelectChange(type, value)}
-          placeholder={placeholder}
-          disabled={isLoading || isPending}
-          value={formDataExtra[type]}
-          messageEmpty={messageEmpty}
-        />
+        <div className="flex items-center gap-2">
+          <ComboboxSingleSelection
+            className="bg-secondary"
+            options={options}
+            onSelect={(value) => handleSelectChange(type, value)}
+            placeholder={placeholder}
+            disabled={isLoading || isPending}
+            value={formDataExtra[type]}
+            messageEmpty={messageEmpty}
+          />
+          {moreInfo}
+        </div>
         {isLoading && (
           <div className="mt-2 flex items-center text-sm text-muted-foreground">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -153,7 +165,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
   return (
     <Form
       action={handleSubmit}
-      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
+      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 max-h-[500px] lg:max-h-full"
     >
       <ContainerInput
         nameLabel="Nombre usuario:"
@@ -194,21 +206,30 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
             Crear cliente +
           </Link>
         </section>,
-        <>
-          Cliente{" "}
-          <Link
-            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
-            className="underline underline-offset-4 flex-inline"
-          >
-            +
-          </Link>
-        </>
+        null,
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild variant="secondary" size="sm">
+                <Link
+                  href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
+                >
+                  <Plus className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow className="fill-primary" />
+              <p>Agregar un nuevo cliente</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
       <ContainerInput
         nameLabel="Nombre del proyecto:"
         htmlFor="name-presupuesto"
         icon="proyecto"
-        className="col-span-full"
+        className="col-span-3"
       >
         <Input
           type="text"

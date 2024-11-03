@@ -1,17 +1,22 @@
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
-import { obtenerRoles, obtenerUsuariosById } from "@/lib/services/sql-queries";
+import {
+  obtenerClientesById,
+  obtenerRoles,
+  obtenerTipoDocumento,
+  obtenerUsuariosById,
+} from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-const EditarUsuario = dynamic(() => import("./_components/edit-usuario"), {
+const EditarUsuario = dynamic(() => import("./_components/edit-cliente"), {
   loading: () => <p>Cargando...</p>,
 });
 
 interface IPropsEditUsuario {
   params: Promise<{
-    idUsuario: string;
+    idCliente: string;
   }>;
 }
 
@@ -23,8 +28,8 @@ export default async function EditarUsuarioPage(props: IPropsEditUsuario) {
         <h1 className="text-lg font-semibold mb-6">Editar</h1>
         <Card x-chunk="overflow-auto" className="mb-6">
           <CardContent>
-            <Suspense key={params.idUsuario} fallback={<p>Cargando...</p>}>
-              <GetDataEditarUsuario idUsuario={params.idUsuario} />
+            <Suspense key={params.idCliente} fallback={<p>Cargando...</p>}>
+              <GetDataEditarUsuario idCliente={params.idCliente} />
             </Suspense>
           </CardContent>
         </Card>
@@ -33,13 +38,18 @@ export default async function EditarUsuarioPage(props: IPropsEditUsuario) {
   );
 }
 
-async function GetDataEditarUsuario({ idUsuario }: { idUsuario: string }) {
-  const dataUsuario = await obtenerUsuariosById(Number(idUsuario));
-  const dataRoles = await obtenerRoles();
+async function GetDataEditarUsuario({ idCliente }: { idCliente: string }) {
+  const dataCliente = await obtenerClientesById(Number(idCliente));
+  const dataTipoDocumento = await obtenerTipoDocumento();
 
-  if (dataUsuario.length === 0) {
+  if (dataCliente.length === 0) {
     return notFound();
   }
 
-  return <EditarUsuario dataUsuario={dataUsuario[0]} dataRoles={dataRoles} />;
+  return (
+    <EditarUsuario
+      dataCliente={dataCliente[0]}
+      dataTipoDocumento={dataTipoDocumento}
+    />
+  );
 }

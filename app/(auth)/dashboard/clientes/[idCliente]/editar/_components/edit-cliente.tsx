@@ -5,33 +5,33 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
 
-import { actionsEditarUsuario } from "@/lib/actions/actions";
+import { actionsEditarCliente } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
-import { obtenerRoles } from "@/lib/services/sql-queries";
+import { obtenerRoles, obtenerTipoDocumento } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import Form from "next/form";
 import ContainerInput from "@/components/ui/container-input";
-import { IDataDBObtenerUsuariosId } from "@/lib/types/types";
+import { IDataDBObtenerClientesId } from "@/lib/types/types";
 
-interface IEditarUsuario {
-  dataUsuario: IDataDBObtenerUsuariosId;
-  dataRoles: Awaited<ReturnType<typeof obtenerRoles>>;
+interface IEditarCliente {
+  dataCliente: IDataDBObtenerClientesId;
+  dataTipoDocumento: Awaited<ReturnType<typeof obtenerTipoDocumento>>;
 }
 
-export default function EditarUsuario({
-  dataUsuario,
-  dataRoles,
-}: IEditarUsuario) {
-  const [stateForm, formActionNewUsuario, isPending] = useActionState(
-    actionsEditarUsuario,
+export default function EditarCliente({
+  dataCliente,
+  dataTipoDocumento,
+}: IEditarCliente) {
+  const [stateForm, formActionEditCliente, isPending] = useActionState(
+    actionsEditarCliente,
     {
       isError: false,
       message: "",
     }
   );
   const [formDataExtra, setFormDataExtra] = useState({
-    idUsuario: dataUsuario.usu_id,
-    rol: String(dataUsuario.rol_id),
+    idCliente: dataCliente?.cli_id,
+    tipoDoc: String(dataCliente?.tipdoc_id) || null,
   });
 
   const handleSubmit = (formData: FormData) => {
@@ -39,7 +39,7 @@ export default function EditarUsuario({
       formData.append(key, String(value));
     });
 
-    formActionNewUsuario(formData);
+    formActionEditCliente(formData);
   };
 
   const handleSelectChange = (
@@ -55,59 +55,58 @@ export default function EditarUsuario({
       className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Correo electrónico</Label>
-        <Input
-          type="text"
-          name="correo"
-          required
-          defaultValue={dataUsuario.usu_correo}
-        />
-      </div>
-
-      <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Clave</Label>
-        <Input
-          type="text"
-          name="clave"
-          required
-          defaultValue={dataUsuario.usu_clave}
-        />
-      </div>
-
-      <div className="sm:col-span-3">
         <Label className="text-sm w-20 truncate">Nombre</Label>
         <Input
           type="text"
           name="nombre"
           required
-          defaultValue={dataUsuario.usu_nomapellidos}
+          defaultValue={dataCliente.cli_nomaperazsocial}
+        />
+      </div>
+
+      <div className="sm:col-span-3">
+        <Label className="text-sm w-20 truncate">Abreviatura</Label>
+        <Input
+          type="text"
+          name="abreviatura"
+          required
+          defaultValue={dataCliente.cli_abreviatura}
         />
       </div>
 
       <ContainerInput
-        nameLabel="Rol"
-        htmlFor="rol"
-        icon="user"
+        nameLabel="Tipo de documento:"
+        htmlFor="tipoDoc"
+        icon="tipoDoc"
         className="col-span-3"
       >
         <div className="flex flex-col w-full">
           <ComboboxSingleSelection
             className="bg-secondary"
-            options={dataRoles.map((item) => ({
-              value: String(item.rol_id),
-              label: item.rol_nombre,
+            options={dataTipoDocumento.map((item) => ({
+              value: String(item.tipdoc_id),
+              label: item.tipdoc_nombre,
             }))}
-            onSelect={(value) => handleSelectChange(value, "rol")}
+            onSelect={(value) => handleSelectChange(value, "tipoDoc")}
             disabled={false}
-            value={formDataExtra["rol"]}
+            value={formDataExtra["tipoDoc"]}
           />
         </div>
       </ContainerInput>
 
+      <div className="sm:col-span-3">
+        <Label className="text-sm w-20 truncate">Número de documento</Label>
+        <Input
+          type="number"
+          name="numeroDoc"
+          defaultValue={dataCliente.cli_numdocumento}
+          required
+        />
+      </div>
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}
-          name="Editar usuario"
+          name="Editar cliente"
           nameLoading="Editando..."
         />
       </div>

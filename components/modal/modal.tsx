@@ -5,6 +5,7 @@ import { useCallback } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -44,6 +45,7 @@ export default function Modal({
       >
         <DialogHeader>
           <DialogTitle>{title || "Modal"}</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         {children}
       </DialogContent>
