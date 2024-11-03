@@ -1111,13 +1111,15 @@ export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
         indunificado: formData.get("indunificado"),
       });
 
-    await crearRecurso(
+    const response = await crearRecurso(
       nombreRecurso,
       Number(tipoRecurso),
       Number(unidadMedida),
       indunificado
     );
-
+    if (response[0]?.error) {
+      throw new Error(response[0]?.message);
+    }
     const url = new URL(referer);
     const returnUrl =
       url.searchParams.get("returnUrl") || "/dashboard/clientes";

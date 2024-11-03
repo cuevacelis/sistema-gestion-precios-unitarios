@@ -4,6 +4,7 @@ import { sql } from "kysely";
 import {
   IDataDBObtenerClientesId,
   IDataDBObtenerGruposDePartidasId,
+  IDataDBObtenerHojaDePresupuestoId,
   IDataDBObtenerPartidasPaginados,
   IDataDBObtenerProyectosId,
   IDataDBObtenerRecursosPaginados,
@@ -1192,7 +1193,7 @@ export const obtenerHojaDePresupuestoByProyectoId = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<ISpHojaDePresupuesto>`sp_presupuesto_obten_exportar_json(${proyectoId})`.as(
+          sql<IDataDBObtenerHojaDePresupuestoId>`sp_presupuesto_obten_exportar_json(${proyectoId})`.as(
             "result"
           )
         )

@@ -6,7 +6,13 @@ import { ISearchParams } from "@/lib/types/types";
 import TableSkeleton from "@/components/ui/skeletons/table-skeleton";
 import { auth } from "@/auth";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-import { obtenerHojaDePresupuesto } from "@/lib/services/sql-queries";
+import {
+  obtenerHojaDePresupuesto,
+  obtenerHojaDePresupuestoByProyectoId,
+  obtenerProyectos,
+} from "@/lib/services/sql-queries";
+import Link from "next/link";
+import { convertToStringOrNull } from "@/lib/utils";
 
 const BackButtonHistory = dynamic(
   () => import("@/components/back-button/back-button-history"),
@@ -15,9 +21,12 @@ const BackButtonHistory = dynamic(
   }
 );
 
-const Search = dynamic(() => import("@/components/search/search"), {
-  loading: () => <></>,
-});
+const DataDropdownProyectos = dynamic(
+  () => import("./_components/data-dropdown-proyectos"),
+  {
+    loading: () => <Skeleton className="h-10 w-full" />,
+  }
+);
 
 const OptionsTable = dynamic(() => import("./_components/options-table"), {
   loading: () => <Skeleton className="h-10 w-full" />,
@@ -33,8 +42,8 @@ interface IProjectPage {
 
 export default async function HojaDelPresupuestoPage(props: IProjectPage) {
   const searchParams = await props.searchParams;
-  const { page, rowsPerPage, query } = searchParams;
-  const uniqueKey = `table-hojaDelPresupuestoo-${page}-${rowsPerPage}-${query}`;
+  const { proyectoId } = searchParams;
+  const uniqueKey = `table-hojaDelPresupuesto-${proyectoId}`;
 
   return (
     <div className="space-y-6">
@@ -58,7 +67,7 @@ export default async function HojaDelPresupuestoPage(props: IProjectPage) {
       <Card className="p-6">
         <CardContent className="px-0 py-0">
           <Suspense
-            key={uniqueKey}
+            key={"options" + uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
             <GetDataOptions />
@@ -66,9 +75,21 @@ export default async function HojaDelPresupuestoPage(props: IProjectPage) {
         </CardContent>
       </Card>
 
+      <Card className="p-6">
+        <CardContent className="px-0 py-0">
+          <Suspense
+            key={"dropdown" + uniqueKey}
+            fallback={<Skeleton className="h-10 w-full" />}
+          >
+            <GetDataDropdownByProyectoId
+              proyectoId={convertToStringOrNull(proyectoId)}
+            />
+          </Suspense>
+        </CardContent>
+      </Card>
       <Card>
         <CardContent className="p-6">
-          <Suspense key={uniqueKey} fallback={<TableSkeleton />}>
+          <Suspense key={"table" + uniqueKey} fallback={<TableSkeleton />}>
             <GetDataTable searchParams={searchParams} />
           </Suspense>
         </CardContent>
@@ -83,13 +104,50 @@ async function GetDataOptions() {
 }
 
 async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
-  const session = await auth();
-  const dataHojaDelPresupuesto = await obtenerHojaDePresupuesto();
+  const { proyectoId } = searchParams;
+
+  if (!proyectoId || proyectoId === "null") {
+    return (
+      <section className="flex flex-col items-center justify-center p-6">
+        <h1 className="text-3xl font-bold mb-6">
+          Aún no se ha seleccionado un proyecto
+        </h1>
+        <Link
+          href="/dashboard/proyectos"
+          className="underline underline-offset-4 flex items-center"
+        >
+          <ModuleIconsComponent
+            className="mr-2 h-4 w-4 flex-shrink-0"
+            modNombre="Proyecto"
+          />
+          Ver proyectos
+        </Link>
+      </section>
+    );
+  }
+
+  const dataHojaDelPresupuesto = await obtenerHojaDePresupuestoByProyectoId(
+    String(proyectoId)
+  );
 
   return (
     <TableComponent
-      dataPresupuesto={dataHojaDelPresupuesto[0]?.result?.data || []}
+      dataHojaDePresupuesto={dataHojaDelPresupuesto[0]?.result?.data || []}
     />
   );
-  return null;
+}
+
+async function GetDataDropdownByProyectoId({
+  proyectoId,
+}: {
+  proyectoId: string | null;
+}) {
+  const dataProyectos = await obtenerProyectos();
+
+  return (
+    <DataDropdownProyectos
+      dataProyectos={dataProyectos}
+      proyectoId={proyectoId}
+    />
+  );
 }

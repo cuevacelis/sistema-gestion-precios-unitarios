@@ -318,6 +318,18 @@ export default function TableComponent({ dataProyectos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
+                        href={`/dashboard/hoja_del_presupuesto?proyectoId=${row.original.pre_id}`}
+                        className="flex items-center"
+                      >
+                        <ModuleIconsComponent
+                          className="mr-2 h-4 w-4"
+                          modNombre="hoja de presupuesto"
+                        />
+                        <span>Ver Hoja de Presupuesto</span>
+                      </Link>
+                    </ContextMenuItem>
+                    <ContextMenuItem asChild>
+                      <Link
                         href={`/dashboard/grupos_de_partida/subgrupos?proyectoId=${row.original.pre_id}`}
                         className="flex items-center"
                       >

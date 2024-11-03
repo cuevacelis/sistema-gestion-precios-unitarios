@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useEffect, Fragment } from "react";
-import { Cell, ColumnDef, flexRender } from "@tanstack/react-table";
+import { Cell, ColumnDef, CoreRow, flexRender } from "@tanstack/react-table";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   TableBody,
@@ -14,15 +14,22 @@ import {
 import { DataTableColumnHeader } from "@/components/data-table/column-header";
 import { DataTablePagination } from "@/components/data-table/pagination";
 import { formatDateToDateTimeWith12HourFormat } from "@/lib/utils";
-import { ISpHojaDePresupuesto } from "@/lib/types/types";
+import {
+  IDataDBObtenerHojaDePresupuestoId,
+  TDataGrupoPartidaDBObtenerHojaDePresupuestoId,
+} from "@/lib/types/types";
 import useUpdateTableComplete from "@/hooks/useTableComplete";
 
 interface IProps {
-  dataPresupuesto: ISpHojaDePresupuesto["result"]["data"];
+  dataHojaDePresupuesto: IDataDBObtenerHojaDePresupuestoId["result"]["data"];
 }
 
-export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
-  const totalResults = dataPresupuesto?.length;
+export default function HojaDePresupuestoTable({
+  dataHojaDePresupuesto,
+}: IProps) {
+  const dataGruposPartidasByHojaDePresupuesto =
+    dataHojaDePresupuesto[0]?.grupos_partida || [];
+  const totalResults = dataHojaDePresupuesto[0]?.grupos_partida?.length;
 
   const colorStyles = {
     level1: "text-red-600", // Primer nivel (proyectos)
@@ -30,10 +37,6 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
     level3: "text-blue-800", // Tercer nivel (partidas)
     lastLevel: "text-white", // Último nivel (cuando no tiene más hijos)
   };
-
-  useEffect(() => {
-    console.log(dataPresupuesto);
-  }, [dataPresupuesto]);
 
   const generateItemNumber = (
     index: number,
@@ -47,12 +50,12 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
   };
 
   const renderPartidasRows = (
-    row: any,
+    row: CoreRow<TDataGrupoPartidaDBObtenerHojaDePresupuestoId>,
     parentItemNumber: string,
     level: number,
-    visibilityRows: Cell<ISpHojaDePresupuesto["result"]["data"][0], any>[]
+    visibilityRows: Cell<TDataGrupoPartidaDBObtenerHojaDePresupuestoId, any>[]
   ) => {
-    return row.grupos_partida?.map((partida: any, partidaIndex: number) => {
+    return row.original.grupos_hijos?.map((gp, partidaIndex: number) => {
       const partidaItemNumber = generateItemNumber(
         partidaIndex,
         1,
@@ -60,10 +63,10 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
       );
 
       return (
-        <Fragment key={`partida-${partida.grupar_id}-${partidaIndex}`}>
+        <Fragment key={`gp-${gp.grupar_id}-${partidaIndex}`}>
           {/* Grupos de partida con color dependiendo del nivel */}
           <TableRow
-            key={partida.grupar_id}
+            key={gp.grupar_id}
             className={
               colorStyles[
                 `level${Math.min(level + 1, 3)}` as keyof typeof colorStyles
@@ -72,52 +75,45 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
           >
             <TableCell className="border-r">{partidaItemNumber}</TableCell>
             <TableCell className="pl-4 border-r">
-              <strong>{partida.grupar_nombre}</strong>
+              <strong>{gp.grupar_nombre}</strong>
             </TableCell>
             {visibilityRows.slice(2).map((cell) => (
               <TableCell key={cell.id} className="border-r"></TableCell>
             ))}
           </TableRow>
 
-          {/* Subpartidas en el nivel 3 o más */}
-          {partida.grupos_hijos?.map(
-            (subpartida: any, subpartidaIndex: number) => {
-              const subpartidaItemNumber = generateItemNumber(
-                subpartidaIndex,
-                2,
-                partidaItemNumber
-              );
+          {gp?.partidas?.map((partida, subpartidaIndex: number) => {
+            const subpartidaItemNumber = generateItemNumber(
+              subpartidaIndex,
+              2,
+              partidaItemNumber
+            );
 
-              // Si no hay más hijos en el nivel 4, usar color blanco
-              const subpartidaClass = !subpartida.grupos_hijos
-                ? colorStyles.lastLevel // Último nivel
-                : colorStyles.level3; // Nivel 3 si aún tiene hijos
+            const subpartidaClass = !true
+              ? colorStyles.lastLevel // Último nivel
+              : colorStyles.level3; // Nivel 3 si aún tiene hijos
 
-              return (
-                <TableRow
-                  key={subpartida.grupar_id}
-                  className={subpartidaClass}
-                >
-                  <TableCell className="border-r">
-                    {subpartidaItemNumber}
-                  </TableCell>
-                  <TableCell className="pl-8 border-r">
-                    {subpartida.grupar_nombre}
-                    {subpartida.grupar_total}
-                  </TableCell>
-                  {visibilityRows.slice(2).map((cell) => (
-                    <TableCell key={cell.id} className="border-r"></TableCell>
-                  ))}
-                </TableRow>
-              );
-            }
-          )}
+            return (
+              <TableRow key={partida.par_id} className={subpartidaClass}>
+                <TableCell className="border-r">
+                  {subpartidaItemNumber}
+                </TableCell>
+                <TableCell className="pl-8 border-r">
+                  {partida.par_nombre}
+                  {partida.par_preunitario}
+                </TableCell>
+                {visibilityRows.slice(2).map((cell) => (
+                  <TableCell key={cell.id} className="border-r"></TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
         </Fragment>
       );
     });
   };
 
-  const columns: ColumnDef<ISpHojaDePresupuesto["result"]["data"][0]>[] =
+  const columns: ColumnDef<TDataGrupoPartidaDBObtenerHojaDePresupuestoId>[] =
     useMemo(
       () => [
         {
@@ -127,54 +123,32 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
             generateItemNumber(table?.getRowModel()?.rows.indexOf(row), 0),
         },
         {
-          accessorKey: "pre_nombre",
+          accessorKey: "UnidadMedida",
           header: ({ column }) => (
             <DataTableColumnHeader
               column={column}
-              title="Nombre del Proyecto"
+              title="Unidad de Medida"
               hideSort
             />
           ),
-          cell: ({ row }) => row.original.pre_nombre.toUpperCase(),
+          cell: ({ row }) => row.original.grupar_nombre.toUpperCase(),
         },
         {
-          accessorKey: "usu_nomapellidos",
-          header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Usuario" hideSort />
-          ),
-          cell: ({ row }) => row.original.usu_nomapellidos,
-        },
-        {
-          accessorKey: "cli_nomaperazsocial",
+          accessorKey: "precio",
           header: ({ column }) => (
             <DataTableColumnHeader
               column={column}
-              title="Razón Social"
+              title="Precio S/."
               hideSort
             />
           ),
-          cell: ({ row }) => row.original.cli_nomaperazsocial,
-        },
-        {
-          accessorKey: "pre_fechorregistro",
-          header: ({ column }) => (
-            <DataTableColumnHeader
-              column={column}
-              title="Fecha de Creación"
-              hideSort
-            />
-          ),
-          cell: ({ row }) =>
-            formatDateToDateTimeWith12HourFormat(
-              row.original.pre_fechorregistro
-            ),
         },
       ],
       []
     );
 
   const { table, rowSelection, setRowSelection } = useUpdateTableComplete({
-    data: dataPresupuesto,
+    data: dataGruposPartidasByHojaDePresupuesto,
     columns,
     rowCount: totalResults,
     identifierField: "pre_id",
@@ -233,12 +207,7 @@ export default function HojaDePresupuestoTable({ dataPresupuesto }: IProps) {
                       ))}
                     </TableRow>
                     {/* Renderizar las partidas como nuevas filas */}
-                    {renderPartidasRows(
-                      row.original,
-                      itemNumber,
-                      1,
-                      visibilityRows
-                    )}
+                    {renderPartidasRows(row, itemNumber, 1, visibilityRows)}
                   </Fragment>
                 );
               })}
