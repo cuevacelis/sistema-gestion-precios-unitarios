@@ -1,9 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  obtenerGruposDePartidas,
   obtenerPartidaById,
   obtenerRecursos,
-  obtenerUnidadesDeMedida,
 } from "@/lib/services/sql-queries";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
@@ -26,13 +24,15 @@ export default async function AsignarRecursoPartidaPage(
   props: IPropsAsignarRecursoPartida
 ) {
   const params = await props.params;
+  const { idPartida } = params;
+  const uniqueKey = `asignar-recurso-partida-${idPartida}`;
   return (
     <div className="p-4 lg:p-6">
       <h1 className="text-2xl font-semibold mb-4">Asignar recurso a partida</h1>
       <Card className="overflow-auto mb-6 pt-6">
         <CardContent>
-          <Suspense key={params.idPartida} fallback={<p>Cargando...</p>}>
-            <GetDataAsignarRecursoPartida idPartida={params.idPartida} />
+          <Suspense key={uniqueKey} fallback={<p>Cargando...</p>}>
+            <GetDataAsignarRecursoPartida idPartida={idPartida} />
           </Suspense>
         </CardContent>
       </Card>

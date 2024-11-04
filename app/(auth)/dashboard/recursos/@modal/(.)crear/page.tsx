@@ -16,7 +16,7 @@ const NuevoRecurso = dynamic(
 
 export default async function NuevoRecursoModalPage() {
   return (
-    <Modal title="Crear nuevo recurso" classNameDialogContent="h-[350px]">
+    <Modal title="Crear nuevo recurso">
       <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataNuevoRecurso />
       </Suspense>

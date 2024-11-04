@@ -9,6 +9,7 @@ import {
   IDataDBObtenerProyectosId,
   IDataDBObtenerRecursosPaginados,
   IDataDBObtenerUsuariosId,
+  IDataSPPrecioRecursoRecomendadoObtenXNombreXDepartamento,
   ISpClienteObtenPaginado,
   ISpDepartamentoObten,
   ISpDistritoObten,
@@ -1013,6 +1014,11 @@ export const obtenerRecursos = cache(
     try {
       return getDbPostgres()
         .selectFrom("recurso")
+        .innerJoin(
+          "tipo_recurso",
+          "recurso.tiprec_id",
+          "tipo_recurso.tiprec_id"
+        )
         .selectAll()
         .where("rec_estado", "=", 1)
         .execute();
@@ -1232,18 +1238,11 @@ export const obtenerPreciosRecomendadosByNombreAndDepartamento = cache(
   async (nombreRecurso: string, dep_id: number) => {
     try {
       return getDbPostgres()
-        .selectFrom("precio_recurso_recomendado")
-        .innerJoin(
-          "departamento",
-          "precio_recurso_recomendado.dep_id",
-          "departamento.dep_id"
+        .selectFrom(
+          sql<IDataSPPrecioRecursoRecomendadoObtenXNombreXDepartamento>`sp_precio_recurso_recomendado_obten_x_nombre_x_departamento(${nombreRecurso}, ${dep_id})`.as(
+            "result"
+          )
         )
-        .where(
-          sql`lower(precio_recurso_recomendado.nombre)`,
-          "like",
-          `%${nombreRecurso.toLowerCase()}%`
-        )
-        .where("precio_recurso_recomendado.dep_id", "=", dep_id)
         .selectAll()
         .execute();
     } catch (error) {

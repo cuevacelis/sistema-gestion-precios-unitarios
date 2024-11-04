@@ -99,7 +99,7 @@ export default function ComboboxSingleSelection({
       className="w-full justify-between flex items-center gap-2"
       disabled={disabled}
     >
-      <span className="text-start truncate w-9/12">
+      <span className="text-start truncate w-full">
         {value
           ? safeOptions.find((option) => option.value === value)?.label
           : placeholder}

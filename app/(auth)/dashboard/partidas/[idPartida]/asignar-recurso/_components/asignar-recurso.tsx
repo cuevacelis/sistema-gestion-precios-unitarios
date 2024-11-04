@@ -68,6 +68,10 @@ export default function AsignarRecursoPartida({
     precio: "",
   });
 
+  const dataRecursoSelected = dataRecursos.find(
+    (recurso) => recurso.rec_id === Number(formDataExtra.idRecurso)
+  );
+
   const handleSubmit = (formData: FormData) => {
     Object.entries(formDataExtra).forEach(([key, value]) => {
       formData.append(key, value || "");
@@ -90,7 +94,7 @@ export default function AsignarRecursoPartida({
   //MODAL
   const [formDataExtraModal, setFormDataExtraModal] = useState({
     country: "1",
-    department: "",
+    department: "24",
     precioRecomendado: "",
   });
 
@@ -106,11 +110,7 @@ export default function AsignarRecursoPartida({
 
   const { data: precioRecomendado, isLoading: isLoadingPrecioRecomendado } =
     usePrecioRecomendadoQuery({
-      nombreRecurso:
-        dataRecursos.find(
-          (recursos) =>
-            Number(recursos.rec_id) === Number(formDataExtra?.idRecurso)
-        )?.rec_nombre || "",
+      nombreRecurso: dataRecursoSelected?.rec_nombre || "",
       idDepartament: formDataExtraModal.department,
       isEnabled: !!formDataExtraModal.department && !!formDataExtra.idRecurso,
     });
@@ -146,10 +146,6 @@ export default function AsignarRecursoPartida({
     }));
     setIsShowModalPreciosRecomendados(false);
   };
-
-  const recursosFound = dataRecursos.find(
-    (recurso) => recurso.rec_id === Number(formDataExtra.idRecurso)
-  );
 
   return (
     <Form
@@ -196,23 +192,28 @@ export default function AsignarRecursoPartida({
         <Input type="text" required value={dataPartida.par_nombre} disabled />
       </ContainerInput>
 
-      <ContainerInput
-        nameLabel="Cantidad:"
-        htmlFor="cantidad"
-        icon="cantidad"
-        className="col-span-full sm:col-span-3"
-      >
-        <Input type="number" required name="cantidad" />
-      </ContainerInput>
+      {dataRecursoSelected?.tiprec_id === 1 ||
+        (dataRecursoSelected?.tiprec_id === 3 && (
+          <ContainerInput
+            nameLabel="Cuadrilla:"
+            htmlFor="cuadrilla"
+            icon="cuadrilla"
+            className="col-span-full sm:col-span-3"
+          >
+            <Input type="number" required name="cuadrilla" />
+          </ContainerInput>
+        ))}
 
-      <ContainerInput
-        nameLabel="Cuadrilla:"
-        htmlFor="cuadrilla"
-        icon="cuadrilla"
-        className="col-span-full sm:col-span-3"
-      >
-        <Input type="number" required name="cuadrilla" />
-      </ContainerInput>
+      {dataRecursoSelected?.tiprec_id === 2 && (
+        <ContainerInput
+          nameLabel="Cantidad:"
+          htmlFor="cantidad"
+          icon="cantidad"
+          className="col-span-full sm:col-span-3"
+        >
+          <Input type="number" required name="cantidad" />
+        </ContainerInput>
+      )}
 
       <ContainerInput
         nameLabel="Precio:"
@@ -232,8 +233,8 @@ export default function AsignarRecursoPartida({
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}
-          name="Guardar"
-          nameLoading="Guardando, por favor espere..."
+          name={`Asignar recurso a ${dataPartida.par_nombre}`}
+          nameLoading="Asignando recurso, por favor espere..."
         />
       </div>
       <div className="sm:col-span-6" aria-live="polite" aria-atomic="true">

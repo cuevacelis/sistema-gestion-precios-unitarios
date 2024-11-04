@@ -328,3 +328,12 @@ export type TDataDBObtenerHojaDePresupuestoId =
 
 export type TDataGrupoPartidaDBObtenerHojaDePresupuestoId =
   IDataDBObtenerHojaDePresupuestoId["result"]["data"][0]["grupos_partida"][0];
+
+export interface IDataSPPrecioRecursoRecomendadoObtenXNombreXDepartamento {
+  prr_id: number;
+  codigo_area: string;
+  dep_id: number;
+  precio: string;
+  fecha_publicacion: string;
+  nombre: string;
+}

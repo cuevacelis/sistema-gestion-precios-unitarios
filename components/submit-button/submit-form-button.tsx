@@ -6,8 +6,8 @@ import { Loader2 } from "lucide-react";
 interface IProps {
   disabled?: boolean;
   isPending: boolean;
-  name?: string;
-  nameLoading?: string;
+  name?: React.ReactNode;
+  nameLoading?: React.ReactNode;
 }
 
 export default function SubmitFormButtonComponent({
@@ -16,11 +16,10 @@ export default function SubmitFormButtonComponent({
   name = "Guardar",
   nameLoading = "Guardando...",
 }: IProps) {
-  // const { pending } = useFormStatus();
   return (
     <Button
       type="submit"
-      className="btn btn-primary"
+      className="btn btn-primary max-w-full justify-start flex-row truncate"
       aria-disabled={isPending || disabled}
       disabled={isPending || disabled}
     >

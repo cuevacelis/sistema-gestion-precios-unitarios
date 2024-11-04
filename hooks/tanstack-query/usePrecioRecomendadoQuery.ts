@@ -1,4 +1,5 @@
 import { obtenerPreciosRecomendadosByNombreAndDepartamento } from "@/lib/services/sql-queries";
+import { IDataSPPrecioRecursoRecomendadoObtenXNombreXDepartamento } from "@/lib/types/types";
 import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
@@ -26,9 +27,7 @@ export default function usePrecioRecomendadoQuery(props: IProps) {
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json() as unknown as Awaited<
-        ReturnType<typeof obtenerPreciosRecomendadosByNombreAndDepartamento>
-      >;
+      return response.json() as unknown as IDataSPPrecioRecursoRecomendadoObtenXNombreXDepartamento[];
     },
     refetchOnWindowFocus: false,
     retry: 0,

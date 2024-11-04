@@ -55,15 +55,24 @@ export default function NuevoRecurso({
   return (
     <Form
       action={handleSubmit}
-      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
+      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 max-h-[500px] lg:max-h-full"
     >
+      <ContainerInput
+        nameLabel="Indunificado:"
+        htmlFor="indunificado"
+        icon="indunificado"
+        className="col-span-full sm:col-span-3"
+      >
+        <Input type="text" name="indunificado" required autoFocus />
+      </ContainerInput>
+
       <ContainerInput
         nameLabel="Nombre del recurso:"
         htmlFor="nombreRecurso"
         icon="recurso"
         className="col-span-full sm:col-span-3"
       >
-        <Input type="text" name="nombreRecurso" required autoFocus />
+        <Input type="text" name="nombreRecurso" required />
       </ContainerInput>
 
       <ContainerInput
@@ -98,15 +107,6 @@ export default function NuevoRecurso({
           disabled={false}
           value={formDataExtra["unidadMedida"]}
         />
-      </ContainerInput>
-
-      <ContainerInput
-        nameLabel="Indunificado:"
-        htmlFor="indunificado"
-        icon="indunificado"
-        className="col-span-full sm:col-span-3"
-      >
-        <Input type="text" name="indunificado" required />
       </ContainerInput>
 
       <div className="col-span-full">
