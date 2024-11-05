@@ -96,10 +96,10 @@ export default function ComboboxSingleSelection({
       variant="outline"
       role="combobox"
       aria-expanded={open}
-      className="w-full justify-between flex items-center gap-2"
+      className="w-full justify-between flex items-center gap-2 overflow-hidden"
       disabled={disabled}
     >
-      <span className="text-start truncate w-full">
+      <span className="max-w-full truncate">
         {value
           ? safeOptions.find((option) => option.value === value)?.label
           : placeholder}

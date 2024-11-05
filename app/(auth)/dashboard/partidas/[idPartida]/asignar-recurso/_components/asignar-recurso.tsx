@@ -43,6 +43,7 @@ import {
 import usePrecioRecomendadoQuery from "@/hooks/tanstack-query/usePrecioRecomendadoQuery";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 
 interface IAsignarRecursoPartida {
   dataPartida: IDataDBObtenerPartidasPaginados;
@@ -156,16 +157,24 @@ export default function AsignarRecursoPartida({
         nameLabel={
           <div className="flex items-center justify-between w-full">
             <span>Seleccione un recurso:</span>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => setIsShowModalPreciosRecomendados(true)}
-              className="ml-2 animate-pulse"
-            >
-              <InfoIcon className="w-4 h-4 mr-1" />
-              Precios recomendados
-            </Button>
+            <div className="relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 rounded-lg blur opacity-35 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => setIsShowModalPreciosRecomendados(true)}
+                className="ml-2 relative px-7 py-4 bg-white dark:bg-gray-800 rounded-lg leading-none flex items-center divide-gray-600"
+              >
+                <ModuleIconsComponent
+                  className="h-4 w-4 flex-shrink-0"
+                  modNombre="Indices unificados"
+                />
+                <span className="text-gray-900 dark:text-gray-100 group-hover:text-gray-100 transition duration-200">
+                  Precios recomendados
+                </span>
+              </Button>
+            </div>
           </div>
         }
         htmlFor="idRecurso"

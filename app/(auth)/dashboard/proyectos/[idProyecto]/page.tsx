@@ -12,16 +12,9 @@ import {
   obtenerGruposDePartidasIdProyecto,
   obtenerProyectoDetalle,
 } from "@/lib/services/sql-queries";
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-
-const VerDetalleProyecto = dynamic(
-  () => import("./_components/detalle-proyecto"),
-  {
-    loading: () => <p>Cargando...</p>,
-  }
-);
+import VerDetalleProyecto from "./_components/detalle-proyecto";
 
 interface IPropsVerDetalleProyecto {
   params: Promise<{

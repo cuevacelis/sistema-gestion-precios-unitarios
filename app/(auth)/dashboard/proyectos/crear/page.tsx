@@ -1,12 +1,9 @@
 import { auth } from "@/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { obtenerClientes } from "@/lib/services/sql-queries";
-import dynamic from "next/dynamic";
 import { Suspense } from "react";
-
-const NuevoProyecto = dynamic(() => import("./_components/nuevo-proyecto"), {
-  loading: () => <p>Cargando...</p>,
-});
+import NuevoProyecto from "./_components/nuevo-proyecto";
+import NuevoProyectoSkeleton from "./_components/skeleton";
 
 export default function NuevoProyectoPage() {
   return (
@@ -14,7 +11,7 @@ export default function NuevoProyectoPage() {
       <h1 className="text-2xl font-semibold mb-4">Crear Nuevo Proyecto</h1>
       <Card className="overflow-auto mb-6 pt-6">
         <CardContent>
-          <Suspense fallback={<p>Cargando...</p>}>
+          <Suspense fallback={<NuevoProyectoSkeleton />}>
             <GetDataNuevoProyecto />
           </Suspense>
         </CardContent>

@@ -41,7 +41,7 @@ export default function Modal({
     >
       <DialogContent
         aria-describedby="description"
-        className={`sm:max-w-[800px] overflow-y-auto ${classNameDialogContent}`}
+        className={`sm:max-w-[900px] max-h-[calc(100vh_-_57px)] overflow-y-auto ${classNameDialogContent}`}
       >
         <DialogHeader>
           <DialogTitle>{title || "Modal"}</DialogTitle>

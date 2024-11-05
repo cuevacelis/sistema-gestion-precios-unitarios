@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { Session } from "next-auth";
-import { Loader2, Plus } from "lucide-react";
+import { Info, Loader2, Plus } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -165,10 +165,10 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
   return (
     <Form
       action={handleSubmit}
-      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 max-h-[500px] lg:max-h-full"
+      className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <ContainerInput
-        nameLabel="Nombre usuario:"
+        nameLabel="Nombre usuario"
         htmlFor="name-user"
         icon="usuario"
         className="col-span-3"
@@ -226,10 +226,10 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         </TooltipProvider>
       )}
       <ContainerInput
-        nameLabel="Nombre del proyecto:"
+        nameLabel="Nombre del proyecto"
         htmlFor="name-presupuesto"
         icon="proyecto"
-        className="col-span-3"
+        className="col-span-full"
       >
         <Input
           type="text"
@@ -302,9 +302,15 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
         </>
       )}
       <ContainerInput
-        nameLabel="Jornal en horas:"
+        nameLabel={
+          <section className="flex flex-row items-center gap-1">
+            <span>Jornal</span>
+            <Info className="h-3 w-3 text-yellow-400" />
+          </section>
+        }
         htmlFor="jornal"
         icon="jornal"
+        tooltip="El número de horas que se trabajará en el proyecto."
         className="col-span-3"
       >
         <Input

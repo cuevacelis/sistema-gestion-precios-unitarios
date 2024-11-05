@@ -53,7 +53,7 @@ export default async function ProyectPage(props: IProjectPage) {
               </CardTitle>
             </div>
             <Search
-              placeholder="Buscar recursos..."
+              placeholder="Buscar recursos por nombre..."
               className="w-full sm:w-64 lg:w-96"
             />
           </div>

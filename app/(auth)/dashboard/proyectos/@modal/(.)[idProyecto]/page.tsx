@@ -5,8 +5,6 @@ import {
   obtenerProyectoDetalle,
 } from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -16,13 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-
-const VerDetalleProyecto = dynamic(
-  () => import("../../[idProyecto]/_components/detalle-proyecto"),
-  {
-    loading: () => <p>Cargando...</p>,
-  }
-);
+import VerDetalleProyecto from "../../[idProyecto]/_components/detalle-proyecto";
 
 interface IPropsEditProyectoModalPage {
   params: Promise<{
@@ -36,17 +28,17 @@ export default async function VerDetalleProyectoModalPage(
   const params = await props.params;
   const { idProyecto } = params;
   return (
-    <Modal title="Ver detalle proyecto" classNameDialogContent="h-[500px]">
+    <Modal title="Ver detalle del proyecto">
       <Suspense
         key={`ver-detalle-proyecto-${idProyecto}`}
-        fallback={<p>Cargando...</p>}
+        fallback={<p>Cargando detalle del proyecto...</p>}
       >
         <GetDataVerDetalleProyecto idProyecto={idProyecto} />
       </Suspense>
       <Separator className="col-span-full my-4" />
       <Suspense
         key={`ver-partidas-${idProyecto}`}
-        fallback={<p>Cargando...</p>}
+        fallback={<p>Cargando grupos de partidas...</p>}
       >
         <GetDataVerPartidas idProyecto={idProyecto} />
       </Suspense>

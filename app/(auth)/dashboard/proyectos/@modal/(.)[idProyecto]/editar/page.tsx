@@ -6,15 +6,8 @@ import {
 } from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import dynamic from "next/dynamic";
-import { Skeleton } from "@/components/ui/skeleton";
-
-const EditarProyecto = dynamic(
-  () => import("../../../[idProyecto]/editar/_components/edit-proyecto"),
-  {
-    loading: () => <p>Cargando...</p>,
-  }
-);
+import EditarProyectosPage from "../../../[idProyecto]/editar/_components/edit-proyecto";
+import EditarProyectoSkeleton from "../../../[idProyecto]/editar/_components/skeleton";
 
 interface IPropsEditProyectoModalPage {
   params: Promise<{
@@ -26,8 +19,8 @@ export default async function EditarProyectoModalPage(
   props: IPropsEditProyectoModalPage
 ) {
   return (
-    <Modal title="Editar proyecto" classNameDialogContent="h-[500px]">
-      <Suspense fallback={<Skeleton className="h-10 w-full" />}>
+    <Modal title="Editar proyecto">
+      <Suspense fallback={<EditarProyectoSkeleton />}>
         <GetDataEditarProyecto id={(await props.params).idProyecto} />
       </Suspense>
     </Modal>
@@ -42,7 +35,7 @@ async function GetDataEditarProyecto(props: { id: string }) {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (
-    <EditarProyecto
+    <EditarProyectosPage
       {...{
         dataClientes,
         session,

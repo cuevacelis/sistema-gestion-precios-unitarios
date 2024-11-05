@@ -27,7 +27,7 @@ export default async function EditarPartidaModalPage(
 ) {
   const params = await props.params;
   return (
-    <Modal title="Editar partida" classNameDialogContent="h-[500px]">
+    <Modal title="Editar partida">
       <Suspense
         key={params.idPartida}
         fallback={<Skeleton className="h-10 w-full" />}

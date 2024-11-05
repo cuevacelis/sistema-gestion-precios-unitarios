@@ -17,7 +17,7 @@ interface IPropsDetalleProyecto {
   dataDetalleProyecto: Awaited<ReturnType<typeof obtenerProyectoDetalle>>;
 }
 
-export default function DetalleProyecto({
+export default function VerDetalleProyecto({
   dataDetalleProyecto,
 }: IPropsDetalleProyecto) {
   return (

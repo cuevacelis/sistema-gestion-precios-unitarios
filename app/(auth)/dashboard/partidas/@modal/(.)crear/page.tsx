@@ -16,7 +16,7 @@ const NuevoPartida = dynamic(
 
 export default async function NuevoPartidaModalPage() {
   return (
-    <Modal title="Crear nuevo partida" classNameDialogContent="h-[500px]">
+    <Modal title="Crear nuevo partida">
       <Suspense fallback={<Skeleton className="h-10 w-full" />}>
         <GetDataNuevoPartida />
       </Suspense>

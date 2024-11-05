@@ -4,13 +4,10 @@ import {
   obtenerClientes,
   obtenerProyectosId,
 } from "@/lib/services/sql-queries";
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-
-const EditarProyecto = dynamic(() => import("./_components/edit-proyecto"), {
-  loading: () => <p>Cargando...</p>,
-});
+import EditarProyectoSkeleton from "./_components/skeleton";
+import EditarProyectosPage from "./_components/edit-proyecto";
 
 interface IPropsEditProyecto {
   params: Promise<{
@@ -26,7 +23,7 @@ export default async function EditarProyectoPage(props: IPropsEditProyecto) {
       <h1 className="text-lg font-semibold mb-6">Editar proyecto</h1>
       <Card x-chunk="overflow-auto" className="mb-6">
         <CardContent>
-          <Suspense key={idProyecto} fallback={<p>Cargando...</p>}>
+          <Suspense key={idProyecto} fallback={<EditarProyectoSkeleton />}>
             <GetDataEditarProyecto idProyecto={idProyecto} />
           </Suspense>
         </CardContent>
@@ -43,7 +40,7 @@ async function GetDataEditarProyecto({ idProyecto }: { idProyecto: string }) {
   const dataClientes = await obtenerClientes();
   const session = await auth();
   return (
-    <EditarProyecto
+    <EditarProyectosPage
       {...{
         dataClientes,
         session,

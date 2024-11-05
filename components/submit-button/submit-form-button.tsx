@@ -1,7 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import {
+  Loader2,
+  LoaderCircle,
+  LoaderIcon,
+  LoaderPinwheel,
+} from "lucide-react";
 
 interface IProps {
   disabled?: boolean;
@@ -23,7 +28,7 @@ export default function SubmitFormButtonComponent({
       aria-disabled={isPending || disabled}
       disabled={isPending || disabled}
     >
-      {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+      {isPending && <LoaderCircle className="h-4 w-4 animate-spin" />}
       {isPending ? nameLoading : name}
     </Button>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Info, Loader2, Plus } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import ErrorMessage from "@/components/validation/message/error-message";
@@ -27,6 +27,14 @@ import Form from "next/form";
 import Link from "next/link";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
 import { usePathname } from "next/navigation";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+import { TooltipArrow } from "@radix-ui/react-tooltip";
 
 interface IEditarPresupuesto {
   presupuestoId: string;
@@ -127,7 +135,8 @@ export default function EditarProyectosPage({
     isLoading: boolean,
     icon?: string,
     messageEmpty?: React.ReactNode,
-    labelReactNode?: React.ReactNode
+    labelReactNode?: React.ReactNode,
+    moreInfo?: React.ReactNode
   ) => (
     <ContainerInput
       nameLabel={labelReactNode || label}
@@ -136,14 +145,17 @@ export default function EditarProyectosPage({
       className="col-span-3"
     >
       <div className="flex flex-col w-full">
-        <ComboboxSingleSelection
-          className="bg-secondary"
-          options={options}
-          onSelect={(value) => handleSelectChange(type, value)}
-          placeholder={placeholder}
-          disabled={!options.length || isLoading || isPending}
-          value={formDataExtra[type]}
-        />
+        <div className="flex items-center gap-2">
+          <ComboboxSingleSelection
+            className="bg-secondary"
+            options={options}
+            onSelect={(value) => handleSelectChange(type, value)}
+            placeholder={placeholder}
+            disabled={!options.length || isLoading || isPending}
+            value={formDataExtra[type]}
+          />
+          {moreInfo}
+        </div>
         {isLoading && (
           <div className="mt-2 flex items-center text-sm text-muted-foreground">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -168,7 +180,7 @@ export default function EditarProyectosPage({
       className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6"
     >
       <ContainerInput
-        nameLabel="Nombre usuario:"
+        nameLabel="Nombre usuario"
         htmlFor="name-user"
         icon="usuario"
         className="col-span-3"
@@ -206,18 +218,27 @@ export default function EditarProyectosPage({
             Crear cliente +
           </Link>
         </section>,
-        <>
-          Cliente{" "}
-          <Link
-            href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
-            className="underline underline-offset-4 flex-inline"
-          >
-            +
-          </Link>
-        </>
+        null,
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild variant="secondary" size="sm">
+                <Link
+                  href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
+                >
+                  <Plus className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow className="fill-primary" />
+              <p>Agregar un nuevo cliente</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       )}
       <ContainerInput
-        nameLabel="Nombre del proyecto:"
+        nameLabel="Nombre del proyecto"
         htmlFor="name-presupuesto"
         icon="proyecto"
         className="col-span-full"
@@ -240,7 +261,7 @@ export default function EditarProyectosPage({
           label: country.pai_nombre,
         })) || [],
         "Seleccione un país",
-        "País:",
+        "País",
         isLoadingCountries,
         "ubicacion"
       )}
@@ -251,7 +272,7 @@ export default function EditarProyectosPage({
           label: department.dep_nombre,
         })) || [],
         "Seleccione un departamento",
-        "Departamento:",
+        "Departamento",
         isLoadingDepartments,
         "ubicacion"
       )}
@@ -262,7 +283,7 @@ export default function EditarProyectosPage({
           label: province.prov_nombre,
         })) || [],
         "Seleccione una provincia",
-        "Provincia:",
+        "Provincia",
         isLoadingProvinces,
         "ubicacion"
       )}
@@ -273,14 +294,20 @@ export default function EditarProyectosPage({
           label: district.dist_nombre,
         })) || [],
         "Seleccione un distrito",
-        "Distrito:",
+        "Distrito",
         isLoadingDistricts,
         "ubicacion"
       )}
       <ContainerInput
-        nameLabel="Jornal:"
+        nameLabel={
+          <section className="flex flex-row items-center gap-1">
+            <span>Jornal</span>
+            <Info className="h-3 w-3 text-yellow-400" />
+          </section>
+        }
         htmlFor="jornal"
         icon="jornal"
+        tooltip="El número de horas que se trabajará en el proyecto."
         className="col-span-3"
       >
         <Input
