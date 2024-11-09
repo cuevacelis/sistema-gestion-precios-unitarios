@@ -289,40 +289,16 @@ export default function TableComponent({ dataPartidas }: IProps) {
                         <span>Ver Detalle</span>
                       </Link>
                     </ContextMenuItem>
-                    <ContextMenuItem asChild disabled>
-                      <Link
-                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
-                        className="flex items-center"
-                      >
-                        <ModuleIconsComponent
-                          className="mr-2 h-4 w-4"
-                          modNombre="Recurso"
-                        />
-                        <span>Ver recursos asignados</span>
-                      </Link>
-                    </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`/dashboard/partidas/${row.original.par_id}/asignar-recurso?${searchParams.toString()}`}
+                        href={`/dashboard/partidas/${row.original.par_id}/recurso-asignado?${searchParams.toString()}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
                           className="mr-2 h-4 w-4"
                           modNombre="Recurso"
                         />
-                        <span>Asignar recurso</span>
-                      </Link>
-                    </ContextMenuItem>
-                    <ContextMenuItem asChild disabled>
-                      <Link
-                        href={`/dashboard/partidas/${row.original.par_id}?${searchParams.toString()}`}
-                        className="flex items-center"
-                      >
-                        <ModuleIconsComponent
-                          className="mr-2 h-4 w-4"
-                          modNombre="Recurso"
-                        />
-                        <span>Editar recurso asignado</span>
+                        <span>Recursos asignados</span>
                       </Link>
                     </ContextMenuItem>
                     <ContextMenuItem asChild>

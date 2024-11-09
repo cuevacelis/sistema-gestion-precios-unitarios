@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Loader2,
   LoaderCircle,
@@ -13,6 +14,7 @@ interface IProps {
   isPending: boolean;
   name?: React.ReactNode;
   nameLoading?: React.ReactNode;
+  className?: string;
 }
 
 export default function SubmitFormButtonComponent({
@@ -20,11 +22,12 @@ export default function SubmitFormButtonComponent({
   isPending,
   name = "Guardar",
   nameLoading = "Guardando...",
+  className,
 }: IProps) {
   return (
     <Button
       type="submit"
-      className="btn btn-primary max-w-full justify-start flex-row truncate"
+      className={cn("btn btn-primary max-w-full truncate", className)}
       aria-disabled={isPending || disabled}
       disabled={isPending || disabled}
     >

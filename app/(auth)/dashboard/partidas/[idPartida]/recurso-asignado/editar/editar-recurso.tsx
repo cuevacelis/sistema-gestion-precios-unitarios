@@ -1,32 +1,18 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "@/components/validation/message/error-message";
-
-import { actionsAsignarRecursoToPartida } from "@/lib/actions/actions";
 import SubmitFormButtonComponent from "@/components/submit-button/submit-form-button";
 import {
   IDataDBObtenerPartidasPaginados,
   ISpDepartamentoObten,
   ISpPaisObten,
 } from "@/lib/types/types";
-import { obtenerRecursos } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
-import { cn } from "@/lib/utils";
 import Form from "next/form";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import ContainerInput from "@/components/ui/container-input";
 import useCountryQuery from "@/hooks/tanstack-query/useCountryQuery";
 import useDepartmentQuery from "@/hooks/tanstack-query/useDepartmentQuery";
@@ -44,32 +30,48 @@ import usePrecioRecomendadoQuery from "@/hooks/tanstack-query/usePrecioRecomenda
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/module-icons";
-
-interface IAsignarRecursoPartida {
-  dataPartida: IDataDBObtenerPartidasPaginados;
-  dataRecursos: Awaited<ReturnType<typeof obtenerRecursos>>;
-}
+import usePartidaByIdQuery from "@/hooks/tanstack-query/usePartidaByIdQuery";
+import useRecursosQuery from "@/hooks/tanstack-query/useRecursosQuery";
+import useViewCalculoPrecioUnitarioByIdQuery from "@/hooks/tanstack-query/useViewCalculoPrecioUnitarioByIdQuery";
+import { actionsAsignarRecursoToPartida } from "@/lib/actions/actions";
 
 type LoadingKeys = "country" | "department" | "province" | "district";
 
-export default function AsignarRecursoPartida({
-  dataPartida,
-  dataRecursos,
-}: IAsignarRecursoPartida) {
+interface IEditarAsignacionRecursoPartida {
+  idPartida: number;
+  idRecurso: number;
+}
+
+export default function EditarAsignacionRecursoPartida({
+  idPartida,
+  idRecurso,
+}: IEditarAsignacionRecursoPartida) {
+  const { data: dataRecursosAsignados, isLoading: isLoadingRecursosAsignados } =
+    useViewCalculoPrecioUnitarioByIdQuery({
+      idPartida: Number(idPartida),
+      idRecurso: Number(idRecurso),
+    });
+  const { data: dataPartida, isLoading: isLoadingPartida } =
+    usePartidaByIdQuery({
+      idPartida: Number(idPartida),
+    });
+  const { data: dataRecursos, isLoading: isLoadingRecursos } = useRecursosQuery(
+    {}
+  );
   const [isShowModalPreciosRecomendados, setIsShowModalPreciosRecomendados] =
     useState<boolean>(false);
-  const [stateForm, formActionAsignarRecursoPartida, isPending] =
+  const [stateForm, formActionEditarAsignacionRecursoPartida, isPending] =
     useActionState(actionsAsignarRecursoToPartida, {
       isError: false,
       message: "",
     });
   const [formDataExtra, setFormDataExtra] = useState({
-    idPartida: String(dataPartida.par_id),
-    idRecurso: null as string | null,
-    precio: "",
+    idPartida: String(dataPartida?.[0]?.par_id),
+    idRecurso: (dataRecursosAsignados?.[0].manual_rec_id || "") as string,
+    precio: (String(dataRecursosAsignados?.[0].rec_precio) || "") as string,
   });
 
-  const dataRecursoSelected = dataRecursos.find(
+  const dataRecursoSelected = dataRecursos?.find(
     (recurso) => recurso.rec_id === Number(formDataExtra.idRecurso)
   );
 
@@ -78,7 +80,7 @@ export default function AsignarRecursoPartida({
       formData.append(key, value || "");
     });
 
-    formActionAsignarRecursoPartida(formData);
+    formActionEditarAsignacionRecursoPartida(formData);
   };
 
   const handleSelectChange = (
@@ -148,6 +150,23 @@ export default function AsignarRecursoPartida({
     setIsShowModalPreciosRecomendados(false);
   };
 
+  if (isLoadingPartida || isLoadingRecursos || isLoadingRecursosAsignados) {
+    return <p>Cargando...</p>;
+  }
+
+  useEffect(() => {
+    if (
+      !isLoadingRecursosAsignados &&
+      dataRecursosAsignados &&
+      dataRecursosAsignados?.length > 0
+    ) {
+      setFormDataExtra((prev) => ({
+        ...prev,
+        idRecurso: String(dataRecursosAsignados?.[0].manual_rec_id),
+      }));
+    }
+  }, [dataRecursosAsignados, isLoadingRecursosAsignados]);
+
   return (
     <Form
       action={handleSubmit}
@@ -182,10 +201,12 @@ export default function AsignarRecursoPartida({
         className="col-span-full"
       >
         <ComboboxSingleSelection
-          options={dataRecursos.map((item) => ({
-            value: String(item.rec_id),
-            label: `Id: ${item.rec_id} - Nombre: ${item.rec_nombre}`,
-          }))}
+          options={
+            dataRecursos?.map((item) => ({
+              value: String(item.rec_id),
+              label: `Id: ${item.rec_id} - Nombre: ${item.rec_nombre}`,
+            })) || []
+          }
           onSelect={(value) => handleSelectChange(value, "idRecurso")}
           disabled={false}
           value={formDataExtra["idRecurso"]}
@@ -198,51 +219,81 @@ export default function AsignarRecursoPartida({
         icon="partida"
         className="col-span-full sm:col-span-3"
       >
-        <Input type="text" required value={dataPartida.par_nombre} disabled />
+        <Input type="text" value={dataPartida?.[0]?.par_nombre} disabled />
       </ContainerInput>
-
-      {dataRecursoSelected?.tiprec_id === 1 ||
-        (dataRecursoSelected?.tiprec_id === 3 && (
-          <ContainerInput
-            nameLabel="Cuadrilla:"
-            htmlFor="cuadrilla"
-            icon="cuadrilla"
-            className="col-span-full sm:col-span-3"
-          >
-            <Input type="number" required name="cuadrilla" />
-          </ContainerInput>
-        ))}
-
-      {dataRecursoSelected?.tiprec_id === 2 && (
+      {/* solo cantidad */}
+      {dataRecursoSelected?.rec_nombre
+        .toLowerCase()
+        .includes("herramientas manuales") ? (
         <ContainerInput
           nameLabel="Cantidad:"
           htmlFor="cantidad"
           icon="cantidad"
           className="col-span-full sm:col-span-3"
         >
-          <Input type="number" required name="cantidad" />
+          <Input
+            type="number"
+            name="cantidad"
+            defaultValue={dataRecursosAsignados?.[0].rec_cantidad}
+          />
         </ContainerInput>
-      )}
+      ) : (
+        <>
+          {(dataRecursoSelected?.tiprec_id === 1 ||
+            dataRecursoSelected?.tiprec_id === 3) && (
+            <ContainerInput
+              nameLabel="Cuadrilla:"
+              htmlFor="cuadrilla"
+              icon="cuadrilla"
+              className="col-span-full sm:col-span-3"
+            >
+              <Input
+                type="number"
+                name="cuadrilla"
+                defaultValue={dataRecursosAsignados?.[0].rec_cuadrilla}
+              />
+            </ContainerInput>
+          )}
 
-      <ContainerInput
-        nameLabel="Precio:"
-        htmlFor="precio"
-        icon="precio"
-        className="col-span-full sm:col-span-3"
-      >
-        <Input
-          type="number"
-          required
-          name="precio"
-          value={formDataExtra.precio}
-          onChange={(e) => handleInputChange("precio", e.target.value)}
-        />
-      </ContainerInput>
+          {dataRecursoSelected?.tiprec_id === 2 && (
+            <ContainerInput
+              nameLabel="Cantidad:"
+              htmlFor="cantidad"
+              icon="cantidad"
+              className="col-span-full sm:col-span-3"
+            >
+              <Input
+                type="number"
+                name="cantidad"
+                defaultValue={dataRecursosAsignados?.[0].rec_cantidad}
+              />
+            </ContainerInput>
+          )}
+
+          {(dataRecursoSelected?.tiprec_id === 1 ||
+            dataRecursoSelected?.tiprec_id === 2 ||
+            dataRecursoSelected?.tiprec_id === 3) && (
+            <ContainerInput
+              nameLabel="Precio:"
+              htmlFor="precio"
+              icon="precio"
+              className="col-span-full sm:col-span-3"
+            >
+              <Input
+                type="number"
+                name="precio"
+                value={formDataExtra.precio}
+                onChange={(e) => handleInputChange("precio", e.target.value)}
+              />
+            </ContainerInput>
+          )}
+        </>
+      )}
 
       <div className="col-span-full">
         <SubmitFormButtonComponent
           isPending={isPending}
-          name={`Asignar recurso a ${dataPartida.par_nombre}`}
+          name={`EditarAsignacion recurso a ${dataPartida?.[0]?.par_nombre}`}
           nameLoading="Asignando recurso, por favor espere..."
         />
       </div>
@@ -288,10 +339,12 @@ export default function AsignarRecursoPartida({
               className="col-span-full"
             >
               <ComboboxSingleSelection
-                options={dataRecursos.map((item) => ({
-                  value: String(item.rec_id),
-                  label: `Id: ${item.rec_id} - Nombre: ${item.rec_nombre}`,
-                }))}
+                options={
+                  dataRecursos?.map((item) => ({
+                    value: String(item.rec_id),
+                    label: `Id: ${item.rec_id} - Nombre: ${item.rec_nombre}`,
+                  })) || []
+                }
                 onSelect={(value) => handleSelectChange(value, "idRecurso")}
                 disabled={false}
                 value={formDataExtra["idRecurso"]}

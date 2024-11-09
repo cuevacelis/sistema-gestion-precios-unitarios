@@ -224,10 +224,24 @@ export interface IDataDBObtenerPartidasPaginados {
   grupar_nombre: string;
 }
 
+export interface IDataDBObtenerAsignacionesRecursoToPartida {
+  detparrec_id: number;
+  v_par_id: number;
+  manual_rec_id: number;
+  rec_nombre: string;
+  unimed_id: number;
+  tiprec_id: number;
+  rec_cantidad: string;
+  rec_cuadrilla: string;
+  detparrec_preunitario: string;
+  rec_precio: string;
+}
+
 // #region RECURSOS
 export interface ISpRecursosObtenPaginado {
   result: {
     data: Array<{
+      rec_id: number;
       rec_indunificado: string;
       rec_nombre: string;
       tiprec_nombre: string;

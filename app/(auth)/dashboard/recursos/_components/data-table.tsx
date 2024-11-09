@@ -59,6 +59,12 @@ export default function TableComponent({ dataRecursos }: IProps) {
   const columns: ColumnDef<TDataDBObtenerRecursosPaginados>[] = useMemo(
     () => [
       {
+        accessorKey: "rec_id",
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Id" />
+        ),
+      },
+      {
         accessorKey: "rec_indunificado",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Indunificado" />
@@ -90,9 +96,12 @@ export default function TableComponent({ dataRecursos }: IProps) {
     data: dataRecursos[0]?.result?.data ?? [],
     columns,
     rowCount: totalResults,
-    identifierField: "rec_indunificado",
+    identifierField: "rec_id",
     initialState: {
       columnVisibility: {
+        rec_id:
+          searchParamsShowColumns.includes("rec_id") ||
+          searchParamsShowColumns.length === 0,
         rec_indunificado:
           searchParamsShowColumns.includes("rec_indunificado") ||
           searchParamsShowColumns.length === 0,
@@ -236,7 +245,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild disabled>
                       <Link
-                        href={`/dashboard/recurso/${row.original.rec_indunificado}`}
+                        href={`/dashboard/recursos/${row.original.rec_id}`}
                         className="flex items-center"
                       >
                         <ModuleIconsComponent
@@ -248,7 +257,7 @@ export default function TableComponent({ dataRecursos }: IProps) {
                     </ContextMenuItem>
                     <ContextMenuItem asChild>
                       <Link
-                        href={`recurso/${row.original.rec_indunificado}/editar?${searchParams.toString()}`}
+                        href={`recursos/${row.original.rec_id}/editar?${searchParams.toString()}`}
                         scroll={false}
                         className="flex items-center"
                       >

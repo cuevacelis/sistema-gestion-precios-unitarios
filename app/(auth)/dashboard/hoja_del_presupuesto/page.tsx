@@ -129,6 +129,7 @@ async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const dataHojaDelPresupuesto = await obtenerHojaDePresupuestoByProyectoId(
     String(proyectoId)
   );
+  console.log(dataHojaDelPresupuesto);
 
   return (
     <TableComponent

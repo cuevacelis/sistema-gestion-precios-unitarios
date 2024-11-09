@@ -123,6 +123,11 @@ export default function HojaDePresupuestoTable({
             generateItemNumber(table?.getRowModel()?.rows.indexOf(row), 0),
         },
         {
+          accessorKey: "nombre",
+          header: "Nombre",
+          cell: ({ row }) => row.original.grupar_nombre.toUpperCase(),
+        },
+        {
           accessorKey: "UnidadMedida",
           header: ({ column }) => (
             <DataTableColumnHeader
@@ -131,7 +136,6 @@ export default function HojaDePresupuestoTable({
               hideSort
             />
           ),
-          cell: ({ row }) => row.original.grupar_nombre.toUpperCase(),
         },
         {
           accessorKey: "precio",

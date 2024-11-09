@@ -24,6 +24,7 @@ import {
   editarGrupoPartida,
   editarPartida,
   editarPresupuesto,
+  editarRecurso,
   editarUsuario,
   findUserByUsernameAndPassword,
   obtenerProyectosPaginados,
@@ -45,6 +46,7 @@ import {
   editarClienteSchema,
   editarGrupoPartidaSchema,
   editarPartidaSchema,
+  editarRecursoSchema,
   editarUsuarioSchema,
   editPresupuestoSchema,
 } from "../validations/validations-zod";
@@ -1150,6 +1152,63 @@ export async function actionsCrearRecurso(_prevState: any, formData: FormData) {
   }
 }
 
+export async function actionsEditarRecurso(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/recursos";
+    const {
+      idRecurso,
+      nombreRecurso,
+      tipoRecurso,
+      unidadMedida,
+      indunificado,
+    } = await editarRecursoSchema.parseAsync({
+      idRecurso: Number(formData.get("idRecurso")),
+      nombreRecurso: formData.get("nombreRecurso"),
+      tipoRecurso: Number(formData.get("tipoRecurso")),
+      unidadMedida: Number(formData.get("unidadMedida")),
+      indunificado: formData.get("indunificado"),
+    });
+
+    await editarRecurso(
+      Number(idRecurso),
+      nombreRecurso,
+      Number(tipoRecurso),
+      Number(unidadMedida),
+      indunificado
+    );
+
+    const url = new URL(referer);
+    let newUrl = "/dashboard/recursos" + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
 export async function actionsAsignarRecursoToPartida(
   _prevState: any,
   formData: FormData
@@ -1161,17 +1220,17 @@ export async function actionsAsignarRecursoToPartida(
       await asignarRecursoToPartidaSchema.parseAsync({
         idPartida: formData.get("idPartida"),
         idRecurso: formData.get("idRecurso"),
-        cantidad: Number(formData.get("cantidad")),
-        cuadrilla: Number(formData.get("cuadrilla")),
-        precio: Number(formData.get("precio")),
+        cantidad: formData.get("cantidad"),
+        cuadrilla: formData.get("cuadrilla"),
+        precio: formData.get("precio"),
       });
 
     await crearAsignacionRecursoToPartida(
       Number(idPartida),
       Number(idRecurso),
-      cantidad,
-      cuadrilla,
-      precio
+      cantidad ? Number(cantidad) : null,
+      cuadrilla ? Number(cuadrilla) : null,
+      precio ? Number(precio) : null
     );
 
     const url = new URL(referer);
@@ -1182,6 +1241,7 @@ export async function actionsAsignarRecursoToPartida(
     revalidatePath(newUrl);
     redirect(newUrl);
   } catch (error) {
+    console.log(error);
     if (isRedirectError(error)) {
       throw error;
     }

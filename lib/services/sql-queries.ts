@@ -2,6 +2,7 @@ import "server-only";
 import { unstable_noStore } from "next/cache";
 import { sql } from "kysely";
 import {
+  IDataDBObtenerAsignacionesRecursoToPartida,
   IDataDBObtenerClientesId,
   IDataDBObtenerGruposDePartidasId,
   IDataDBObtenerHojaDePresupuestoId,
@@ -1030,18 +1031,56 @@ export const obtenerRecursos = cache(
   { tags: ["recursos"], revalidate: 60 * 60 * 24 }
 );
 
+export const obtenerAsignacionesRecursoToPartida = cache(
+  async (p_par_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerAsignacionesRecursoToPartida>`sp_calculo_precio_unitario_obten(${p_par_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["asignacionesRecursoToPartida"],
+  { tags: ["asignacionesRecursoToPartida"], revalidate: 60 * 60 * 24 }
+);
+
+export const obtenerAsignacionesRecursoToPartidaByRecurso = cache(
+  async (p_part_id: number, rec_id: number) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<IDataDBObtenerAsignacionesRecursoToPartida>`sp_calculo_precio_unitario_obten_x_id(${p_part_id},${rec_id})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["asignacionesRecursoToPartida"],
+  { tags: ["asignacionesRecursoToPartida"], revalidate: 60 * 60 * 24 }
+);
+
 export const crearAsignacionRecursoToPartida = cache(
   async (
     p_par_id: number,
     p_rec_id: number,
-    p_rec_cantidad: number,
-    p_rec_cuadrilla: number,
-    p_rec_precio: number
+    p_rec_cantidad: number | null,
+    p_rec_cuadrilla: number | null,
+    p_rec_precio: number | null
   ) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_calculo_precio_unitario_crea_v2(${p_par_id}, ${p_rec_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+          sql<any>`sp_calculo_precio_unitario_crea(${p_par_id}, ${p_rec_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
             "result"
           )
         )
@@ -1067,7 +1106,8 @@ export const editarAsignacionRecursoToPartida = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_recurso_actualiza_x_partida_x_presupuesto_v2(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+          sql<any>`sp_calculo_precio_unitario_actualiza_v2
+(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
             "result"
           )
         )
@@ -1085,11 +1125,18 @@ export const obtenerRecursoById = cache(
   async (p_rec_id: number) => {
     try {
       return getDbPostgres()
-        .selectFrom(
-          sql<IDataDBObtenerRecursosPaginados>`sp_recurso_obten_x_id(${p_rec_id})`.as(
-            "result"
-          )
+        .selectFrom("recurso")
+        .innerJoin(
+          "tipo_recurso",
+          "recurso.tiprec_id",
+          "tipo_recurso.tiprec_id"
         )
+        .innerJoin(
+          "unidad_medida",
+          "recurso.unimed_id",
+          "unidad_medida.unimed_id"
+        )
+        .where("recurso.rec_id", "=", p_rec_id)
         .selectAll()
         .execute();
     } catch (error) {
@@ -1142,6 +1189,31 @@ export const crearRecurso = cache(
       return getDbPostgres()
         .selectFrom(
           sql<any>`sp_recurso_crea(${p_rec_nombre}, ${p_tiprec_id}, ${p_unimed_id}, ${p_rec_indunificado})`.as(
+            "result"
+          )
+        )
+        .selectAll()
+        .execute();
+    } catch (error) {
+      throw error;
+    }
+  },
+  ["recurso"],
+  { tags: ["recurso"], revalidate: 60 * 60 * 24 }
+);
+
+export const editarRecurso = cache(
+  async (
+    p_rec_id: number,
+    p_rec_nombre: string,
+    p_tiprec_id: number,
+    p_unimed_id: number,
+    p_indunificado: string
+  ) => {
+    try {
+      return getDbPostgres()
+        .selectFrom(
+          sql<any>`sp_recurso_actualiza(${p_rec_id}, ${p_rec_nombre}, ${p_tiprec_id}, ${p_unimed_id}, ${p_indunificado})`.as(
             "result"
           )
         )

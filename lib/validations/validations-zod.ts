@@ -180,14 +180,22 @@ export const crearRecursoSchema = z.object({
   indunificado: z.string().min(1, "El campo 'Indunificado' es requerido"),
 });
 
-export const asignarRecursoToPartidaSchema = z.object({
-  idPartida: z.string().min(1, "El campo 'Id de partida' es requerido"),
-  idRecurso: z.string().min(1, "El campo 'Id de recurso' es requerido"),
-  cantidad: z.number().min(1, "El campo 'Cantidad' es requerido"),
-  cuadrilla: z.number().min(1, "El campo 'Cuadrilla' es requerido"),
-  precio: z.number().min(1, "El campo 'Precio' es requerido"),
+export const editarRecursoSchema = z.object({
+  idRecurso: z.number().min(1, "El campo 'Id de recurso' es requerido"),
+  nombreRecurso: z.string().min(1, "El campo 'Nombre de recurso' es requerido"),
+  tipoRecurso: z.number().min(1, "El campo 'Tipo de recurso' es requerido"),
+  unidadMedida: z.number().min(1, "El campo 'Unidad de medida' es requerido"),
+  indunificado: z.string().min(1, "El campo 'Indunificado' es requerido"),
 });
 
 export const deleteRecursoSchema = z.object({
   idRecurso: z.string().min(1, "El campo 'Id de recurso' es requerido"),
+});
+
+export const asignarRecursoToPartidaSchema = z.object({
+  idPartida: z.string().min(1, "El campo 'Id de partida' es requerido"),
+  idRecurso: z.string().min(1, "El campo 'Id de recurso' es requerido"),
+  cantidad: z.string().min(0, "El campo 'Cantidad' es requerido").nullable(),
+  cuadrilla: z.string().min(0, "El campo 'Cuadrilla' es requerido").nullable(),
+  precio: z.string().min(0, "El campo 'Precio' es requerido").nullable(),
 });
