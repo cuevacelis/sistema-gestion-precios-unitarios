@@ -63,7 +63,6 @@ async function GetDataVerRecursoPartida({ idPartida }: { idPartida: string }) {
     return notFound();
   }
   const dataRecursos = await obtenerRecursos();
-  console.log(dataPartidaRecursosAsignados);
   return (
     <VerRecursoPartida
       dataPartida={dataPartida[0]}

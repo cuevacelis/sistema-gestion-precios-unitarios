@@ -150,10 +150,6 @@ export default function EditarAsignacionRecursoPartida({
     setIsShowModalPreciosRecomendados(false);
   };
 
-  if (isLoadingPartida || isLoadingRecursos || isLoadingRecursosAsignados) {
-    return <p>Cargando...</p>;
-  }
-
   useEffect(() => {
     if (
       !isLoadingRecursosAsignados &&
@@ -165,7 +161,11 @@ export default function EditarAsignacionRecursoPartida({
         idRecurso: String(dataRecursosAsignados?.[0].manual_rec_id),
       }));
     }
-  }, [dataRecursosAsignados, isLoadingRecursosAsignados]);
+  }, [dataRecursosAsignados?.length, isLoadingRecursosAsignados]);
+
+  if (isLoadingPartida || isLoadingRecursos || isLoadingRecursosAsignados) {
+    return <p>Cargando...</p>;
+  }
 
   return (
     <Form
