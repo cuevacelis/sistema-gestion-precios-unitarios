@@ -1241,7 +1241,6 @@ export async function actionsAsignarRecursoToPartida(
     revalidatePath(newUrl);
     redirect(newUrl);
   } catch (error) {
-    console.log(error);
     if (isRedirectError(error)) {
       throw error;
     }
