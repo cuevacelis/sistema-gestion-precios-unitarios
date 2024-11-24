@@ -11,12 +11,14 @@ import { obtenerRoles } from "@/lib/services/sql-queries";
 import ComboboxSingleSelection from "@/components/combobox/combobox-single-selection";
 import Form from "next/form";
 import ContainerInput from "@/components/ui/container-input";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 interface ICrearUsuario {
   dataRoles: Awaited<ReturnType<typeof obtenerRoles>>;
 }
 
 export default function CrearUsuario({ dataRoles }: ICrearUsuario) {
+  const [isVisiblePass, setIsVisiblePass] = useState<boolean>(false);
   const [stateForm, formActionNewUsuario, isPending] = useActionState(
     actionsCrearUsuario,
     {
@@ -55,8 +57,29 @@ export default function CrearUsuario({ dataRoles }: ICrearUsuario) {
       </div>
 
       <div className="sm:col-span-3">
-        <Label className="text-sm w-20 truncate">Clave</Label>
-        <Input type="text" name="clave" required />
+        <Label htmlFor="clave-new-user">Clave</Label>
+        <div className="relative">
+          <Input
+            id="clave-new-user"
+            name="clave"
+            autoComplete="off"
+            type={isVisiblePass ? "text" : "password"}
+            className="pr-10"
+            placeholder="Ingresa una contraseña."
+            required
+          />
+          <button
+            type="button"
+            className="absolute inset-y-0 right-0 flex items-center pr-3"
+            onClick={() => setIsVisiblePass(!isVisiblePass)}
+          >
+            {isVisiblePass ? (
+              <EyeOffIcon className="h-5 w-5 text-gray-500" />
+            ) : (
+              <EyeIcon className="h-5 w-5 text-gray-500" />
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="sm:col-span-3">
