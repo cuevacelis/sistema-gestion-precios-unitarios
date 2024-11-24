@@ -59,7 +59,7 @@ export default function AsignarRecursoPartida({
       message: "",
     });
   const [formDataExtra, setFormDataExtra] = useState({
-    idPartida: String(dataPartida?.[0]?.par_id),
+    idPartida: String(idPartida),
     idRecurso: null as string | null,
     precio: "",
   });

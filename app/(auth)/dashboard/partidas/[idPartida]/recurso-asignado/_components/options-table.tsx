@@ -49,7 +49,7 @@ export default function OptionsTable({ idPartida }: IProps) {
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
             <DialogTitle>Agregar</DialogTitle>
-            <DialogDescription>:v</DialogDescription>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <AsignarRecursoPartida idPartida={idPartida} />
         </DialogContent>

@@ -1271,7 +1271,7 @@ export const obtenerHojaDePresupuestoByProyectoId = cache(
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<IDataDBObtenerHojaDePresupuestoId>`sp_presupuesto_obten_exportar_json(${proyectoId})`.as(
+          sql<IDataDBObtenerHojaDePresupuestoId>`sp_presupuesto_obten_exportar(${proyectoId})`.as(
             "result"
           )
         )

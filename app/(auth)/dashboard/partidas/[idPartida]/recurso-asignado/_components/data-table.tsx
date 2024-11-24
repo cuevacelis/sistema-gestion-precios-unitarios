@@ -288,7 +288,7 @@ export default function TableComponent({
                         <DialogContent className="sm:max-w-[525px]">
                           <DialogHeader>
                             <DialogTitle>Editar</DialogTitle>
-                            <DialogDescription>:v</DialogDescription>
+                            <DialogDescription></DialogDescription>
                           </DialogHeader>
                           <EditarAsignacionRecursoPartida
                             idPartida={row.original.v_par_id}
