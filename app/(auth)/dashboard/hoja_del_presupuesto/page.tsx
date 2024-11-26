@@ -70,7 +70,7 @@ export default async function HojaDelPresupuestoPage(props: IProjectPage) {
             key={"options" + uniqueKey}
             fallback={<Skeleton className="h-10 w-full" />}
           >
-            <GetDataOptions />
+            <GetDataOptions proyectoId={convertToStringOrNull(proyectoId)} />
           </Suspense>
         </CardContent>
       </Card>
@@ -98,9 +98,9 @@ export default async function HojaDelPresupuestoPage(props: IProjectPage) {
   );
 }
 
-async function GetDataOptions() {
+async function GetDataOptions({ proyectoId }: { proyectoId: string | null }) {
   const session = await auth();
-  return <OptionsTable session={session} />;
+  return <OptionsTable session={session} proyectoId={proyectoId} />;
 }
 
 async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
@@ -129,7 +129,6 @@ async function GetDataTable({ searchParams }: { searchParams: ISearchParams }) {
   const dataHojaDelPresupuesto = await obtenerHojaDePresupuestoByProyectoId(
     String(proyectoId)
   );
-  console.log(dataHojaDelPresupuesto);
 
   return (
     <TableComponent

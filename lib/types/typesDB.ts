@@ -36,6 +36,7 @@ export interface DetallePartidaGrupoPartida {
 
 export interface DetallePartidaRecurso {
   detparrec_id: Generated<number>;
+  detparrec_preunitario: Numeric | null;
   detrec_precio: Numeric | null;
   par_id: number;
   rec_cantidad: Numeric | null;
@@ -153,7 +154,7 @@ export interface UbicacionPresupuesto {
 }
 
 export interface UnidadMedida {
-  unimed_abreviatura: string;
+  unimed_abreviatura: string | null;
   unimed_estado: Generated<number>;
   unimed_id: Generated<number>;
   unimed_nombre: string;

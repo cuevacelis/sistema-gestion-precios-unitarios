@@ -1,7 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { actionsQueueExportS3Presupuestos } from "@/lib/actions/actions";
+import {
+  actionsQueueExportPresupuestoGeneralS3,
+  actionsQueueExportS3Presupuestos,
+} from "@/lib/actions/actions";
 import { Download, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -20,7 +23,13 @@ import { Session } from "next-auth";
 import { toast } from "sonner";
 import { formatDateTimeForFilename } from "@/lib/utils";
 
-export default function OptionsTable({ session }: { session: Session | null }) {
+export default function OptionsTable({
+  session,
+  proyectoId,
+}: {
+  session: Session | null;
+  proyectoId: string | null;
+}) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const createPath = `${pathname}/crear?${searchParams.toString()}`;
@@ -32,10 +41,11 @@ export default function OptionsTable({ session }: { session: Session | null }) {
           "Su solicitud de exportación se ha iniciado, se le notificará cuando esté lista para descarga.",
         duration: 3000,
       });
-      await actionsQueueExportS3Presupuestos({
+      await actionsQueueExportPresupuestoGeneralS3({
         userId: String(session?.user?.id),
         prefixNameFile: `Proyectos-${formatDateTimeForFilename()}`,
         email: String(session?.user?.email),
+        pre_id: String(proyectoId),
       });
     } catch (error) {
       toast.error("No se pudo iniciar la exportación, inténtelo de nuevo.");

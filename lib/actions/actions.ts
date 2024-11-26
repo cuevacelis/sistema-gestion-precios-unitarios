@@ -780,6 +780,41 @@ export async function actionsQueueExportS3Presupuestos({
   }
 }
 
+export async function actionsQueueExportPresupuestoGeneralS3({
+  userId,
+  prefixNameFile,
+  email,
+  pre_id
+}: {
+  userId: string;
+  prefixNameFile: string;
+  email?: string;
+  pre_id: string;
+}) {
+  try {
+    const lambdaClient = new LambdaClient({ region: "us-east-1" });
+    const command = new InvokeCommand({
+      FunctionName: "sgpu-serverless-dev-getPresupuestoGeneralExport",
+      InvocationType: "Event",
+      Payload: Buffer.from(
+        JSON.stringify({
+          body: JSON.stringify({
+            userId,
+            prefixNameFile,
+            email,
+            pre_id
+          }),
+        })
+      ),
+    });
+
+    await lambdaClient.send(command);
+  } catch (error) {
+    console.error("Error en el proceso de exportación:", error);
+    throw error;
+  }
+}
+
 // #region GRUPOS DE PARTIDAS
 export async function actionsCrearGrupoPartida(
   _prevState: any,
