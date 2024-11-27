@@ -112,13 +112,19 @@ export default function TableComponent({
         {
           accessorKey: "unimed_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="ID Unidad de medida" />
+            <DataTableColumnHeader
+              column={column}
+              title="ID Unidad de medida"
+            />
           ),
         },
         {
           accessorKey: "unimed_nombre",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Nombre Unidad de medida" />
+            <DataTableColumnHeader
+              column={column}
+              title="Nombre Unidad de medida"
+            />
           ),
         },
         {
@@ -130,7 +136,10 @@ export default function TableComponent({
         {
           accessorKey: "tiprec_nombre",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Nombre Tipo Recurso" />
+            <DataTableColumnHeader
+              column={column}
+              title="Nombre Tipo Recurso"
+            />
           ),
         },
         {
@@ -290,12 +299,18 @@ export default function TableComponent({
                   <ContextMenuContent className="w-64">
                     <ContextMenuItem asChild>
                       <Dialog>
-                        <DialogTrigger>
-                          <ModuleIconsComponent
-                            className="mr-2 h-4 w-4"
-                            modNombre="Editar"
-                          />
-                          <span>Editar</span>
+                        <DialogTrigger asChild>
+                          <Button
+                            size="default"
+                            variant="ghost"
+                            className="h-9 p-2 gap-1 w-full flex flex-row justify-start"
+                          >
+                            <ModuleIconsComponent
+                              className="mr-2 h-4 w-4"
+                              modNombre="Editar"
+                            />
+                            <span>Editar</span>
+                          </Button>
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[525px]">
                           <DialogHeader>
