@@ -251,6 +251,7 @@ export default function EditarAsignacionRecursoPartida({
               <Input
                 type="number"
                 name="cuadrilla"
+                step="0.001"
                 defaultValue={dataRecursosAsignados?.[0].rec_cuadrilla}
               />
             </ContainerInput>
