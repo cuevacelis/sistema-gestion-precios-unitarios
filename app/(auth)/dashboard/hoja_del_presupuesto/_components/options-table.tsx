@@ -56,7 +56,12 @@ export default function OptionsTable({
     <section className="flex flex-wrap items-center gap-4">
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button size="default" variant="secondary" className="h-9 gap-1">
+          <Button
+            size="default"
+            variant="secondary"
+            className="h-9 gap-1"
+            disabled={proyectoId === null || String(proyectoId) === "null"}
+          >
             <Download className="w-4" />
             <span>Exportar a PDF</span>
           </Button>

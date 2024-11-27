@@ -223,7 +223,7 @@ export default function AsignarRecursoPartida({
               icon="cuadrilla"
               className="col-span-full sm:col-span-3"
             >
-              <Input type="number" name="cuadrilla" />
+              <Input type="number" name="cuadrilla" step="0.001" />
             </ContainerInput>
           )}
 
