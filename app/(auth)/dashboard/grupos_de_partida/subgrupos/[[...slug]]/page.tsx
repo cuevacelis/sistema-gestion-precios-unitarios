@@ -226,6 +226,9 @@ async function TableWrapper({
 }: TableWrapperProps) {
   let gruposDePartidas: IDataDBObtenerGruposDePartidasId[] = [];
   let isPartidasAssigned: boolean = false;
+  console.log(lastGrupoPartidaId);
+  console.log(idProyecto);
+  console.log(isSubGroup);
 
   if (isSubGroup) {
     gruposDePartidas = await obtenerGruposDePartidasIdRecursive(
@@ -240,6 +243,9 @@ async function TableWrapper({
       convertToStringOrNull(idProyecto)
     );
   }
+
+  console.log(gruposDePartidas);
+  console.log(isPartidasAssigned);
 
   return (
     <TableComponent

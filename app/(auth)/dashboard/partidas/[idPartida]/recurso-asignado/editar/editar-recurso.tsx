@@ -235,6 +235,7 @@ export default function EditarAsignacionRecursoPartida({
             type="number"
             name="cantidad"
             defaultValue={dataRecursosAsignados?.[0].rec_cantidad}
+            step="0.001"
           />
         </ContainerInput>
       ) : (
@@ -266,6 +267,7 @@ export default function EditarAsignacionRecursoPartida({
                 type="number"
                 name="cantidad"
                 defaultValue={dataRecursosAsignados?.[0].rec_cantidad}
+                step="0.001"
               />
             </ContainerInput>
           )}

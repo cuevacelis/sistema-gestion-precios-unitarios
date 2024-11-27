@@ -211,7 +211,7 @@ export default function AsignarRecursoPartida({
           icon="cantidad"
           className="col-span-full sm:col-span-3"
         >
-          <Input type="number" name="cantidad" />
+          <Input type="number" name="cantidad" step="0.001" />
         </ContainerInput>
       ) : (
         <>
@@ -234,7 +234,7 @@ export default function AsignarRecursoPartida({
               icon="cantidad"
               className="col-span-full sm:col-span-3"
             >
-              <Input type="number" name="cantidad" />
+              <Input type="number" name="cantidad" step="0.001" />
             </ContainerInput>
           )}
 
