@@ -112,13 +112,25 @@ export default function TableComponent({
         {
           accessorKey: "unimed_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="unimed_id" />
+            <DataTableColumnHeader column={column} title="ID Unidad de medida" />
+          ),
+        },
+        {
+          accessorKey: "unimed_nombre",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Nombre Unidad de medida" />
           ),
         },
         {
           accessorKey: "tiprec_id",
           header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="tiprec_id" />
+            <DataTableColumnHeader column={column} title="ID Tipo Recurso" />
+          ),
+        },
+        {
+          accessorKey: "tiprec_nombre",
+          header: ({ column }) => (
+            <DataTableColumnHeader column={column} title="Nombre Tipo Recurso" />
           ),
         },
         {
@@ -153,7 +165,7 @@ export default function TableComponent({
     data: dataPartidaRecursosAsignados ?? [],
     columns,
     rowCount: totalResults,
-    identifierField: "detparrec_id",
+    // identifierField: "detparrec_id",
     initialState: {
       columnVisibility: {
         detparrec_id: false,

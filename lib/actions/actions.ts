@@ -784,7 +784,7 @@ export async function actionsQueueExportPresupuestoGeneralS3({
   userId,
   prefixNameFile,
   email,
-  pre_id
+  pre_id,
 }: {
   userId: string;
   prefixNameFile: string;
@@ -802,7 +802,7 @@ export async function actionsQueueExportPresupuestoGeneralS3({
             userId,
             prefixNameFile,
             email,
-            pre_id
+            pre_id,
           }),
         })
       ),
@@ -1276,7 +1276,6 @@ export async function actionsAsignarRecursoToPartida(
     revalidatePath(newUrl);
     redirect(newUrl);
   } catch (error) {
-    console.error(error);
     if (isRedirectError(error)) {
       throw error;
     }

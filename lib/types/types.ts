@@ -226,11 +226,13 @@ export interface IDataDBObtenerPartidasPaginados {
 
 export interface IDataDBObtenerAsignacionesRecursoToPartida {
   detparrec_id: number;
-  v_par_id: number;
   manual_rec_id: number;
+  v_par_id: number;
   rec_nombre: string;
   unimed_id: number;
+  unimed_nombre: string;
   tiprec_id: number;
+  tiprec_nombre: string;
   rec_cantidad: string;
   rec_cuadrilla: string;
   detparrec_preunitario: string;

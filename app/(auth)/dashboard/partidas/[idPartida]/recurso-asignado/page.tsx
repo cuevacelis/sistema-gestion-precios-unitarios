@@ -34,7 +34,7 @@ export default async function VerRecursoPartidaPage(
       <h1 className="text-2xl font-semibold mb-4">
         Ver recursos de la partida
       </h1>
-      <Card className="p-6">
+      <Card className="p-6 mb-4">
         <CardContent className="px-0 py-0">
           <Suspense
             key={uniqueKey}
