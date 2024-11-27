@@ -1098,16 +1098,15 @@ export const editarAsignacionRecursoToPartida = cache(
   async (
     p_par_id: number,
     p_rec_id: number,
-    p_pre_id: number,
-    p_rec_cantidad: number,
-    p_rec_cuadrilla: number,
-    p_rec_precio: number
+    p_rec_cantidad: number | null,
+    p_rec_cuadrilla: number | null,
+    p_rec_precio: number | null
   ) => {
     try {
       return getDbPostgres()
         .selectFrom(
-          sql<any>`sp_calculo_precio_unitario_actualiza_v2
-(${p_par_id}, ${p_rec_id}, ${p_pre_id}, ${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
+          sql<any>`sp_calculo_precio_unitario_actualiza
+(${p_par_id}, ${p_rec_id},${p_rec_cantidad}, ${p_rec_cuadrilla}, ${p_rec_precio})`.as(
             "result"
           )
         )

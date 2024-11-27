@@ -20,6 +20,7 @@ import {
   crearPresupuesto,
   crearRecurso,
   crearUsuario,
+  editarAsignacionRecursoToPartida,
   editarCliente,
   editarGrupoPartida,
   editarPartida,
@@ -1270,8 +1271,62 @@ export async function actionsAsignarRecursoToPartida(
 
     const url = new URL(referer);
     const returnUrl =
-      url.searchParams.get("returnUrl") || "/dashboard/clientes";
-    let newUrl = "/dashboard/partidas" + url.search;
+      url.searchParams.get("returnUrl") || "/dashboard/partidas";
+    let newUrl = returnUrl + url.search;
+
+    revalidatePath(newUrl);
+    redirect(newUrl);
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    if (error instanceof ZodError) {
+      return {
+        message: error.errors.map((err) => err.message),
+        isError: true,
+      };
+    }
+    if (error instanceof Error) {
+      return {
+        message: error?.message,
+        isError: true,
+      };
+    }
+    return {
+      message: "Algo salió mal.",
+      isError: true,
+    };
+  }
+}
+
+export async function actionsEditartRecursoToPartida(
+  _prevState: any,
+  formData: FormData
+) {
+  try {
+    const headersList = await headers();
+    const referer = headersList.get("referer") || "/dashboard/recursos";
+    const { idPartida, idRecurso, cantidad, cuadrilla, precio } =
+      await asignarRecursoToPartidaSchema.parseAsync({
+        idPartida: formData.get("idPartida"),
+        idRecurso: formData.get("idRecurso"),
+        cantidad: formData.get("cantidad"),
+        cuadrilla: formData.get("cuadrilla"),
+        precio: formData.get("precio"),
+      });
+
+    await editarAsignacionRecursoToPartida(
+      Number(idPartida),
+      Number(idRecurso),
+      cantidad ? Number(cantidad) : null,
+      cuadrilla ? Number(cuadrilla) : null,
+      precio ? Number(precio) : null
+    );
+
+    const url = new URL(referer);
+    const returnUrl =
+      url.searchParams.get("returnUrl") || "/dashboard/partidas";
+    let newUrl = returnUrl + url.search;
 
     revalidatePath(newUrl);
     redirect(newUrl);

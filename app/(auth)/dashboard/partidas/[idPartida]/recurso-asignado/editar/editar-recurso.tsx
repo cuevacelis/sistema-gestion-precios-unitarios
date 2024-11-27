@@ -33,7 +33,7 @@ import ModuleIconsComponent from "@/components/navbar/navbar-logged/_components/
 import usePartidaByIdQuery from "@/hooks/tanstack-query/usePartidaByIdQuery";
 import useRecursosQuery from "@/hooks/tanstack-query/useRecursosQuery";
 import useViewCalculoPrecioUnitarioByIdQuery from "@/hooks/tanstack-query/useViewCalculoPrecioUnitarioByIdQuery";
-import { actionsAsignarRecursoToPartida } from "@/lib/actions/actions";
+import { actionsEditartRecursoToPartida } from "@/lib/actions/actions";
 
 type LoadingKeys = "country" | "department" | "province" | "district";
 
@@ -61,7 +61,7 @@ export default function EditarAsignacionRecursoPartida({
   const [isShowModalPreciosRecomendados, setIsShowModalPreciosRecomendados] =
     useState<boolean>(false);
   const [stateForm, formActionEditarAsignacionRecursoPartida, isPending] =
-    useActionState(actionsAsignarRecursoToPartida, {
+    useActionState(actionsEditartRecursoToPartida, {
       isError: false,
       message: "",
     });
