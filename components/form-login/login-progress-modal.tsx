@@ -1,17 +1,30 @@
+"use client"
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2, Lock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Progress } from "@/components/ui/progress";
+import { Loader2, Lock } from 'lucide-react';
+import { useState } from "react";
+import { useInterval } from 'usehooks-ts';
 
 interface IProps {
   isPending: boolean;
 }
 
 export default function LoadingProgressModal({ isPending }: IProps) {
+  const [progress, setProgress] = useState(0);
+
+  useInterval(
+    () => {
+      setProgress((prevProgress) => (prevProgress >= 100 ? 100 : prevProgress + 1));
+    },
+    isPending ? 50 : null
+  );
+
   return (
     <Dialog open={isPending}>
       <DialogContent className="sm:max-w-[425px]">
@@ -29,11 +42,10 @@ export default function LoadingProgressModal({ isPending }: IProps) {
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Por favor, espere mientras verificamos sus credenciales...
           </p>
-          <div className="mt-6 w-full max-w-[200px] h-2 bg-secondary rounded-full overflow-hidden">
-            <div className={cn("h-full bg-primary", "animate-progress")} />
-          </div>
+          <Progress value={progress} className="w-full max-w-[200px] mt-6" />
         </section>
       </DialogContent>
     </Dialog>
   );
 }
+
