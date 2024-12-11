@@ -105,16 +105,6 @@ export default function TopBarComponent(props: IProps) {
               <Menu className="h-5 w-5" />
             </Button>
           )}
-          {/* {stateSidebar === "collapsed" && !isMobile && (
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 flex"
-              onClick={toggleSidebar}
-            >
-              <SidebarOpen className="h-5 w-5" />
-            </Button>
-          )} */}
           <BreadcrumbResponsive />
         </div>
 
@@ -218,67 +208,84 @@ export default function TopBarComponent(props: IProps) {
               </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="space-y-1">
-              <h4 className="text-sm font-medium leading-none">
-                {props.session?.user?.name}
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                {props.session?.user?.email}
-              </p>
+          <DropdownMenuContent align="end" className="w-56 p-2">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {props.session?.user?.name}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {props.session?.user?.email}
+                </p>
+              </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link
                   href="/dashboard/configuracion/general"
-                  className="flex items-center w-full"
+                  className="flex items-center w-full cursor-pointer"
                 >
                   <User className="mr-2 h-4 w-4" />
                   <span>Perfil</span>
-                  {/* <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut> */}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
                   href="/dashboard/configuracion"
-                  className="flex items-center w-full"
+                  className="flex items-center w-full cursor-pointer"
                 >
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Configuración</span>
-                  {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuSub>
-                <DropdownMenuSubTrigger>Tema</DropdownMenuSubTrigger>
+                <DropdownMenuSubTrigger className="cursor-pointer">
+                  <span className="flex items-center">
+                    {theme === "light" ? (
+                      <SunIcon className="mr-2 h-4 w-4" />
+                    ) : theme === "dark" ? (
+                      <MoonIcon className="mr-2 h-4 w-4" />
+                    ) : (
+                      <ComputerIcon className="mr-2 h-4 w-4" />
+                    )}
+                    <span>Tema</span>
+                  </span>
+                </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent>
                     <DropdownMenuItem
-                      className="flex items-center gap-2"
+                      className="cursor-pointer"
                       onClick={() => setTheme("system")}
                     >
-                      <ComputerIcon className="w-3" />
-                      <span className="text-xs">Sistema</span>
-                      {theme === "system" && <CheckIcon className="w-3" />}
+                      <ComputerIcon className="mr-2 h-4 w-4" />
+                      <span>Sistema</span>
+                      {theme === "system" && (
+                        <CheckIcon className="ml-auto h-4 w-4" />
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="flex items-center gap-2"
+                      className="cursor-pointer"
                       onClick={() => setTheme("light")}
                     >
-                      <SunIcon className="w-3" />
-                      <span className="text-xs">Claro</span>
-                      {theme === "light" && <CheckIcon className="w-3" />}
+                      <SunIcon className="mr-2 h-4 w-4" />
+                      <span>Claro</span>
+                      {theme === "light" && (
+                        <CheckIcon className="ml-auto h-4 w-4" />
+                      )}
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      className="flex items-center gap-2"
+                      className="cursor-pointer"
                       onClick={() => setTheme("dark")}
                     >
-                      <MoonIcon className="w-3" />
-                      <span className="text-xs">Oscuro</span>
-                      {theme === "dark" && <CheckIcon className="w-3" />}
+                      <MoonIcon className="mr-2 h-4 w-4" />
+                      <span>Oscuro</span>
+                      {theme === "dark" && (
+                        <CheckIcon className="ml-auto h-4 w-4" />
+                      )}
                     </DropdownMenuItem>
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
@@ -289,18 +296,15 @@ export default function TopBarComponent(props: IProps) {
               <a
                 target="_blank"
                 href="https://github.com/cuevacelis/sistema-gestion-precios-unitarios"
+                className="flex items-center cursor-pointer"
               >
                 <GitHubLogoIcon className="mr-2 h-4 w-4" />
                 <span>GitHub</span>
               </a>
             </DropdownMenuItem>
-            {/* <DropdownMenuItem>
-              <LifeBuoy className="mr-2 h-4 w-4" />
-              <span>Soporte</span>
-            </DropdownMenuItem> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-[#FF666618] [&>svg]:!text-red-500"
+              className="cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-950"
               onClick={async () => {
                 setStatusRespLogout("pending");
                 await actionsSignOut();
@@ -309,7 +313,6 @@ export default function TopBarComponent(props: IProps) {
             >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Cerrar sesión</span>
-              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

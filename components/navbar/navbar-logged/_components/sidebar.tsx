@@ -3,7 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { ISpModuloObtenerModulosXPusuario } from "@/lib/types/types";
 import { cn, convertirEspaciosAGuionesBajos } from "@/lib/utils";
-import { SidebarClose, SidebarOpen } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  PanelLeftCloseIcon,
+  PanelRightCloseIcon,
+} from "lucide-react";
 import { Session } from "next-auth";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,83 +19,98 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SidebarProps {
   session: Session | null;
   modulesByUser: ISpModuloObtenerModulosXPusuario[];
 }
 
-export default function SidebarComponent(props: SidebarProps) {
+export default function SidebarComponent({
+  session,
+  modulesByUser,
+}: SidebarProps) {
   const pathname = usePathname();
   const { toggleSidebar, state: stateSidebar } = useSidebar();
 
   return (
-    <Sidebar className={cn("font-normal px-4")} collapsible="icon">
-      <SidebarHeader>
-        {stateSidebar === "expanded" && (
-          <section className="flex justify-between items-center text-muted-foreground mt-2 font-normal">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 dark:text-white text-black"
-              onClick={toggleSidebar}
-            >
-              <SidebarClose />
-            </Button>
-            <Link href="/" className="flex items-center gap-2 ml-auto">
-              <span className="">CALCPU</span>
+    <Sidebar className="border-r" collapsible="icon">
+      <SidebarHeader className="pt-4">
+        <div className="flex items-center justify-between">
+          {stateSidebar === "expanded" && (
+            <Link href="/" className="flex items-center">
+              <span className="ml-2 font-bold text-lg bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent transition-all duration-300 ease-in-out transform group-hover:scale-105">
+                CALCPU
+              </span>
             </Link>
-          </section>
-        )}
-        {stateSidebar === "collapsed" && (
+          )}
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="h-8 w-8 flex mt-2"
+            className="ml-auto"
             onClick={toggleSidebar}
           >
-            <SidebarOpen />
+            {stateSidebar === "expanded" ? (
+              <PanelLeftCloseIcon className="h-4 w-4" />
+            ) : (
+              <PanelRightCloseIcon className="h-4 w-4" />
+            )}
           </Button>
-        )}
+        </div>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
-              {props.modulesByUser.map((module) => (
-                <SidebarMenuItem key={module.mod_nombre}>
+        <ScrollArea className="h-[calc(100vh-5rem)]">
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
                   <SidebarMenuButton asChild>
                     <Link
-                      key={module.mod_nombre}
-                      href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
+                      href="/dashboard"
                       className={cn(
-                        "h-auto",
-                        pathname.startsWith(
-                          `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
-                        ) && "bg-muted text-primary"
+                        "flex items-center rounded-lg text-gray-600 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
+                        pathname === "/dashboard" &&
+                          "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50"
                       )}
                     >
-                      <ModuleIconsComponent
-                        className={cn("", {
-                          "!h-6 !w-6": stateSidebar === "expanded",
-                        })}
-                        modNombre={module.mod_nombre}
-                      />
-                      <span>{module.mod_nombre}</span>
+                      <Home className="h-5 w-5" />
+                      <span>Inicio</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                {modulesByUser.map((module) => (
+                  <SidebarMenuItem key={module.mod_nombre}>
+                    <SidebarMenuButton asChild>
+                      <Link
+                        href={`/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`}
+                        className={cn(
+                          "flex items-center rounded-lg text-gray-600 transition-all hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50",
+                          pathname.startsWith(
+                            `/dashboard/${convertirEspaciosAGuionesBajos(module.mod_nombre.toLowerCase())}`
+                          ) &&
+                            "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-50"
+                        )}
+                      >
+                        <ModuleIconsComponent
+                          className="h-5 w-5"
+                          modNombre={module.mod_nombre}
+                        />
+                        <span>{module.mod_nombre}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </ScrollArea>
       </SidebarContent>
     </Sidebar>
   );

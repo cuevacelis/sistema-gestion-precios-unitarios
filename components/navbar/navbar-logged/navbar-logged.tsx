@@ -16,13 +16,7 @@ export default function NavbarLoggedComponent({
   modulesByUser,
 }: IPropsNavbarLogged) {
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width-icon": "5rem",
-        } as React.CSSProperties
-      }
-    >
+    <SidebarProvider>
       <SidebarComponent session={session} modulesByUser={modulesByUser} />
       <SidebarInset className="bg-muted dark:bg-muted/50 overflow-auto">
         <TopBarComponent session={session} modulesByUser={modulesByUser} />
