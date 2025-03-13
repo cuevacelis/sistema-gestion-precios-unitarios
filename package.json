@@ -1,7 +1,7 @@
 {
   "name": "sistema-gestion-precios-unitarios",
   "version": "2.1.0",
-  "packageManager": "pnpm@10.6.2",
+  "packageManager": "pnpm@10.6.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,7 +12,7 @@
     "generate": "npx kysely-codegen --url='env(POSTGRES_URL)' --out-file './lib/types/typesDB.ts'"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.2.4",
+    "@ai-sdk/openai": "^1.2.5",
     "@aws-sdk/client-lambda": "^3.758.0",
     "@aws-sdk/client-sqs": "^3.758.0",
     "@heroicons/react": "^2.2.0",
@@ -51,7 +51,7 @@
     "@vercel/postgres": "^0.10.0",
     "@vercel/postgres-kysely": "^0.10.0",
     "ably": "^2.6.3",
-    "ai": "^4.1.60",
+    "ai": "^4.1.61",
     "autoprefixer": "10.4.21",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
@@ -69,7 +69,7 @@
     "openai": "^4.87.3",
     "pg": "^8.14.0",
     "react": "19.0.0",
-    "react-day-picker": "8.10.1",
+    "react-day-picker": "9.6.2",
     "react-dom": "19.0.0",
     "react-hook-form": "^7.54.2",
     "react-loader-spinner": "^6.1.6",
