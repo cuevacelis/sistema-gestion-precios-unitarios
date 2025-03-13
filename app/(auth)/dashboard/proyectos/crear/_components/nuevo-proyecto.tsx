@@ -214,7 +214,7 @@ export default function NuevoProyecto({ session }: INuevoProyecto) {
                 <Link
                   href={`/dashboard/clientes/crear?returnUrl=${encodeURIComponent(pathname)}`}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="size-4" />
                 </Link>
               </Button>
             </TooltipTrigger>

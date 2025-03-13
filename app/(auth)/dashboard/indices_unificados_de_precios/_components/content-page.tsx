@@ -31,11 +31,11 @@ import { useMediaQuery } from "usehooks-ts";
 const chartConfig = {
   date1: {
     label: "Fecha 1",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
   date2: {
     label: "Fecha 2",
-    color: "hsl(var(--chart-2))",
+    color: "var(--chart-2)",
   },
 } satisfies ChartConfig;
 
