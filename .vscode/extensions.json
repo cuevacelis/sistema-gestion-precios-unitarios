@@ -1,0 +1,10 @@
+{
+	"recommendations": [
+		"biomejs.biome",
+		"formulahendry.auto-rename-tag",
+		"bradlc.vscode-tailwindcss",
+		"dsznajder.es7-react-js-snippets",
+		"yoavbls.pretty-ts-errors",
+		"wix.vscode-import-cost"
+	]
+}
