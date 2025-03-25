@@ -5,50 +5,50 @@ import dynamic from "next/dynamic";
 import { Suspense } from "react";
 
 const EditarGrupoPartida = dynamic(
-  () => import("./_components/editar-grupo-partida"),
-  {}
+	() => import("./_components/editar-grupo-partida"),
+	{},
 );
 
 interface IPropsEditarGrupoPartida {
-  params: Promise<{
-    slug?: string[];
-  }>;
+	params: Promise<{
+		slug?: string[];
+	}>;
 }
 
 export default async function EditarGrupoPartidaPage(
-  props: IPropsEditarGrupoPartida
+	props: IPropsEditarGrupoPartida,
 ) {
-  const params = await props.params;
-  const { slug = [] } = params;
-  const lastSlug = slug.at(-1);
+	const params = await props.params;
+	const { slug = [] } = params;
+	const lastSlug = slug.at(-1);
 
-  return (
-    <div className="p-4 lg:p-6">
-      <h1 className="text-2xl font-semibold mb-4">Editar Grupo de Partida</h1>
-      <Card className="overflow-auto mb-6">
-        <CardContent>
-          <Suspense fallback={<p>Cargando...</p>}>
-            <GetDataEditarGrupoPartida idGrupoPartida={lastSlug} />
-          </Suspense>
-        </CardContent>
-      </Card>
-    </div>
-  );
+	return (
+		<div className="p-4 lg:p-6">
+			<h1 className="text-2xl font-semibold mb-4">Editar Grupo de Partida</h1>
+			<Card className="overflow-auto mb-6">
+				<CardContent>
+					<Suspense fallback={<p>Cargando...</p>}>
+						<GetDataEditarGrupoPartida idGrupoPartida={lastSlug} />
+					</Suspense>
+				</CardContent>
+			</Card>
+		</div>
+	);
 }
 
 interface IParams {
-  idGrupoPartida?: string;
+	idGrupoPartida?: string;
 }
 
 async function GetDataEditarGrupoPartida({ idGrupoPartida }: IParams) {
-  const dataGrupoPartida = await obtenerNombreGruposDePartidasById(
-    String(idGrupoPartida)
-  );
+	const dataGrupoPartida = await obtenerNombreGruposDePartidasById(
+		String(idGrupoPartida),
+	);
 
-  return (
-    <EditarGrupoPartida
-      idGrupoPartida={convertToStringOrNull(idGrupoPartida)}
-      dataGrupoPartida={dataGrupoPartida}
-    />
-  );
+	return (
+		<EditarGrupoPartida
+			idGrupoPartida={convertToStringOrNull(idGrupoPartida)}
+			dataGrupoPartida={dataGrupoPartida}
+		/>
+	);
 }

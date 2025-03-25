@@ -2,35 +2,35 @@ import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import { clsx } from "clsx";
 
 interface Breadcrumb {
-  label: string;
-  href: string;
-  active?: boolean;
+	label: string;
+	href: string;
+	active?: boolean;
 }
 
 export default function Breadcrumbs({
-  breadcrumbs,
+	breadcrumbs,
 }: {
-  breadcrumbs: Breadcrumb[];
+	breadcrumbs: Breadcrumb[];
 }) {
-  return (
-    <nav aria-label="Breadcrumb" className="mb-6">
-      <ol className="flex flex-row items-center text-sm">
-        {breadcrumbs.map((breadcrumb, index) => (
-          <li
-            key={breadcrumb.href.toString()}
-            aria-current={breadcrumb.active}
-            className={clsx(
-              "flex flex-row items-center",
-              breadcrumb.active ? "" : "opacity-50"
-            )}
-          >
-            {/* <Link href={breadcrumb.href}>{breadcrumb.label}</Link> */}
-            {index < breadcrumbs.length - 1 ? (
-              <ChevronRightIcon className="w-3 mx-1 inline-block" />
-            ) : null}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
+	return (
+		<nav aria-label="Breadcrumb" className="mb-6">
+			<ol className="flex flex-row items-center text-sm">
+				{breadcrumbs.map((breadcrumb, index) => (
+					<li
+						key={breadcrumb.href.toString()}
+						aria-current={breadcrumb.active}
+						className={clsx(
+							"flex flex-row items-center",
+							breadcrumb.active ? "" : "opacity-50",
+						)}
+					>
+						{/* <Link href={breadcrumb.href}>{breadcrumb.label}</Link> */}
+						{index < breadcrumbs.length - 1 ? (
+							<ChevronRightIcon className="w-3 mx-1 inline-block" />
+						) : null}
+					</li>
+				))}
+			</ol>
+		</nav>
+	);
 }

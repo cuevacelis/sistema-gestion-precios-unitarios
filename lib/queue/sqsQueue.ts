@@ -2,11 +2,11 @@ import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 // Crear una instancia del cliente SQS
 const sqs = new SQSClient({
-  region: process.env.AWS_REGION || "us-east-1",
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
+	region: process.env.AWS_REGION || "us-east-1",
+	credentials: {
+		accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+		secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+	},
 });
 
 /**
@@ -17,18 +17,18 @@ const sqs = new SQSClient({
  * @throws Error si falla el envío del mensaje a la cola
  */
 export async function sendToQueue(
-  queueUrl: string,
-  messageBody: any
+	queueUrl: string,
+	messageBody: any,
 ): Promise<string> {
-  const command = new SendMessageCommand({
-    QueueUrl: queueUrl,
-    MessageBody: JSON.stringify(messageBody),
-  });
+	const command = new SendMessageCommand({
+		QueueUrl: queueUrl,
+		MessageBody: JSON.stringify(messageBody),
+	});
 
-  try {
-    const response = await sqs.send(command);
-    return response.MessageId!;
-  } catch (error) {
-    throw new Error("Failed to queue message");
-  }
+	try {
+		const response = await sqs.send(command);
+		return response.MessageId!;
+	} catch (error) {
+		throw new Error("Failed to queue message");
+	}
 }

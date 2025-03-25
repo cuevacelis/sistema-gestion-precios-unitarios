@@ -1,19 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { useInterval } from "usehooks-ts";
-import { TypeAnimation } from "react-type-animation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, ArrowRight, Users, BarChart2, FileSpreadsheet } from 'lucide-react';
+import {
+	ArrowRight,
+	BarChart2,
+	CheckCircle,
+	FileSpreadsheet,
+	Users,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { TypeAnimation } from "react-type-animation";
+import { useInterval } from "usehooks-ts";
 
 import imgBeneficio1 from "@/resources/images/beneficios1.jpg";
 import imgBeneficio2 from "@/resources/images/beneficios2.jpg";
-import imgHome1 from "@/resources/images/logo.jpeg";
 import imgHome2 from "@/resources/images/home-sgpu-1.webp";
 import imgHome3 from "@/resources/images/home-sgpu-3.webp";
+import imgHome1 from "@/resources/images/logo.jpeg";
 import backgroundSection1 from "@/resources/images/mejores-construccion-software.png";
 
 export default function HomePage() {
@@ -45,7 +51,7 @@ export default function HomePage() {
 									]}
 									wrapper="p"
 									speed={50}
-									repeat={Infinity}
+									repeat={Number.POSITIVE_INFINITY}
 								/>
 							</div>
 							<div className="flex gap-4">
@@ -55,9 +61,7 @@ export default function HomePage() {
 									</Link>
 								</Button>
 								<Button asChild size="lg" variant="outline">
-									<Link href="#beneficios">
-										Ver funcionalidades
-									</Link>
+									<Link href="#beneficios">Ver funcionalidades</Link>
 								</Button>
 							</div>
 						</div>
@@ -67,8 +71,9 @@ export default function HomePage() {
 									key={index}
 									src={img}
 									alt={`Sistema CALCPU ${index + 1}`}
-									className={`absolute transition-opacity duration-1000 ${index === currentImage ? "opacity-100" : "opacity-0"
-										}`}
+									className={`absolute transition-opacity duration-1000 ${
+										index === currentImage ? "opacity-100" : "opacity-0"
+									}`}
 									fill
 									style={{ objectFit: "cover" }}
 									priority={index === 0}
@@ -89,8 +94,12 @@ export default function HomePage() {
 						</div>
 						<div className="space-y-2">
 							<BarChart2 className="mx-auto h-12 w-12" />
-							<h3 className="text-2xl font-semibold">Análisis de Precios Unitarios</h3>
-							<p>Realiza análisis detallados de precios unitarios y subpartidas</p>
+							<h3 className="text-2xl font-semibold">
+								Análisis de Precios Unitarios
+							</h3>
+							<p>
+								Realiza análisis detallados de precios unitarios y subpartidas
+							</p>
 						</div>
 						<div className="space-y-2">
 							<FileSpreadsheet className="mx-auto h-12 w-12" />
@@ -125,14 +134,20 @@ export default function HomePage() {
 				</div>
 			</section>
 
-			<section id="beneficios" className="container mx-auto px-4 py-20 md:py-32">
+			<section
+				id="beneficios"
+				className="container mx-auto px-4 py-20 md:py-32"
+			>
 				<div className="text-center mb-16">
-					<p className="text-lg text-primary font-semibold mb-4">FUNCIONALIDADES</p>
+					<p className="text-lg text-primary font-semibold mb-4">
+						FUNCIONALIDADES
+					</p>
 					<h2 className="text-4xl md:text-5xl font-bold mb-6">
 						Características Principales de CALCPU
 					</h2>
 					<p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-						Descubre las potentes herramientas que CALCPU ofrece para optimizar tus proyectos de construcción
+						Descubre las potentes herramientas que CALCPU ofrece para optimizar
+						tus proyectos de construcción
 					</p>
 				</div>
 
@@ -144,7 +159,9 @@ export default function HomePage() {
 					/>
 					<Card>
 						<CardHeader>
-							<CardTitle className="text-2xl">Gestión de Proyectos y Recursos</CardTitle>
+							<CardTitle className="text-2xl">
+								Gestión de Proyectos y Recursos
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<ul className="space-y-4">
@@ -167,7 +184,9 @@ export default function HomePage() {
 				<div className="grid md:grid-cols-2 gap-16">
 					<Card className="md:order-2">
 						<CardHeader>
-							<CardTitle className="text-2xl">Planificación y Control Avanzado</CardTitle>
+							<CardTitle className="text-2xl">
+								Planificación y Control Avanzado
+							</CardTitle>
 						</CardHeader>
 						<CardContent>
 							<ul className="space-y-4">
@@ -199,7 +218,8 @@ export default function HomePage() {
 						Optimiza tu Gestión de Proyectos con CALCPU
 					</h2>
 					<p className="text-xl mb-8 max-w-2xl mx-auto">
-						Únete a nuestra plataforma y descubre cómo CALCPU puede ayudarte a mejorar la eficiencia y precisión en tus proyectos de construcción.
+						Únete a nuestra plataforma y descubre cómo CALCPU puede ayudarte a
+						mejorar la eficiencia y precisión en tus proyectos de construcción.
 					</p>
 					<Button asChild size="lg" variant="secondary">
 						<Link href="/login">
@@ -211,4 +231,3 @@ export default function HomePage() {
 		</div>
 	);
 }
-

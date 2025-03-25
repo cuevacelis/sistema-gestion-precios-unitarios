@@ -1,14 +1,14 @@
 import NavbarUnloggedComponent from "@/components/navbar/navbar-unlogged/navbar-unlogged";
 
 export default function NotAuthDashboardLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <>
-      <NavbarUnloggedComponent />
-      {children}
-    </>
-  );
+	return (
+		<>
+			<NavbarUnloggedComponent />
+			{children}
+		</>
+	);
 }

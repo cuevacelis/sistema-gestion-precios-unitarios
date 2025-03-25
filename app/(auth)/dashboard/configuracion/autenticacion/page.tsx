@@ -1,3 +1,3 @@
 export default function AuthenticationConfigurationPage() {
-  return null;
+	return null;
 }
