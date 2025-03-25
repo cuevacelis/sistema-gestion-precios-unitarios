@@ -6,7 +6,7 @@ import { convertToStringOrNull } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarGrupoPartida = dynamic(
-  () => import("../../../editar/[[...slug]]/_components/editar-grupo-partida"),
+  () => import("../../../../editar/[[...slug]]/_components/editar-grupo-partida"),
   {}
 );
 

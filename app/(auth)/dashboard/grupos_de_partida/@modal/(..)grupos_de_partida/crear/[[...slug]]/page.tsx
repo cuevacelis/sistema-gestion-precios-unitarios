@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { convertToStringOrNull } from "@/lib/utils";
 
 const NuevoGrupoPartida = dynamic(
-  () => import("../../../crear/[[...slug]]/_components/nuevo-grupo-partida"),
+  () => import("../../../../crear/[[...slug]]/_components/nuevo-grupo-partida"),
   {}
 );
 
