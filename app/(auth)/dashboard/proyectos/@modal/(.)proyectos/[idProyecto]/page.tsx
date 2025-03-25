@@ -14,7 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import VerDetalleProyecto from "../../[idProyecto]/_components/detalle-proyecto";
+import VerDetalleProyecto from "../../../[idProyecto]/_components/detalle-proyecto";
 
 interface IPropsEditProyectoModalPage {
   params: Promise<{

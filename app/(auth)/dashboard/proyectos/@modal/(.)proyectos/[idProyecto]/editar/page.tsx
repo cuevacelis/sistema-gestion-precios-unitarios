@@ -6,8 +6,8 @@ import {
 } from "@/lib/services/sql-queries";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
-import EditarProyectosPage from "../../../[idProyecto]/editar/_components/edit-proyecto";
-import EditarProyectoSkeleton from "../../../[idProyecto]/editar/_components/skeleton";
+import EditarProyectosPage from "../../../../[idProyecto]/editar/_components/edit-proyecto";
+import EditarProyectoSkeleton from "../../../../[idProyecto]/editar/_components/skeleton";
 
 interface IPropsEditProyectoModalPage {
   params: Promise<{

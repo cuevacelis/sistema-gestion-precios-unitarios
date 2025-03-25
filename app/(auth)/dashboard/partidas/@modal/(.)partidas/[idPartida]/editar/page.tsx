@@ -10,7 +10,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EditarPartida = dynamic(
-  () => import("../../../[idPartida]/editar/_components/edit-partida"),
+  () => import("../../../../[idPartida]/editar/_components/edit-partida"),
   {
     loading: () => <p>Cargando...</p>,
   }

@@ -8,7 +8,7 @@ import {
 } from "@/lib/services/sql-queries";
 
 const NuevoPartida = dynamic(
-  () => import("../../crear/_components/nueva-partida"),
+  () => import("../../../crear/_components/nueva-partida"),
   {
     loading: () => <p>Cargando...</p>,
   }
